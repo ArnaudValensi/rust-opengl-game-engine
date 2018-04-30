@@ -1,33 +1,17 @@
 extern crate glbs;
-extern crate gl;
-extern crate glutin;
 
-use glbs::common::{Window, process_events};
-use glutin::GlContext;
+use glbs::main_1_1_2;
 
-// settings
-const SCR_WIDTH: u32 = 800;
-const SCR_HEIGHT: u32 = 600;
+fn main() {
+    let args: Vec<String> = std::env::args().collect();
+    if args.len() != 2 {
+        println!("Call with the number of the tutorial, e.g. `1_1_2` for _1_2_hello_window_clear.rs");
+        std::process::exit(1);
+    }
+    let tutorial_id = &args[1];
 
-pub fn main() {
-    // glfw: initialize and configure
-    // ------------------------------
-    let mut window = Window::new(SCR_WIDTH, SCR_HEIGHT);
-
-    // render loop
-    // -----------
-    while window.running {
-        // events
-        // -----
-        process_events(&mut window);
-
-        // render
-        // ------
-        unsafe {
-            gl::ClearColor(0.2, 0.3, 0.3, 1.0);
-            gl::Clear(gl::COLOR_BUFFER_BIT);
-        }
-
-        window.gl_window.swap_buffers().unwrap();
+    match tutorial_id.as_str() {
+        "1_1_2" => main_1_1_2(),
+        _     => println!("Unknown tutorial id")
     }
 }
