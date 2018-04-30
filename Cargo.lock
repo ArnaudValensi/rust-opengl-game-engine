@@ -136,6 +136,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "glbs"
+version = "0.1.0"
+dependencies = [
+ "gl 0.6.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "glutin 0.14.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "gleam"
 version = "0.4.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -290,14 +298,6 @@ dependencies = [
  "redox_syscall 0.1.37 (registry+https://github.com/rust-lang/crates.io-index)",
  "remove_dir_all 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "winapi 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "tests-glrs"
-version = "0.1.0"
-dependencies = [
- "gl 0.6.5 (registry+https://github.com/rust-lang/crates.io-index)",
- "glutin 0.14.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
