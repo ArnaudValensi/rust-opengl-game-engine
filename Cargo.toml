@@ -1,0 +1,8 @@
+[package]
+name = "tests-glrs"
+version = "0.1.0"
+authors = ["Arnaud Valensi <arnaud.valensi@gmail.com>"]
+
+[dependencies]
+gl = "0.6.0"
+glutin = "*"
