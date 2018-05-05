@@ -6,6 +6,7 @@ pub struct Input {
     keys_down: HashSet<KeyCode>,
     keys_down_this_tick: HashSet<KeyCode>,
     keys_up_this_tick: HashSet<KeyCode>,
+    pub mouse_position: (f64, f64),
 }
 
 impl Input {
@@ -18,6 +19,7 @@ impl Input {
             keys_down,
             keys_down_this_tick,
             keys_up_this_tick,
+            mouse_position: (0.0, 0.0),
         }
     }
 

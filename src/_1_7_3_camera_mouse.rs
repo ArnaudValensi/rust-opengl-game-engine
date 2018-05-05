@@ -31,13 +31,14 @@ use cgmath::prelude::*;
 // settings
 const SCR_WIDTH: u32 = 800;
 const SCR_HEIGHT: u32 = 600;
+const FOV: f32 = 45.0;
 
 // camera
-const cameraFront: Vector3<f32> = Vector3 {
-    x: 0.0,
-    y: 0.0,
-    z: -1.0,
-};
+// const cameraFront: Vector3<f32> = Vector3 {
+//     x: 0.0,
+//     y: 0.0,
+//     z: -1.0,
+// };
 const cameraUp: Vector3<f32> = Vector3 {
     x: 0.0,
     y: 1.0,
@@ -46,6 +47,19 @@ const cameraUp: Vector3<f32> = Vector3 {
 
 pub fn main_1_7_3() {
     let mut cameraPos = Point3::new(0.0, 0.0, 3.0);
+    let mut cameraFront: Vector3<f32> = Vector3 {
+        x: 0.0,
+        y: 0.0,
+        z: -1.0,
+    };
+
+    let mut firstMouse = true;
+    // yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector
+    // pointing to the right so we initially rotate a bit to the left.
+    let mut yaw: f32 = -90.0;
+    let mut pitch: f32 = 0.0;
+    let mut lastX: f32 = SCR_WIDTH as f32 / 2.0;
+    let mut lastY: f32 = SCR_HEIGHT as f32 / 2.0;
 
     // timing
     let mut deltaTime: Duration; // time between current frame and last frame
@@ -203,7 +217,7 @@ pub fn main_1_7_3() {
 
         // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
         // -----------------------------------------------------------------------------------------------------------
-        let projection: Matrix4<f32> = perspective(Deg(45.0), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
+        let projection: Matrix4<f32> = perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
         ourShader.setMat4(c_str!("projection"), &projection);
 
         (ourShader, VBO, VAO, texture1, texture2, cubePositions)
@@ -225,7 +239,18 @@ pub fn main_1_7_3() {
 
         // input
         // -----
-        processInput(&mut window, deltaTime, &mut cameraPos);
+        // processInput(&mut window, deltaTime, &mut cameraPos);
+        processInput(
+            &mut window,
+            deltaTime,
+            &mut cameraPos,
+            &mut firstMouse,
+            &mut lastX,
+            &mut lastY,
+            &mut yaw,
+            &mut pitch,
+            &mut cameraFront,
+        );
 
         // render
         // ------
@@ -274,7 +299,17 @@ pub fn main_1_7_3() {
     }
 }
 
-fn processInput(window: &Window, deltaTime: Duration, cameraPos: &mut Point3<f32>) {
+fn processInput(
+    window: &Window,
+    deltaTime: Duration,
+    cameraPos: &mut Point3<f32>,
+    firstMouse: &mut bool,
+    lastX: &mut f32,
+    lastY: &mut f32,
+    yaw: &mut f32,
+    pitch: &mut f32,
+    cameraFront: &mut Vector3<f32>,
+) {
     let input = &window.input;
 
     // if window.get_key(Key::Escape) == Action::Press {
@@ -284,10 +319,10 @@ fn processInput(window: &Window, deltaTime: Duration, cameraPos: &mut Point3<f32
     let cameraSpeed: f32 = 2.5 * deltaTime.as_fractional_secs() as f32;
 
     if input.get_key(KeyCode::W) {
-        *cameraPos += cameraSpeed * cameraFront;
+        *cameraPos += cameraSpeed * *cameraFront;
     }
     if input.get_key(KeyCode::S) {
-        *cameraPos += -(cameraSpeed * cameraFront);
+        *cameraPos += -(cameraSpeed * *cameraFront);
     }
     if input.get_key(KeyCode::A) {
         *cameraPos += -(cameraFront.cross(cameraUp).normalize() * cameraSpeed);
@@ -295,4 +330,60 @@ fn processInput(window: &Window, deltaTime: Duration, cameraPos: &mut Point3<f32
     if input.get_key(KeyCode::D) {
         *cameraPos += cameraFront.cross(cameraUp).normalize() * cameraSpeed;
     }
+
+    processMouse(
+        &input.mouse_position,
+        firstMouse,
+        lastX,
+        lastY,
+        yaw,
+        pitch,
+        cameraFront,
+    );
+}
+
+fn processMouse(
+    mouse_position: &(f64, f64),
+    firstMouse: &mut bool,
+    lastX: &mut f32,
+    lastY: &mut f32,
+    yaw: &mut f32,
+    pitch: &mut f32,
+    cameraFront: &mut Vector3<f32>,
+) {
+    let (xpos, ypos) = (mouse_position.0 as f32, mouse_position.1 as f32);
+    if *firstMouse {
+        *lastX = xpos;
+        *lastY = ypos;
+        *firstMouse = false;
+    }
+
+    // println!("{:?}", mouse_position);
+
+    let mut xoffset = xpos - *lastX;
+    let mut yoffset = *lastY - ypos; // reversed since y-coordinates go from bottom to top
+    *lastX = xpos;
+    *lastY = ypos;
+
+    let sensitivity: f32 = 0.1; // change this value to your liking
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    *yaw += xoffset;
+    *pitch += yoffset;
+
+    // make sure that when pitch is out of bounds, screen doesn't get flipped
+    if *pitch > 89.0 {
+        *pitch = 89.0;
+    }
+    if *pitch < -89.0 {
+        *pitch = -89.0;
+    }
+
+    let front = Vector3 {
+        x: yaw.to_radians().cos() * pitch.to_radians().cos(),
+        y: pitch.to_radians().sin(),
+        z: yaw.to_radians().sin() * pitch.to_radians().cos(),
+    };
+    *cameraFront = front.normalize();
 }

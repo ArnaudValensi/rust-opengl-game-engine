@@ -77,6 +77,9 @@ pub fn process_events(window: &mut Window) {
                         _ => ()
                     }
                 }
+                WindowEvent::CursorMoved { position, .. } => {
+                    window_input.mouse_position = position;
+                }
                 _ => ()
             },
             _ => ()
