@@ -13,6 +13,7 @@ use self::glutin::{
     GlContext,
     ElementState,
     KeyboardInput,
+    CursorState,
 };
 
 pub struct Window {
@@ -33,6 +34,8 @@ impl Window {
         let context = ContextBuilder::new()
             .with_vsync(true);
         let gl_window = GlWindow::new(window, context, &events_loop).unwrap();
+
+        gl_window.set_cursor_state(CursorState::Grab);
 
         unsafe {
             gl_window.make_current().unwrap();
