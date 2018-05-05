@@ -33,12 +33,6 @@ const SCR_WIDTH: u32 = 800;
 const SCR_HEIGHT: u32 = 600;
 const FOV: f32 = 45.0;
 
-// camera
-// const cameraFront: Vector3<f32> = Vector3 {
-//     x: 0.0,
-//     y: 0.0,
-//     z: -1.0,
-// };
 const cameraUp: Vector3<f32> = Vector3 {
     x: 0.0,
     y: 1.0,
@@ -53,13 +47,10 @@ pub fn main_1_7_3() {
         z: -1.0,
     };
 
-    let mut firstMouse = true;
     // yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector
     // pointing to the right so we initially rotate a bit to the left.
     let mut yaw: f32 = -90.0;
     let mut pitch: f32 = 0.0;
-    let mut lastX: f32 = SCR_WIDTH as f32 / 2.0;
-    let mut lastY: f32 = SCR_HEIGHT as f32 / 2.0;
 
     // timing
     let mut deltaTime: Duration; // time between current frame and last frame
@@ -244,9 +235,6 @@ pub fn main_1_7_3() {
             &mut window,
             deltaTime,
             &mut cameraPos,
-            &mut firstMouse,
-            &mut lastX,
-            &mut lastY,
             &mut yaw,
             &mut pitch,
             &mut cameraFront,
@@ -303,9 +291,6 @@ fn processInput(
     window: &mut Window,
     deltaTime: Duration,
     cameraPos: &mut Point3<f32>,
-    firstMouse: &mut bool,
-    lastX: &mut f32,
-    lastY: &mut f32,
     yaw: &mut f32,
     pitch: &mut f32,
     cameraFront: &mut Vector3<f32>,
@@ -332,10 +317,7 @@ fn processInput(
     }
 
     processMouse(
-        &input.mouse_position,
-        firstMouse,
-        lastX,
-        lastY,
+        &input.mouse_axis,
         yaw,
         pitch,
         cameraFront,
@@ -343,31 +325,16 @@ fn processInput(
 }
 
 fn processMouse(
-    mouse_position: &(f64, f64),
-    firstMouse: &mut bool,
-    lastX: &mut f32,
-    lastY: &mut f32,
+    mouse_axis: &(f64, f64),
     yaw: &mut f32,
     pitch: &mut f32,
     cameraFront: &mut Vector3<f32>,
 ) {
-    let (xpos, ypos) = (mouse_position.0 as f32, mouse_position.1 as f32);
-    if *firstMouse {
-        *lastX = xpos;
-        *lastY = ypos;
-        *firstMouse = false;
-    }
-
-    // println!("{:?}", mouse_position);
-
-    let mut xoffset = xpos - *lastX;
-    let mut yoffset = *lastY - ypos; // reversed since y-coordinates go from bottom to top
-    *lastX = xpos;
-    *lastY = ypos;
+    let (xpos, ypos) = (mouse_axis.0 as f32, mouse_axis.1 as f32);
 
     let sensitivity: f32 = 0.1; // change this value to your liking
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
+    let xoffset = xpos * sensitivity;
+    let yoffset = -ypos * sensitivity;
 
     *yaw += xoffset;
     *pitch += yoffset;

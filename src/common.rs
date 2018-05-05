@@ -20,6 +20,7 @@ pub struct Window {
     pub input: Input,
     pub running: bool,
     pub events_loop: EventsLoop,
+    cursor_locked: bool,
 }
 
 impl Window {
@@ -44,7 +45,12 @@ impl Window {
             input,
             gl_window,
             running: true,
+            cursor_locked: true,
         }
+    }
+
+    pub fn set_cursor_locked(&mut self, lock: bool) {
+        self.cursor_locked = lock;
     }
 }
 
@@ -52,6 +58,8 @@ pub fn process_events(window: &mut Window) {
     let running = &mut window.running;
     let gl_window = &window.gl_window;
     let window_input = &mut window.input;
+
+    window_input.mouse_axis = (0.0, 0.0);
 
     window.events_loop.poll_events(|event| {
         match event {
@@ -78,7 +86,20 @@ pub fn process_events(window: &mut Window) {
                     }
                 }
                 WindowEvent::CursorMoved { position, .. } => {
-                    window_input.mouse_position = position;
+                    let window_size = gl_window.get_inner_size().unwrap();
+                    let window_center_x = window_size.0 as f64 / 2.0;
+                    let window_center_y = window_size.1 as f64 / 2.0;
+
+                    window_input.mouse_axis = (
+                        position.0 - window_center_x,
+                        position.1 - window_center_y
+                    );
+                    // println!("window_size: {:?}", window_size);
+
+                    // println!("window_center_x: {:?}", window_center_x);
+                    // println!("window_center_y: {:?}", window_center_y);
+                    // println!("position: {:?}", position);
+                    // println!("window_input.mouse_axis: {:?}", window_input.mouse_axis);
                     center_mouse_cursor(gl_window);
                 }
                 _ => ()
