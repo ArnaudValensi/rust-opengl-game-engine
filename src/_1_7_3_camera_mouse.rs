@@ -300,7 +300,7 @@ pub fn main_1_7_3() {
 }
 
 fn processInput(
-    window: &Window,
+    window: &mut Window,
     deltaTime: Duration,
     cameraPos: &mut Point3<f32>,
     firstMouse: &mut bool,
@@ -312,9 +312,9 @@ fn processInput(
 ) {
     let input = &window.input;
 
-    // if window.get_key(Key::Escape) == Action::Press {
-    //     window.set_should_close(true)
-    // }
+    if input.get_key(KeyCode::Escape) {
+        window.running = false;
+    }
 
     let cameraSpeed: f32 = 2.5 * deltaTime.as_fractional_secs() as f32;
 
