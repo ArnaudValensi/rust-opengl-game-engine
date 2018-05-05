@@ -14,7 +14,7 @@ use self::glutin::{
 pub struct Window {
     pub gl_window: glutin::GlWindow,
     pub running: bool,
-    events_loop: glutin::EventsLoop,
+    pub events_loop: glutin::EventsLoop,
 }
 
 impl Window {

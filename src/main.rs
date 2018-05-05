@@ -3,6 +3,7 @@ extern crate glbs;
 use glbs::main_1_1_2;
 use glbs::main_1_2_1;
 use glbs::main_1_2_2;
+use glbs::main_1_7_2;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -16,6 +17,7 @@ fn main() {
         "1_1_2" => main_1_1_2(),
         "1_2_1" => main_1_2_1(),
         "1_2_2" => main_1_2_2(),
+        "1_7_2" => main_1_7_2(),
         _     => println!("Unknown tutorial id")
     }
 }
