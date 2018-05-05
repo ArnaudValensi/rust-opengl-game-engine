@@ -45,6 +45,7 @@ impl Window {
         }
 
         gl::load_with(|symbol| gl_window.get_proc_address(symbol) as *const _);
+        center_mouse_cursor(&gl_window);
 
         Window {
             events_loop,
