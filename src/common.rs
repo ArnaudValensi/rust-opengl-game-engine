@@ -101,12 +101,7 @@ pub fn process_events(window: &mut Window) {
                         position.0 - window_center_x,
                         position.1 - window_center_y
                     );
-                    // println!("window_size: {:?}", window_size);
 
-                    // println!("window_center_x: {:?}", window_center_x);
-                    // println!("window_center_y: {:?}", window_center_y);
-                    // println!("position: {:?}", position);
-                    // println!("window_input.mouse_axis: {:?}", window_input.mouse_axis);
                     center_mouse_cursor(gl_window);
                 }
                 _ => ()
@@ -118,7 +113,7 @@ pub fn process_events(window: &mut Window) {
 
 fn center_mouse_cursor(gl_window: &GlWindow) {
     let hidpi_factor = gl_window.hidpi_factor() as i32;
-    let window_size =  gl_window.get_inner_size().unwrap();
+    let window_size = gl_window.get_inner_size().unwrap();
     let posx = window_size.0 as i32 / hidpi_factor / 2;
     let posy = window_size.1 as i32 / hidpi_factor / 2;
 
