@@ -35,7 +35,10 @@ impl Window {
             .with_vsync(true);
         let gl_window = GlWindow::new(window, context, &events_loop).unwrap();
 
-        gl_window.set_cursor_state(CursorState::Grab);
+        gl_window
+            .set_cursor_state(CursorState::Grab)
+            .ok()
+            .expect("could not grab mouse cursor");
 
         unsafe {
             gl_window.make_current().unwrap();
@@ -118,5 +121,8 @@ fn center_mouse_cursor(gl_window: &GlWindow) {
     let posx = window_size.0 as i32 / hidpi_factor / 2;
     let posy = window_size.1 as i32 / hidpi_factor / 2;
 
-    gl_window.set_cursor_position(posx, posy);
+    gl_window
+        .set_cursor_position(posx, posy)
+        .ok()
+        .expect("could not center mouse cursor");
 }
