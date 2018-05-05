@@ -4,14 +4,10 @@
 extern crate gl;
 extern crate glutin;
 
-use common::{Window};
+use common::{Window, process_events};
+use input::keyboard::{KeyCode};
 use self::glutin::{
-    Event,
-    WindowEvent,
     GlContext,
-    VirtualKeyCode,
-    ElementState,
-    KeyboardInput,
 };
 
 use self::gl::types::*;
@@ -229,11 +225,11 @@ pub fn main_1_7_2() {
 
         // events
         // -----
-        // process_events(&mut window);
+        process_events(&mut window);
 
         // input
         // -----
-        process_events(&mut window, deltaTime, &mut cameraPos);
+        processInput(&mut window, deltaTime, &mut cameraPos);
 
         // render
         // ------
@@ -282,56 +278,25 @@ pub fn main_1_7_2() {
     }
 }
 
-pub fn process_events(window: &mut Window, deltaTime: Duration, cameraPos: &mut Point3<f32>) {
-    let running = &mut window.running;
-    let gl_window = &window.gl_window;
+fn processInput(window: &Window, deltaTime: Duration, cameraPos: &mut Point3<f32>) {
+    let input = &window.input;
+
+    // if window.get_key(Key::Escape) == Action::Press {
+    //     window.set_should_close(true)
+    // }
 
     let cameraSpeed: f32 = 2.5 * deltaTime.as_fractional_secs() as f32;
 
-    window.events_loop.poll_events(|event| {
-        match event {
-            Event::WindowEvent{ event, .. } => match event {
-                WindowEvent::Closed => *running = false,
-                WindowEvent::Resized(width, height) => {
-                    gl_window.resize(width, height);
-                },
-                WindowEvent::KeyboardInput { input, .. } => match input {
-                    KeyboardInput { state, virtual_keycode, .. } => match virtual_keycode {
-                        Some(key) => {
-                            println!("{:?}", key);
-
-                            match state {
-                                ElementState::Pressed => {
-                                    // input.set_key_down(normalized_key);
-                                    if key == VirtualKeyCode::W {
-                                        println!("W=");
-                                        *cameraPos += cameraSpeed * cameraFront;
-                                    }
-                                    if key == VirtualKeyCode::S {
-                                        println!("S=");
-                                        *cameraPos += -(cameraSpeed * cameraFront);
-                                    }
-                                    if key == VirtualKeyCode::A {
-                                        println!("A=");
-                                        *cameraPos += -(cameraFront.cross(cameraUp).normalize() * cameraSpeed);
-                                    }
-                                    if key == VirtualKeyCode::D {
-                                        println!("D=");
-                                        *cameraPos += cameraFront.cross(cameraUp).normalize() * cameraSpeed;
-                                    }
-                                }
-                                ElementState::Released => {
-                                    // input.set_key_up(normalized_key);
-                                }
-                            }
-                        }
-                        _ => ()
-                    }
-                    _ => ()
-                }
-                _ => ()
-            },
-            _ => ()
-        }
-    });
+    if input.get_key(KeyCode::W) {
+        *cameraPos += cameraSpeed * cameraFront;
+    }
+    if input.get_key(KeyCode::S) {
+        *cameraPos += -(cameraSpeed * cameraFront);
+    }
+    if input.get_key(KeyCode::A) {
+        *cameraPos += -(cameraFront.cross(cameraUp).normalize() * cameraSpeed);
+    }
+    if input.get_key(KeyCode::D) {
+        *cameraPos += cameraFront.cross(cameraUp).normalize() * cameraSpeed;
+    }
 }

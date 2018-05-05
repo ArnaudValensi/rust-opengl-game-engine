@@ -6,6 +6,7 @@ extern crate floating_duration;
 pub mod common;
 pub mod shader;
 pub mod macros;
+pub mod input;
 
 mod _1_1_2_hello_window;
 pub use self::_1_1_2_hello_window::*;
