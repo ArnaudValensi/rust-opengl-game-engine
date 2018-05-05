@@ -113,21 +113,10 @@ pub fn process_events(window: &mut Window) {
 }
 
 fn center_mouse_cursor(gl_window: &GlWindow) {
-    // let window_position = gl_window.get_position().unwrap();
-    // let window_size =  gl_window.get_outer_size().unwrap();
-    // // let center_position = gl_window.get_position() + gl_window.get_outer_size() / 2;
-    //
-    // println!("window_position: {:?}", window_position);
-    // println!("window_size: {:?}", window_size);
-    //
-    // let posx = window_position.0 + window_size.0 as i32 / 2;
-    // let posy = window_position.1 + window_size.1 as i32 / 2;
+    let hidpi_factor = gl_window.hidpi_factor() as i32;
+    let window_size =  gl_window.get_inner_size().unwrap();
+    let posx = window_size.0 as i32 / hidpi_factor / 2;
+    let posy = window_size.1 as i32 / hidpi_factor / 2;
 
-    // let window_size = gl_window.get_inner_size().unwrap();
-    // let posx = window_size.0 as i32 / 2;
-    // let posy = window_size.1 as i32 / 2;
-    //
-    // println!("posx {}, posy {}", posx, posy);
-
-    gl_window.set_cursor_position(400, 300);
+    gl_window.set_cursor_position(posx, posy);
 }
