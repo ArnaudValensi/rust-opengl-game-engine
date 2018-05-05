@@ -20,8 +20,6 @@ use std::ffi::CStr;
 use std::time::{Instant, Duration};
 use floating_duration::TimeAsFloat;
 
-// TODO: from here
-
 use shader::Shader;
 
 use image;
@@ -46,7 +44,7 @@ const cameraUp: Vector3<f32> = Vector3 {
     z: 0.0,
 };
 
-pub fn main_1_7_2() {
+pub fn main_1_7_3() {
     let mut cameraPos = Point3::new(0.0, 0.0, 3.0);
 
     // timing

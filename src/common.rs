@@ -76,7 +76,6 @@ pub fn process_events(window: &mut Window) {
                         }
                         _ => ()
                     }
-                    _ => ()
                 }
                 _ => ()
             },

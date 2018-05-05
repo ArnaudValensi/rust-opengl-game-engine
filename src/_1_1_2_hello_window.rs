@@ -1,4 +1,6 @@
-// extern crate glbs;
+#![allow(non_upper_case_globals)]
+#![allow(non_snake_case)]
+
 extern crate gl;
 extern crate glutin;
 
