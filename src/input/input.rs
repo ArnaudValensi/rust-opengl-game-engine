@@ -50,5 +50,6 @@ impl Input {
     pub fn new_tick(&mut self) {
         self.keys_down_this_tick.clear();
         self.keys_up_this_tick.clear();
+        self.mouse_axis = (0.0, 0.0);
     }
 }

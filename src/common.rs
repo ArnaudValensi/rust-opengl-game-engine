@@ -66,7 +66,7 @@ pub fn process_events(window: &mut Window) {
     let gl_window = &window.gl_window;
     let window_input = &mut window.input;
 
-    window_input.mouse_axis = (0.0, 0.0);
+    window_input.new_tick();
 
     window.events_loop.poll_events(|event| {
         match event {
