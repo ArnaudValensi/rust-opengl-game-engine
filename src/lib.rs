@@ -18,3 +18,5 @@ mod _1_7_2_camera_keyboard;
 pub use self::_1_7_2_camera_keyboard::*;
 mod _1_7_3_camera_mouse;
 pub use self::_1_7_3_camera_mouse::*;
+mod _10_1_1_load_vox;
+pub use self::_10_1_1_load_vox::*;
