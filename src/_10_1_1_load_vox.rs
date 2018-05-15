@@ -28,7 +28,8 @@ use image::GenericImage;
 use cgmath::{Matrix4, Vector3, vec3,  Deg, perspective, Point3};
 use cgmath::prelude::*;
 
-use vox_loader::VoxLoader;
+// use vox_loader::VoxLoader;
+use chunk::Chunk;
 
 // settings
 const SCR_WIDTH: u32 = 800;
@@ -44,7 +45,12 @@ const cameraUp: Vector3<f32> = Vector3 {
 pub fn main_10_1_1() {
     println!("hey");
 
-    let chunk = VoxLoader::new();
+    // let chunk = VoxLoader::new();
+    let mut chunk = Chunk::new(2, 3, 4);
+
+    chunk.set_voxel(1, 0, 1, 1);
+
+    println!("chunk: {:#?}", chunk);
 }
 
 pub fn main_10_1_1b() {
