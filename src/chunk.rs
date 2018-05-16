@@ -8,6 +8,11 @@ pub struct Chunk {
     voxels: Vec<u8>,
 }
 
+// TODO:
+// public Voxel GetVoxelBasedOnPlan(int x, int y, int layer, Direction direction)
+// public int SizeXBasedOnPlan(Direction direction)
+// public int SizeYBasedOnPlan(Direction direction)
+// public int SizeZBasedOnPlan(Direction direction)
 impl Chunk {
     pub fn new(size_x: u8, size_y: u8, size_z: u8) -> Self {
         let size = (size_x * size_y * size_z) as usize;
@@ -48,8 +53,6 @@ impl Chunk {
 
         Ok(self.voxels[index as usize])
     }
-
-    // public Voxel GetVoxelBasedOnPlan(int x, int y, int layer, Direction direction)
 }
 
 #[cfg(test)]
