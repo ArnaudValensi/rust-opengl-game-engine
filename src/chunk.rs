@@ -20,12 +20,16 @@ impl Chunk {
         }
     }
 
-    pub fn is_position_in_bound(&self, x: u8, y: u8, z: u8) -> bool {
+    pub fn is_in_bound(&self, x: u8, y: u8, z: u8) -> bool {
         x < self.size_x && y < self.size_y && z < self.size_z
     }
 
+    pub fn is_out_of_bound(&self, x: u8, y: u8, z: u8) -> bool {
+        !self.is_in_bound(x, y, z)
+    }
+
     pub fn set_voxel(&mut self, x: u8, y: u8, z: u8, i: u8) -> Result<()> {
-        if !self.is_position_in_bound(x, y, z) {
+        if self.is_out_of_bound(x, y, z) {
             bail!("the position of the voxel you are trying to set is out of bound");
         }
 
@@ -36,7 +40,7 @@ impl Chunk {
     }
 
     pub fn get_voxel(&self, x: u8, y: u8, z: u8) -> Result<u8> {
-        if !self.is_position_in_bound(x, y, z) {
+        if self.is_out_of_bound(x, y, z) {
             bail!("the position of the voxel you are trying to set is out of bound");
         }
 
@@ -44,6 +48,8 @@ impl Chunk {
 
         Ok(self.voxels[index as usize])
     }
+
+    // public Voxel GetVoxelBasedOnPlan(int x, int y, int layer, Direction direction)
 }
 
 #[cfg(test)]
