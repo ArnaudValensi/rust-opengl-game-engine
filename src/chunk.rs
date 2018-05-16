@@ -60,4 +60,14 @@ mod tests {
         assert!(result1.is_err(), "it should return an out of bound error");
         assert!(!result2.is_err(), "it should not return an error");
     }
+
+    #[test]
+    fn get_voxel() {
+        let mut chunk = Chunk::new(2, 3, 4);
+
+        chunk.set_voxel(1, 0, 1, 1).expect("could not set voxel");
+        let voxel = chunk.get_voxel(1, 0, 1);
+
+        assert_eq!(voxel.unwrap(), 1, "it should get the correct voxel");
+    }
 }
