@@ -45,3 +45,19 @@ impl Chunk {
         Ok(self.voxels[index as usize])
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use chunk::Chunk;
+
+    #[test]
+    fn set_voxel() {
+        let mut chunk = Chunk::new(2, 3, 4);
+
+        let result1 = chunk.set_voxel(2, 0, 1, 1);
+        let result2 = chunk.set_voxel(1, 0, 1, 1);
+
+        assert!(result1.is_err(), "it should return an out of bound error");
+        assert!(!result2.is_err(), "it should not return an error");
+    }
+}
