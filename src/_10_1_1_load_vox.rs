@@ -29,6 +29,7 @@ use cgmath::{Matrix4, Vector3, vec3,  Deg, perspective, Point3};
 use cgmath::prelude::*;
 
 // use vox_loader::VoxLoader;
+use errors::*;
 use chunk::Chunk;
 
 // settings
@@ -42,15 +43,38 @@ const cameraUp: Vector3<f32> = Vector3 {
     z: 0.0,
 };
 
-pub fn main_10_1_1() {
-    println!("hey");
+fn print_errors_and_exit(e: &Error) {
+    println!("error: {}", e);
 
+    for e in e.iter().skip(1) {
+        println!("caused by: {}", e);
+    }
+
+    // The backtrace is not always generated. Try to run this example
+    // with `RUST_BACKTRACE=1`.
+    if let Some(backtrace) = e.backtrace() {
+        println!("backtrace: {:?}", backtrace);
+    }
+
+    ::std::process::exit(1);
+}
+
+fn run() -> Result<()> {
     // let chunk = VoxLoader::new();
     let mut chunk = Chunk::new(2, 3, 4);
 
-    chunk.set_voxel(1, 0, 1, 1);
+    chunk.set_voxel(1, 0, 1, 1)?;
 
     println!("chunk: {:#?}", chunk);
+
+    Ok(())
+}
+
+pub fn main_10_1_1() {
+    if let Err(ref e) = run() {
+        print_errors_and_exit(e);
+    }
+
 }
 
 pub fn main_10_1_1b() {

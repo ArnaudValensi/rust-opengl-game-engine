@@ -2,6 +2,13 @@ extern crate gl;
 extern crate image;
 extern crate cgmath;
 extern crate floating_duration;
+#[macro_use]
+extern crate error_chain;
+
+pub mod errors {
+    // Create the Error, ErrorKind, ResultExt, and Result types
+    error_chain! { }
+}
 
 pub mod common;
 pub mod shader;

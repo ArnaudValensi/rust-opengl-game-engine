@@ -1,3 +1,5 @@
+use errors::*;
+
 #[derive(Debug)]
 struct Size {
     pub x: u8,
@@ -21,26 +23,24 @@ impl Chunk {
         }
     }
 
-    pub fn set_voxel(&mut self, x: u8, y: u8, z: u8, i: u8) {
+    pub fn set_voxel(&mut self, x: u8, y: u8, z: u8, i: u8) -> Result<()> {
         let size = &self.size;
 
         if x >= size.x {
-            println!("x must be lesser than size_x");
-            ::std::process::exit(1);
+            bail!("x must be lesser than size_x");
         }
 
         if y >= size.y {
-            println!("y must be lesser than size_y");
-            ::std::process::exit(1);
+            bail!("y must be lesser than size_y");
         }
 
         if z >= size.z {
-            println!("z must be lesser than size_z");
-            ::std::process::exit(1);
+            bail!("z must be lesser than size_z");
         }
 
         let index = (z * size.x * size.y) + (y * size.x) + x;
 
         self.voxels[index as usize] = i;
+        Ok(())
     }
 }
