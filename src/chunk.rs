@@ -1,15 +1,10 @@
 use errors::*;
 
 #[derive(Debug)]
-struct Size {
-    pub x: u8,
-    pub y: u8,
-    pub z: u8,
-}
-
-#[derive(Debug)]
 pub struct Chunk {
-    size: Size,
+    size_x: u8,
+    size_y: u8,
+    size_z: u8,
     voxels: Vec<u8>,
 }
 
@@ -18,29 +13,35 @@ impl Chunk {
         let size = (size_x * size_y * size_z) as usize;
 
         Chunk {
-            size: Size { x: size_x, y: size_y, z: size_z },
+            size_x,
+            size_y,
+            size_z,
             voxels: vec![0; size],
         }
     }
 
+    pub fn is_position_in_bound(&self, x: u8, y: u8, z: u8) -> bool {
+        x < self.size_x && y < self.size_y && z < self.size_z
+    }
+
     pub fn set_voxel(&mut self, x: u8, y: u8, z: u8, i: u8) -> Result<()> {
-        let size = &self.size;
-
-        if x >= size.x {
-            bail!("x must be lesser than size_x");
+        if !self.is_position_in_bound(x, y, z) {
+            bail!("the position of the voxel you are trying to set is out of bound");
         }
 
-        if y >= size.y {
-            bail!("y must be lesser than size_y");
-        }
-
-        if z >= size.z {
-            bail!("z must be lesser than size_z");
-        }
-
-        let index = (z * size.x * size.y) + (y * size.x) + x;
+        let index = (z * self.size_x * self.size_y) + (y * self.size_x) + x;
 
         self.voxels[index as usize] = i;
         Ok(())
+    }
+
+    pub fn get_voxel(&self, x: u8, y: u8, z: u8) -> Result<u8> {
+        if !self.is_position_in_bound(x, y, z) {
+            bail!("the position of the voxel you are trying to set is out of bound");
+        }
+
+        let index = (z * self.size_x * self.size_y) + (y * self.size_x) + x;
+
+        Ok(self.voxels[index as usize])
     }
 }
