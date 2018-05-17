@@ -11,6 +11,7 @@ pub mod macros;
 pub mod input;
 pub mod vox_loader;
 pub mod voxel;
+pub mod mesh;
 
 mod _1_1_2_hello_window;
 pub use self::_1_1_2_hello_window::*;
