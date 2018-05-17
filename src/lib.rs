@@ -10,7 +10,7 @@ pub mod shader;
 pub mod macros;
 pub mod input;
 pub mod vox_loader;
-pub mod chunk;
+pub mod voxel;
 
 mod _1_1_2_hello_window;
 pub use self::_1_1_2_hello_window::*;

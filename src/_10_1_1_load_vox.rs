@@ -30,7 +30,7 @@ use cgmath::prelude::*;
 
 // use vox_loader::VoxLoader;
 use errors::*;
-use chunk::Chunk;
+use voxel::chunk::Chunk;
 
 // settings
 const SCR_WIDTH: u32 = 800;

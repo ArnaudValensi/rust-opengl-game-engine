@@ -57,7 +57,7 @@ impl Chunk {
 
 #[cfg(test)]
 mod tests {
-    use chunk::Chunk;
+    use voxel::chunk::Chunk;
 
     #[test]
     fn set_voxel() {
