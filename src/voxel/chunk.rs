@@ -1,7 +1,8 @@
 use errors::*;
-use voxel::mesh_data::MeshData;
-use voxel::voxel_mesh_builder::build_mesh;
+use super::mesh_data::MeshData;
+use super::voxel_mesh_builder::build_mesh;
 use super::voxel::is_solid;
+use super::position::Position;
 
 const ERROR_VOXEL_OUT_OF_BOUND: &str = "the position of the voxel you are trying to set is out of bound";
 
@@ -32,31 +33,39 @@ impl Chunk {
         }
     }
 
-    pub fn is_in_bound(&self, x: u8, y: u8, z: u8) -> bool {
-        x < self.size_x && y < self.size_y && z < self.size_z
+    pub fn is_in_bound(&self, x: i64, y: i64, z: i64) -> bool {
+        x < self.size_x as i64 && y < self.size_y as i64 && z < self.size_z as i64
     }
 
-    pub fn is_out_of_bound(&self, x: u8, y: u8, z: u8) -> bool {
+    pub fn is_out_of_bound(&self, x: i64, y: i64, z: i64) -> bool {
         !self.is_in_bound(x, y, z)
     }
 
-    pub fn set_voxel(&mut self, x: u8, y: u8, z: u8, i: u8) -> Result<()> {
+    pub fn is_position_in_bound(&self, position: &Position) -> bool {
+        self.is_in_bound(position.x, position.y, position.z)
+    }
+
+    pub fn is_position_out_of_bound(&self, position: &Position) -> bool {
+        self.is_out_of_bound(position.x, position.y, position.z)
+    }
+
+    pub fn set_voxel(&mut self, x: i64, y: i64, z: i64, i: u8) -> Result<()> {
         if self.is_out_of_bound(x, y, z) {
             bail!(ERROR_VOXEL_OUT_OF_BOUND);
         }
 
-        let index = (z * self.size_x * self.size_y) + (y * self.size_x) + x;
+        let index = (z * self.size_x as i64 * self.size_y as i64) + (y * self.size_x as i64) + x;
 
         self.voxels[index as usize] = i;
         Ok(())
     }
 
-    pub fn get_voxel(&self, x: u8, y: u8, z: u8) -> Result<u8> {
+    pub fn get_voxel(&self, x: i64, y: i64, z: i64) -> Result<u8> {
         if self.is_out_of_bound(x, y, z) {
             bail!(ERROR_VOXEL_OUT_OF_BOUND);
         }
 
-        let index = (z * self.size_x * self.size_y) + (y * self.size_x) + x;
+        let index = (z * self.size_x as i64 * self.size_y as i64) + (y * self.size_x as i64) + x;
 
         Ok(self.voxels[index as usize])
     }
@@ -65,10 +74,22 @@ impl Chunk {
         build_mesh(&self)
     }
 
-    pub fn is_solid(&self, x: u8, y: u8, z: u8) -> bool {
+    pub fn is_solid(&self, x: i64, y: i64, z: i64) -> bool {
         let voxel = self.get_voxel(x, y, z).expect(ERROR_VOXEL_OUT_OF_BOUND);
 
         is_solid(voxel)
+    }
+
+    pub fn is_air(&self, x: i64, y: i64, z: i64) -> bool {
+        !self.is_solid(x, y, z)
+    }
+
+    pub fn is_position_solid(&self, position: &Position) -> bool {
+        self.is_solid(position.x, position.y, position.z)
+    }
+
+    pub fn is_position_air(&self, position: &Position) -> bool {
+        self.is_air(position.x, position.y, position.z)
     }
 }
 
