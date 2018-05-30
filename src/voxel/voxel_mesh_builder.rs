@@ -6,9 +6,7 @@ use super::voxel_geometry::{add_quad_triangles, create_vertex_face};
 // use mesh::Mesh;
 
 pub fn build_mesh(chunk: &Chunk) -> MeshData {
-    let mesh_data = MeshData {
-
-    };
+    let mesh_data = MeshData::new();
 
     for x in 0..chunk.size_x {
         for y in 0..chunk.size_y {
@@ -23,7 +21,7 @@ pub fn build_mesh(chunk: &Chunk) -> MeshData {
     mesh_data
 }
 
-fn voxel_data<'a>(chunk: &Chunk, x: i64, y: i64, z: i64, mesh_data: &'a MeshData) -> &'a MeshData {
+fn voxel_data<'a>(chunk: &Chunk, x: i64, y: i64, z: i64, mesh_data: &'a mut MeshData) -> &'a MeshData {
     let position: Position = Position::new(x, y, z);
 
     for direction in Direction::iterator() {
@@ -32,7 +30,7 @@ fn voxel_data<'a>(chunk: &Chunk, x: i64, y: i64, z: i64, mesh_data: &'a MeshData
         // Build the face if there is no touching cube or if is the side of the chunk.
         if chunk.is_position_out_of_bound(&touching_pos) || chunk.is_position_air(&touching_pos) {
             create_vertex_face(mesh_data, &position, direction);
-            add_quad_triangles(mesh_data);
+            // add_quad_triangles(mesh_data);
 
             // Vector2 colorUv = colorTexture.GetColorUV(
             //     chunk.GetVoxel(pos).color
