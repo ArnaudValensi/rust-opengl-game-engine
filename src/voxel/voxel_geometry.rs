@@ -190,19 +190,14 @@ pub fn create_vertex_face(mesh_data: &mut MeshData, position: &Position, directi
     }
 }
 
-pub fn add_quad_triangles(mesh_data: &MeshData) {
+pub fn add_quad_triangles(mesh_data: &mut MeshData) {
+    let vertices_count = mesh_data.vertices.len() as i32;
 
+    mesh_data.triangles.push(vertices_count - 4);
+    mesh_data.triangles.push(vertices_count - 3);
+    mesh_data.triangles.push(vertices_count - 2);
+
+    mesh_data.triangles.push(vertices_count - 4);
+    mesh_data.triangles.push(vertices_count - 2);
+    mesh_data.triangles.push(vertices_count - 1);
 }
-
-// public static void AddQuadTriangles(MeshData meshData) {
-// 	var triangles = meshData.triangles;
-// 	var vertices = meshData.vertices;
-//
-// 	triangles.Add(vertices.Count - 4);
-// 	triangles.Add(vertices.Count - 3);
-// 	triangles.Add(vertices.Count - 2);
-//
-// 	triangles.Add(vertices.Count - 4);
-// 	triangles.Add(vertices.Count - 2);
-// 	triangles.Add(vertices.Count - 1);
-// }
