@@ -18,9 +18,9 @@ impl Position {
 
     pub fn from_direction(direction: Direction) -> Position {
         match direction {
-            Direction::North => Position::new(0, 0, 1),
+            Direction::North => Position::new(0, 0, -1),
             Direction::East => Position::new(1, 0, 0),
-            Direction::South => Position::new(0, 0, -1),
+            Direction::South => Position::new(0, 0, 1),
             Direction::West => Position::new(-1, 0, 0),
             Direction::Up => Position::new(0, 1, 0),
             Direction::Down => Position::new(0, -1, 0),

@@ -3,7 +3,6 @@ use super::direction::Direction;
 use super::position::Position;
 use cgmath::Vector3;
 
-// TODO: a list followed by a to_array should be more efficient here
 pub fn create_vertex_face(mesh_data: &mut MeshData, position: &Position, direction: &Direction) {
     match direction {
         &Direction::North => {
@@ -11,28 +10,28 @@ pub fn create_vertex_face(mesh_data: &mut MeshData, position: &Position, directi
                 Vector3::<f32>::new(
                     position.x as f32 + 0.5_f32,
                     position.y as f32 - 0.5_f32,
-                    position.z as f32 + 0.5_f32
+                    position.z as f32 - 0.5_f32
                 )
             );
             mesh_data.vertices.push(
                 Vector3::<f32>::new(
                     position.x as f32 + 0.5_f32,
                     position.y as f32 + 0.5_f32,
-                    position.z as f32 + 0.5_f32,
+                    position.z as f32 - 0.5_f32,
                 )
             );
             mesh_data.vertices.push(
                 Vector3::<f32>::new(
                     position.x as f32 - 0.5_f32,
                     position.y as f32 + 0.5_f32,
-                    position.z as f32 + 0.5_f32,
+                    position.z as f32 - 0.5_f32,
                 )
             );
             mesh_data.vertices.push(
                 Vector3::<f32>::new(
                     position.x as f32 - 0.5_f32,
                     position.y as f32 - 0.5_f32,
-                    position.z as f32 + 0.5_f32,
+                    position.z as f32 - 0.5_f32,
                 )
             );
         },
@@ -71,28 +70,28 @@ pub fn create_vertex_face(mesh_data: &mut MeshData, position: &Position, directi
                 Vector3::<f32>::new(
                     position.x as f32 - 0.5_f32,
                     position.y as f32 - 0.5_f32,
-                    position.z as f32 - 0.5_f32,
+                    position.z as f32 + 0.5_f32,
                 )
             );
             mesh_data.vertices.push(
                 Vector3::<f32>::new(
                     position.x as f32 - 0.5_f32,
                     position.y as f32 + 0.5_f32,
-                    position.z as f32 - 0.5_f32,
+                    position.z as f32 + 0.5_f32,
                 )
             );
             mesh_data.vertices.push(
                 Vector3::<f32>::new(
                     position.x as f32 + 0.5_f32,
                     position.y as f32 + 0.5_f32,
-                    position.z as f32 - 0.5_f32,
+                    position.z as f32 + 0.5_f32,
                 )
             );
             mesh_data.vertices.push(
                 Vector3::<f32>::new(
                     position.x as f32 + 0.5_f32,
                     position.y as f32 - 0.5_f32,
-                    position.z as f32 - 0.5_f32,
+                    position.z as f32 + 0.5_f32,
                 )
             );
         },
@@ -101,14 +100,7 @@ pub fn create_vertex_face(mesh_data: &mut MeshData, position: &Position, directi
                 Vector3::<f32>::new(
                     position.x as f32 - 0.5_f32,
                     position.y as f32 - 0.5_f32,
-                    position.z as f32 + 0.5_f32,
-                )
-            );
-            mesh_data.vertices.push(
-                Vector3::<f32>::new(
-                    position.x as f32 - 0.5_f32,
-                    position.y as f32 + 0.5_f32,
-                    position.z as f32 + 0.5_f32,
+                    position.z as f32 - 0.5_f32,
                 )
             );
             mesh_data.vertices.push(
@@ -116,13 +108,20 @@ pub fn create_vertex_face(mesh_data: &mut MeshData, position: &Position, directi
                     position.x as f32 - 0.5_f32,
                     position.y as f32 + 0.5_f32,
                     position.z as f32 - 0.5_f32,
+                )
+            );
+            mesh_data.vertices.push(
+                Vector3::<f32>::new(
+                    position.x as f32 - 0.5_f32,
+                    position.y as f32 + 0.5_f32,
+                    position.z as f32 + 0.5_f32,
                 )
             );
             mesh_data.vertices.push(
                 Vector3::<f32>::new(
                     position.x as f32 - 0.5_f32,
                     position.y as f32 - 0.5_f32,
-                    position.z as f32 - 0.5_f32,
+                    position.z as f32 + 0.5_f32,
                 )
             );
         },
@@ -131,26 +130,26 @@ pub fn create_vertex_face(mesh_data: &mut MeshData, position: &Position, directi
                 Vector3::<f32>::new(
                     position.x as f32 - 0.5_f32,
                     position.y as f32 + 0.5_f32,
-                    position.z as f32 + 0.5_f32,
-                )
-            );
-            mesh_data.vertices.push(
-                Vector3::<f32>::new(
-                    position.x as f32 + 0.5_f32,
-                    position.y as f32 + 0.5_f32,
-                    position.z as f32 + 0.5_f32,
-                )
-            );
-            mesh_data.vertices.push(
-                Vector3::<f32>::new(
-                    position.x as f32 + 0.5_f32,
-                    position.y as f32 + 0.5_f32,
                     position.z as f32 - 0.5_f32,
                 )
             );
             mesh_data.vertices.push(
                 Vector3::<f32>::new(
                     position.x as f32 - 0.5_f32,
+                    position.y as f32 + 0.5_f32,
+                    position.z as f32 + 0.5_f32,
+                )
+            );
+            mesh_data.vertices.push(
+                Vector3::<f32>::new(
+                    position.x as f32 + 0.5_f32,
+                    position.y as f32 + 0.5_f32,
+                    position.z as f32 + 0.5_f32,
+                )
+            );
+            mesh_data.vertices.push(
+                Vector3::<f32>::new(
+                    position.x as f32 + 0.5_f32,
                     position.y as f32 + 0.5_f32,
                     position.z as f32 - 0.5_f32,
                 )
@@ -161,26 +160,26 @@ pub fn create_vertex_face(mesh_data: &mut MeshData, position: &Position, directi
                 Vector3::<f32>::new(
                     position.x as f32 - 0.5_f32,
                     position.y as f32 - 0.5_f32,
-                    position.z as f32 - 0.5_f32,
-                )
-            );
-            mesh_data.vertices.push(
-                Vector3::<f32>::new(
-                    position.x as f32 + 0.5_f32,
-                    position.y as f32 - 0.5_f32,
-                    position.z as f32 - 0.5_f32,
-                )
-            );
-            mesh_data.vertices.push(
-                Vector3::<f32>::new(
-                    position.x as f32 + 0.5_f32,
-                    position.y as f32 - 0.5_f32,
                     position.z as f32 + 0.5_f32,
                 )
             );
             mesh_data.vertices.push(
                 Vector3::<f32>::new(
                     position.x as f32 - 0.5_f32,
+                    position.y as f32 - 0.5_f32,
+                    position.z as f32 - 0.5_f32,
+                )
+            );
+            mesh_data.vertices.push(
+                Vector3::<f32>::new(
+                    position.x as f32 + 0.5_f32,
+                    position.y as f32 - 0.5_f32,
+                    position.z as f32 - 0.5_f32,
+                )
+            );
+            mesh_data.vertices.push(
+                Vector3::<f32>::new(
+                    position.x as f32 + 0.5_f32,
                     position.y as f32 - 0.5_f32,
                     position.z as f32 + 0.5_f32,
                 )
@@ -193,11 +192,11 @@ pub fn create_vertex_face(mesh_data: &mut MeshData, position: &Position, directi
 pub fn add_quad_triangles(mesh_data: &mut MeshData) {
     let vertices_count = mesh_data.vertices.len() as i32;
 
-    mesh_data.triangles.push(vertices_count - 4);
-    mesh_data.triangles.push(vertices_count - 3);
-    mesh_data.triangles.push(vertices_count - 2);
+    mesh_data.triangles.push(vertices_count - 4); // 0
+    mesh_data.triangles.push(vertices_count - 3); // 1
+    mesh_data.triangles.push(vertices_count - 2); // 2
 
-    mesh_data.triangles.push(vertices_count - 4);
-    mesh_data.triangles.push(vertices_count - 2);
-    mesh_data.triangles.push(vertices_count - 1);
+    mesh_data.triangles.push(vertices_count - 4); // 0
+    mesh_data.triangles.push(vertices_count - 2); // 2
+    mesh_data.triangles.push(vertices_count - 1); // 3
 }
