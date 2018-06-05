@@ -6,40 +6,12 @@ use std::mem::size_of;
 use std::os::raw::c_void;
 use std::ptr;
 
-use cgmath::{ Vector3, Vector2 };
-use cgmath::prelude::*;
+// use cgmath::prelude::*;
 use gl;
 
 use shader::Shader;
-
-// NOTE: without repr(C) the compiler may reorder the fields or use different padding/alignment than C.
-// Depending on how you pass the data to OpenGL, this may be bad. In this case it's not strictly
-// necessary though because of the `offset!` macro used below in setupMesh()
-#[repr(C)]
-pub struct Vertex {
-    // position
-    pub Position: Vector3<f32>,
-    // normal
-    pub Normal: Vector3<f32>,
-    // texCoords
-    pub TexCoords: Vector2<f32>,
-    // tangent
-    pub Tangent: Vector3<f32>,
-    // bitangent
-    pub Bitangent: Vector3<f32>,
-}
-
-impl Default for Vertex {
-    fn default() -> Self {
-        Vertex {
-            Position: Vector3::zero(),
-            Normal: Vector3::zero(),
-            TexCoords: Vector2::zero(),
-            Tangent: Vector3::zero(),
-            Bitangent: Vector3::zero(),
-        }
-    }
-}
+use vertex::Vertex;
+use mesh_data::MeshData;
 
 #[derive(Clone)]
 pub struct Texture {
@@ -51,7 +23,7 @@ pub struct Texture {
 pub struct Mesh {
     /*  Mesh Data  */
     pub vertices: Vec<Vertex>,
-    pub indices: Vec<u32>,
+    pub indices: Vec<i32>,
     pub textures: Vec<Texture>,
     pub VAO: u32,
 
@@ -61,10 +33,14 @@ pub struct Mesh {
 }
 
 impl Mesh {
-    pub fn new(vertices: Vec<Vertex>, indices: Vec<u32>, textures: Vec<Texture>) -> Mesh {
+    pub fn new(mesh_data: MeshData, textures: Vec<Texture>) -> Mesh {
         let mut mesh = Mesh {
-            vertices, indices, textures,
-            VAO: 0, VBO: 0, EBO: 0
+            vertices: mesh_data.vertices,
+            indices: mesh_data.indices,
+            textures,
+            VAO: 0,
+            VBO: 0,
+            EBO: 0,
         };
 
         // now that we have all the required data, set the vertex buffers and its attribute pointers.
@@ -135,8 +111,8 @@ impl Mesh {
         gl::BufferData(gl::ARRAY_BUFFER, size, data, gl::STATIC_DRAW);
 
         gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, self.EBO);
-        let size = (self.indices.len() * size_of::<u32>()) as isize;
-        let data = &self.indices[0] as *const u32 as *const c_void;
+        let size = (self.indices.len() * size_of::<i32>()) as isize;
+        let data = &self.indices[0] as *const i32 as *const c_void;
         gl::BufferData(gl::ELEMENT_ARRAY_BUFFER, size, data, gl::STATIC_DRAW);
 
         // set the vertex attribute pointers

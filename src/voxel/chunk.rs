@@ -1,5 +1,5 @@
 use errors::*;
-use super::mesh_data::MeshData;
+use mesh_data::MeshData;
 use super::voxel_mesh_builder::build_mesh;
 use super::voxel::is_solid;
 use super::position::Position;
