@@ -1,6 +1,7 @@
 use std::ops::Add;
 use super::direction::Direction;
 
+#[derive(Debug)]
 pub struct Position {
     pub x: i64,
     pub y: i64,

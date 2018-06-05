@@ -21,6 +21,8 @@ use std::time::{Instant, Duration};
 use floating_duration::TimeAsFloat;
 
 use shader::Shader;
+use voxel::voxel_mesh_builder::build_mesh;
+use mesh::Mesh;
 
 use image;
 use image::GenericImage;
@@ -60,24 +62,6 @@ fn print_errors_and_exit(e: &Error) {
 }
 
 fn run() -> Result<()> {
-    // let chunk = VoxLoader::new();
-    let mut chunk = Chunk::new(2, 3, 4);
-
-    chunk.set_voxel(1, 0, 1, 1)?;
-
-    println!("chunk: {:#?}", chunk);
-
-    Ok(())
-}
-
-pub fn main_10_1_1() {
-    if let Err(ref e) = run() {
-        print_errors_and_exit(e);
-    }
-
-}
-
-pub fn main_10_1_1b() {
     let mut cameraPos = Point3::new(0.0, 0.0, 3.0);
     let mut cameraFront: Vector3<f32> = Vector3 {
         x: 0.0,
@@ -252,6 +236,17 @@ pub fn main_10_1_1b() {
         (ourShader, VBO, VAO, texture1, texture2, cubePositions)
     };
 
+    // let chunk = VoxLoader::new();
+    let mut chunk = Chunk::new(2, 3, 4);
+
+    chunk.set_voxel(0, 0, 0, 1)?;
+    chunk.set_voxel(1, 0, 0, 1)?;
+
+    println!("chunk: {:#?}", chunk);
+
+    let chunk_mesh_data = build_mesh(&chunk);
+    let chunk_mesh = Mesh::new(chunk_mesh_data, Vec::default());
+
     // render loop
     // -----------
     while window.running {
@@ -284,30 +279,38 @@ pub fn main_10_1_1b() {
             gl::ClearColor(0.2, 0.3, 0.3, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
+            ourShader.useProgram();
+
             // bind textures on corresponding texture units
             gl::ActiveTexture(gl::TEXTURE0);
             gl::BindTexture(gl::TEXTURE_2D, texture1);
             gl::ActiveTexture(gl::TEXTURE1);
             gl::BindTexture(gl::TEXTURE_2D, texture2);
-
-            // activate shader
-            ourShader.useProgram();
-
+            //
+            // // activate shader
+            // ourShader.useProgram();
+            //
             // camera/view transformation
             let view: Matrix4<f32> = Matrix4::look_at(cameraPos, cameraPos + cameraFront, cameraUp);
             ourShader.setMat4(c_str!("view"), &view);
 
-            // render boxes
-            gl::BindVertexArray(VAO);
-            for (i, position) in cubePositions.iter().enumerate() {
-                // calculate the model matrix for each object and pass it to shader before drawing
-                let mut model: Matrix4<f32> = Matrix4::from_translation(*position);
-                let angle = 20.0 * i as f32;
-                model = model * Matrix4::from_axis_angle(vec3(1.0, 0.3, 0.5).normalize(), Deg(angle));
-                ourShader.setMat4(c_str!("model"), &model);
+            let model: Matrix4<f32> = Matrix4::from_translation(vec3(0.0, 0.0, 0.0));
+            // model = model * Matrix4::from_axis_angle(vec3(1.0, 0.3, 0.5).normalize(), Deg(0.0));
+            ourShader.setMat4(c_str!("model"), &model);
 
-                gl::DrawArrays(gl::TRIANGLES, 0, 36);
-            }
+            chunk_mesh.Draw(&ourShader);
+
+
+            // render boxes
+            // gl::BindVertexArray(VAO);
+            // for (_i, position) in cubePositions.iter().enumerate() {
+            //     // calculate the model matrix for each object and pass it to shader before drawing
+            //     let mut model: Matrix4<f32> = Matrix4::from_translation(*position);
+            //     model = model * Matrix4::from_axis_angle(vec3(1.0, 0.3, 0.5).normalize(), Deg(0.0));
+            //     ourShader.setMat4(c_str!("model"), &model);
+            //
+            //     gl::DrawArrays(gl::TRIANGLES, 0, 36);
+            // }
         }
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -322,6 +325,14 @@ pub fn main_10_1_1b() {
     unsafe {
         gl::DeleteVertexArrays(1, &VAO);
         gl::DeleteBuffers(1, &VBO);
+    }
+
+    Ok(())
+}
+
+pub fn main_10_1_1() {
+    if let Err(ref e) = run() {
+        print_errors_and_exit(e);
     }
 }
 

@@ -34,7 +34,12 @@ impl Chunk {
     }
 
     pub fn is_in_bound(&self, x: i64, y: i64, z: i64) -> bool {
-        x < self.size_x as i64 && y < self.size_y as i64 && z < self.size_z as i64
+        x >= 0 &&
+        y >= 0 &&
+        z >= 0 &&
+        x < self.size_x as i64 &&
+        y < self.size_y as i64 &&
+        z < self.size_z as i64
     }
 
     pub fn is_out_of_bound(&self, x: i64, y: i64, z: i64) -> bool {
