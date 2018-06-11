@@ -10,8 +10,6 @@ use self::glutin::{
     GlContext,
 };
 
-use std::os::raw::c_void;
-use std::path::Path;
 use std::ffi::CStr;
 use std::time::{Instant, Duration};
 use floating_duration::TimeAsFloat;
@@ -20,9 +18,6 @@ use shader::Shader;
 use voxel::voxel_mesh_builder::build_mesh;
 use mesh::Mesh;
 use texture::Texture;
-
-use image;
-use image::GenericImage;
 
 use cgmath::{Matrix4, Vector3, vec3,  Deg, perspective, Point3};
 use cgmath::prelude::*;
