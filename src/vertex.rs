@@ -8,25 +8,25 @@ use cgmath::prelude::*;
 #[derive(Debug)]
 pub struct Vertex {
     // position
-    pub Position: Vector3<f32>,
+    pub position: Vector3<f32>,
     // normal
-    pub Normal: Vector3<f32>,
+    pub normal: Vector3<f32>,
     // texCoords
-    pub TexCoords: Vector2<f32>,
+    pub tex_coords: Vector2<f32>,
     // tangent
-    pub Tangent: Vector3<f32>,
+    pub tangent: Vector3<f32>,
     // bitangent
-    pub Bitangent: Vector3<f32>,
+    pub bitangent: Vector3<f32>,
 }
 
 impl Default for Vertex {
     fn default() -> Self {
         Vertex {
-            Position: Vector3::zero(),
-            Normal: Vector3::zero(),
-            TexCoords: Vector2::zero(),
-            Tangent: Vector3::zero(),
-            Bitangent: Vector3::zero(),
+            position: Vector3::zero(),
+            normal: Vector3::zero(),
+            tex_coords: Vector2::zero(),
+            tangent: Vector3::zero(),
+            bitangent: Vector3::zero(),
         }
     }
 }

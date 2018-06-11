@@ -34,15 +34,15 @@ pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position
             let mut vertex_2 = Vertex::default();
             let mut vertex_3 = Vertex::default();
 
-            vertex_0.Position = vertex_position_0;
-            vertex_1.Position = vertex_position_1;
-            vertex_2.Position = vertex_position_2;
-            vertex_3.Position = vertex_position_3;
+            vertex_0.position = vertex_position_0;
+            vertex_1.position = vertex_position_1;
+            vertex_2.position = vertex_position_2;
+            vertex_3.position = vertex_position_3;
 
-            vertex_0.TexCoords = Vector2::<f32>::new(0.0, 0.0);
-            vertex_1.TexCoords = Vector2::<f32>::new(0.0, 1.0);
-            vertex_2.TexCoords = Vector2::<f32>::new(1.0, 1.0);
-            vertex_3.TexCoords = Vector2::<f32>::new(1.0, 0.0);
+            vertex_0.tex_coords = Vector2::<f32>::new(0.0, 0.0);
+            vertex_1.tex_coords = Vector2::<f32>::new(0.0, 1.0);
+            vertex_2.tex_coords = Vector2::<f32>::new(1.0, 1.0);
+            vertex_3.tex_coords = Vector2::<f32>::new(1.0, 0.0);
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -76,15 +76,15 @@ pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position
             let mut vertex_2 = Vertex::default();
             let mut vertex_3 = Vertex::default();
 
-            vertex_0.Position = vertex_position_0;
-            vertex_1.Position = vertex_position_1;
-            vertex_2.Position = vertex_position_2;
-            vertex_3.Position = vertex_position_3;
+            vertex_0.position = vertex_position_0;
+            vertex_1.position = vertex_position_1;
+            vertex_2.position = vertex_position_2;
+            vertex_3.position = vertex_position_3;
 
-            vertex_0.TexCoords = Vector2::<f32>::new(0.0, 0.0);
-            vertex_1.TexCoords = Vector2::<f32>::new(0.0, 1.0);
-            vertex_2.TexCoords = Vector2::<f32>::new(1.0, 1.0);
-            vertex_3.TexCoords = Vector2::<f32>::new(1.0, 0.0);
+            vertex_0.tex_coords = Vector2::<f32>::new(0.0, 0.0);
+            vertex_1.tex_coords = Vector2::<f32>::new(0.0, 1.0);
+            vertex_2.tex_coords = Vector2::<f32>::new(1.0, 1.0);
+            vertex_3.tex_coords = Vector2::<f32>::new(1.0, 0.0);
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -118,15 +118,15 @@ pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position
             let mut vertex_2 = Vertex::default();
             let mut vertex_3 = Vertex::default();
 
-            vertex_0.Position = vertex_position_0;
-            vertex_1.Position = vertex_position_1;
-            vertex_2.Position = vertex_position_2;
-            vertex_3.Position = vertex_position_3;
+            vertex_0.position = vertex_position_0;
+            vertex_1.position = vertex_position_1;
+            vertex_2.position = vertex_position_2;
+            vertex_3.position = vertex_position_3;
 
-            vertex_0.TexCoords = Vector2::<f32>::new(0.0, 0.0);
-            vertex_1.TexCoords = Vector2::<f32>::new(0.0, 1.0);
-            vertex_2.TexCoords = Vector2::<f32>::new(1.0, 1.0);
-            vertex_3.TexCoords = Vector2::<f32>::new(1.0, 0.0);
+            vertex_0.tex_coords = Vector2::<f32>::new(0.0, 0.0);
+            vertex_1.tex_coords = Vector2::<f32>::new(0.0, 1.0);
+            vertex_2.tex_coords = Vector2::<f32>::new(1.0, 1.0);
+            vertex_3.tex_coords = Vector2::<f32>::new(1.0, 0.0);
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -160,15 +160,15 @@ pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position
             let mut vertex_2 = Vertex::default();
             let mut vertex_3 = Vertex::default();
 
-            vertex_0.Position = vertex_position_0;
-            vertex_1.Position = vertex_position_1;
-            vertex_2.Position = vertex_position_2;
-            vertex_3.Position = vertex_position_3;
+            vertex_0.position = vertex_position_0;
+            vertex_1.position = vertex_position_1;
+            vertex_2.position = vertex_position_2;
+            vertex_3.position = vertex_position_3;
 
-            vertex_0.TexCoords = Vector2::<f32>::new(0.0, 0.0);
-            vertex_1.TexCoords = Vector2::<f32>::new(0.0, 1.0);
-            vertex_2.TexCoords = Vector2::<f32>::new(1.0, 1.0);
-            vertex_3.TexCoords = Vector2::<f32>::new(1.0, 0.0);
+            vertex_0.tex_coords = Vector2::<f32>::new(0.0, 0.0);
+            vertex_1.tex_coords = Vector2::<f32>::new(0.0, 1.0);
+            vertex_2.tex_coords = Vector2::<f32>::new(1.0, 1.0);
+            vertex_3.tex_coords = Vector2::<f32>::new(1.0, 0.0);
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -202,15 +202,15 @@ pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position
             let mut vertex_2 = Vertex::default();
             let mut vertex_3 = Vertex::default();
 
-            vertex_0.Position = vertex_position_0;
-            vertex_1.Position = vertex_position_1;
-            vertex_2.Position = vertex_position_2;
-            vertex_3.Position = vertex_position_3;
+            vertex_0.position = vertex_position_0;
+            vertex_1.position = vertex_position_1;
+            vertex_2.position = vertex_position_2;
+            vertex_3.position = vertex_position_3;
 
-            vertex_0.TexCoords = Vector2::<f32>::new(0.0, 0.0);
-            vertex_1.TexCoords = Vector2::<f32>::new(0.0, 1.0);
-            vertex_2.TexCoords = Vector2::<f32>::new(1.0, 1.0);
-            vertex_3.TexCoords = Vector2::<f32>::new(1.0, 0.0);
+            vertex_0.tex_coords = Vector2::<f32>::new(0.0, 0.0);
+            vertex_1.tex_coords = Vector2::<f32>::new(0.0, 1.0);
+            vertex_2.tex_coords = Vector2::<f32>::new(1.0, 1.0);
+            vertex_3.tex_coords = Vector2::<f32>::new(1.0, 0.0);
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -244,15 +244,15 @@ pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position
             let mut vertex_2 = Vertex::default();
             let mut vertex_3 = Vertex::default();
 
-            vertex_0.Position = vertex_position_0;
-            vertex_1.Position = vertex_position_1;
-            vertex_2.Position = vertex_position_2;
-            vertex_3.Position = vertex_position_3;
+            vertex_0.position = vertex_position_0;
+            vertex_1.position = vertex_position_1;
+            vertex_2.position = vertex_position_2;
+            vertex_3.position = vertex_position_3;
 
-            vertex_0.TexCoords = Vector2::<f32>::new(0.0, 0.0);
-            vertex_1.TexCoords = Vector2::<f32>::new(0.0, 1.0);
-            vertex_2.TexCoords = Vector2::<f32>::new(1.0, 1.0);
-            vertex_3.TexCoords = Vector2::<f32>::new(1.0, 0.0);
+            vertex_0.tex_coords = Vector2::<f32>::new(0.0, 0.0);
+            vertex_1.tex_coords = Vector2::<f32>::new(0.0, 1.0);
+            vertex_2.tex_coords = Vector2::<f32>::new(1.0, 1.0);
+            vertex_3.tex_coords = Vector2::<f32>::new(1.0, 0.0);
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
