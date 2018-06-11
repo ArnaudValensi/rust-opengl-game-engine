@@ -19,6 +19,7 @@ use floating_duration::TimeAsFloat;
 use shader::Shader;
 use voxel::voxel_mesh_builder::build_mesh;
 use mesh::Mesh;
+use texture::Texture;
 
 use image;
 use image::GenericImage;
@@ -78,7 +79,7 @@ fn run() -> Result<()> {
     // ------------------------------
     let mut window = Window::new(SCR_WIDTH, SCR_HEIGHT);
 
-    let (ourShader, texture1, texture2) = unsafe {
+    let (ourShader, texture1) = unsafe {
         // configure global opengl state
         // -----------------------------
         gl::Enable(gl::DEPTH_TEST);
@@ -87,72 +88,27 @@ fn run() -> Result<()> {
         // ------------------------------------
         let ourShader = Shader::new(
             "src/shaders/7.2.camera.vs",
-            "src/shaders/7.2.camera.fs");
+            "src/shaders/7.2.camera.fs"
+        );
 
         // load and create a texture
         // -------------------------
-        let (mut texture1, mut texture2) = (0, 0);
         // texture 1
         // ---------
-        gl::GenTextures(1, &mut texture1);
-        gl::BindTexture(gl::TEXTURE_2D, texture1);
-        // set the texture wrapping parameters
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32); // set texture wrapping to gl::REPEAT (default wrapping method)
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32);
-        // set texture filtering parameters
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
-        // load image, create texture and generate mipmaps
-        let img = image::open(&Path::new("resources/textures/container.jpg")).expect("Failed to load texture");
-        let data = img.raw_pixels();
-        gl::TexImage2D(gl::TEXTURE_2D,
-                       0,
-                       gl::RGB as i32,
-                       img.width() as i32,
-                       img.height() as i32,
-                       0,
-                       gl::RGB,
-                       gl::UNSIGNED_BYTE,
-                       &data[0] as *const u8 as *const c_void);
-        gl::GenerateMipmap(gl::TEXTURE_2D);
-        // texture 2
-        // ---------
-        gl::GenTextures(1, &mut texture2);
-        gl::BindTexture(gl::TEXTURE_2D, texture2);
-        // set the texture wrapping parameters
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32); // set texture wrapping to gl::REPEAT (default wrapping method)
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32);
-        // set texture filtering parameters
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
-        // load image, create texture and generate mipmaps
-        let img = image::open(&Path::new("resources/textures/awesomeface.png")).expect("Failed to load texture");
-        let img = img.flipv(); // flip loaded texture on the y-axis.
-        let data = img.raw_pixels();
-        // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
-        gl::TexImage2D(gl::TEXTURE_2D,
-                       0,
-                       gl::RGB as i32,
-                       img.width() as i32,
-                       img.height() as i32,
-                       0,
-                       gl::RGBA,
-                       gl::UNSIGNED_BYTE,
-                       &data[0] as *const u8 as *const c_void);
-        gl::GenerateMipmap(gl::TEXTURE_2D);
+        let texture1 = Texture::new("resources/textures/container.jpg");
 
         // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
         // -------------------------------------------------------------------------------------------
         ourShader.useProgram();
         ourShader.setInt(c_str!("texture1"), 0);
-        ourShader.setInt(c_str!("texture2"), 1);
+        // ourShader.setInt(c_str!("texture2"), 1);
 
         // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
         // -----------------------------------------------------------------------------------------------------------
         let projection: Matrix4<f32> = perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
         ourShader.setMat4(c_str!("projection"), &projection);
 
-        (ourShader, texture1, texture2)
+        (ourShader, texture1)
     };
 
     // let chunk = VoxLoader::new();
@@ -201,14 +157,8 @@ fn run() -> Result<()> {
             ourShader.useProgram();
 
             // bind textures on corresponding texture units
-            gl::ActiveTexture(gl::TEXTURE0);
-            gl::BindTexture(gl::TEXTURE_2D, texture1);
-            gl::ActiveTexture(gl::TEXTURE1);
-            gl::BindTexture(gl::TEXTURE_2D, texture2);
-            //
-            // // activate shader
-            // ourShader.useProgram();
-            //
+            texture1.bind();
+
             // camera/view transformation
             let view: Matrix4<f32> = Matrix4::look_at(cameraPos, cameraPos + cameraFront, cameraUp);
             ourShader.setMat4(c_str!("view"), &view);
