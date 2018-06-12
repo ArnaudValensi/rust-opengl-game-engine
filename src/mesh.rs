@@ -49,7 +49,7 @@ impl Mesh {
     }
 
     /// render the mesh
-    pub unsafe fn Draw(&self, shader: &Shader) {
+    pub unsafe fn Draw(&self, _shader: &Shader) {
         // bind appropriate textures
         // let mut diffuseNr  = 0;
         // let mut specularNr = 0;

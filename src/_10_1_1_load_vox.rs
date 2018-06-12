@@ -25,6 +25,7 @@ use cgmath::prelude::*;
 // use vox_loader::VoxLoader;
 use errors::*;
 use voxel::chunk::Chunk;
+// use camera::Camera;
 
 // settings
 const SCR_WIDTH: u32 = 800;
@@ -54,6 +55,7 @@ fn print_errors_and_exit(e: &Error) {
 }
 
 fn run() -> Result<()> {
+    // let _camera = Camera::new();
     let mut cameraPos = Point3::new(0.0, 0.0, 3.0);
     let mut cameraFront: Vector3<f32> = Vector3 {
         x: 0.0,

@@ -15,6 +15,8 @@ pub mod vertex;
 pub mod mesh;
 pub mod mesh_data;
 pub mod texture;
+pub mod camera;
+pub mod material;
 
 mod _1_1_2_hello_window;
 pub use self::_1_1_2_hello_window::*;
