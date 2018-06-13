@@ -52,9 +52,12 @@ impl Material {
       }
     }
 
-    pub fn set_integer(&self, name: &CStr, value: i32) {
+    pub fn set_integer(&self, name: &str, value: i32) {
+      let c_string = CString::new(name).unwrap();
+      let c_str = c_string.as_c_str();
+
       unsafe {
-         self.shader.setInt(name, value);
+         self.shader.setInt(c_str, value);
       }
     }
 }
