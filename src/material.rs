@@ -10,7 +10,7 @@ pub struct Material {
 
 impl Material {
     pub fn new(shader: Shader, texture: Texture) -> Self {
-        Self { 
+        Self {
             shader,
             texture,
         }
@@ -22,8 +22,16 @@ impl Material {
             self.texture.bind();
         }
     }
-    
-    pub fn set_matrix4(&self, name: &CStr, mat: &Matrix4<f32>) {
-        
+
+    pub fn set_matrix4(&self, name: &CStr, matrix: &Matrix4<f32>) {
+      unsafe {
+         self.shader.setMat4(name, matrix);
+      }
+    }
+
+    pub fn set_integer(&self, name: &CStr, value: i32) {
+      unsafe {
+         self.shader.setInt(name, value);
+      }
     }
 }

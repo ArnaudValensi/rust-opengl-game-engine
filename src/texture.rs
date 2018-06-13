@@ -9,8 +9,8 @@ static OBJECT_COUNTER: AtomicUsize = atomic::ATOMIC_USIZE_INIT;
 
 #[derive(Debug)]
 pub struct Texture {
-    pub id: u32,
     pub path: String,
+    id: u32,
     index: u32,
 }
 
@@ -58,5 +58,9 @@ impl Texture {
             gl::ActiveTexture(gl::TEXTURE0 + self.index);
             gl::BindTexture(gl::TEXTURE_2D, self.id);
         }
+    }
+
+    pub fn get_id(&self) -> u32 {
+        self.index
     }
 }

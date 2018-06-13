@@ -97,7 +97,7 @@ fn run() -> Result<()> {
         // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
         // -------------------------------------------------------------------------------------------
         ourShader.useProgram();
-        ourShader.setInt(c_str!("texture1"), 0);
+        ourShader.setInt(c_str!("texture1"), texture1.get_id() as i32);
         // ourShader.setInt(c_str!("texture2"), 1);
 
         // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
