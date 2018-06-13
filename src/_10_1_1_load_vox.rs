@@ -10,7 +10,6 @@ use self::glutin::{
     GlContext,
 };
 
-use std::ffi::CStr;
 use std::time::{Instant, Duration};
 use floating_duration::TimeAsFloat;
 
@@ -86,7 +85,7 @@ fn run() -> Result<()> {
         // configure global opengl state
         // -----------------------------
         gl::Enable(gl::DEPTH_TEST);
-        material.set_matrix4(c_str!("projection"), &projection);
+        material.set_matrix4("projection", &projection);
     }
 
     // let chunk = VoxLoader::new();
@@ -136,10 +135,10 @@ fn run() -> Result<()> {
 
             // camera/view transformation
             let view: Matrix4<f32> = Matrix4::look_at(cameraPos, cameraPos + cameraFront, cameraUp);
-            material.set_matrix4(c_str!("view"), &view);
+            material.set_matrix4("view", &view);
 
             let model: Matrix4<f32> = Matrix4::from_translation(vec3(0.0, 0.0, 0.0));
-            material.set_matrix4(c_str!("model"), &model);
+            material.set_matrix4("model", &model);
 
             chunk_mesh.Draw();
         }
