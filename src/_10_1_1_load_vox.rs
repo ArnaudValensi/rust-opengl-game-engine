@@ -14,10 +14,9 @@ use std::ffi::CStr;
 use std::time::{Instant, Duration};
 use floating_duration::TimeAsFloat;
 
-use shader::Shader;
 use voxel::voxel_mesh_builder::build_mesh;
 use mesh::Mesh;
-use texture::Texture;
+use material::Material;
 
 use cgmath::{Matrix4, Vector3, vec3,  Deg, perspective, Point3};
 use cgmath::prelude::*;
@@ -76,37 +75,19 @@ fn run() -> Result<()> {
     // ------------------------------
     let mut window = Window::new(SCR_WIDTH, SCR_HEIGHT);
 
-    let (ourShader, texture1) = unsafe {
+    // create material
+    let material = Material::new();
+
+    // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
+    // -----------------------------------------------------------------------------------------------------------
+    let projection: Matrix4<f32> = perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
+
+    unsafe {
         // configure global opengl state
         // -----------------------------
         gl::Enable(gl::DEPTH_TEST);
-
-        // build and compile our shader program
-        // ------------------------------------
-        let ourShader = Shader::new(
-            "src/shaders/7.2.camera.vs",
-            "src/shaders/7.2.camera.fs"
-        );
-
-        // load and create a texture
-        // -------------------------
-        // texture 1
-        // ---------
-        let texture1 = Texture::new("resources/textures/container.jpg");
-
-        // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-        // -------------------------------------------------------------------------------------------
-        ourShader.useProgram();
-        ourShader.setInt(c_str!("texture1"), texture1.get_id() as i32);
-        // ourShader.setInt(c_str!("texture2"), 1);
-
-        // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
-        // -----------------------------------------------------------------------------------------------------------
-        let projection: Matrix4<f32> = perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
-        ourShader.setMat4(c_str!("projection"), &projection);
-
-        (ourShader, texture1)
-    };
+        material.set_matrix4(c_str!("projection"), &projection);
+    }
 
     // let chunk = VoxLoader::new();
     let mut chunk = Chunk::new(2, 3, 4);
@@ -151,20 +132,16 @@ fn run() -> Result<()> {
             gl::ClearColor(0.2, 0.3, 0.3, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
-            ourShader.useProgram();
-
-            // bind textures on corresponding texture units
-            texture1.bind();
+            material.bind();
 
             // camera/view transformation
             let view: Matrix4<f32> = Matrix4::look_at(cameraPos, cameraPos + cameraFront, cameraUp);
-            ourShader.setMat4(c_str!("view"), &view);
+            material.set_matrix4(c_str!("view"), &view);
 
             let model: Matrix4<f32> = Matrix4::from_translation(vec3(0.0, 0.0, 0.0));
-            // model = model * Matrix4::from_axis_angle(vec3(1.0, 0.3, 0.5).normalize(), Deg(0.0));
-            ourShader.setMat4(c_str!("model"), &model);
+            material.set_matrix4(c_str!("model"), &model);
 
-            chunk_mesh.Draw(&ourShader);
+            chunk_mesh.Draw();
         }
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

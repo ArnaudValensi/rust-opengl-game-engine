@@ -9,11 +9,31 @@ pub struct Material {
 }
 
 impl Material {
-    pub fn new(shader: Shader, texture: Texture) -> Self {
-        Self {
-            shader,
-            texture,
-        }
+    pub fn new() -> Self {
+      // build and compile our shader program
+      // ------------------------------------
+      let shader = Shader::new(
+          "src/shaders/7.2.camera.vs",
+          "src/shaders/7.2.camera.fs"
+      );
+
+      // load and create a texture
+      // -------------------------
+      // texture 1
+      // ---------
+      let texture = Texture::new("resources/textures/container.jpg");
+
+      // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+      // -------------------------------------------------------------------------------------------
+      unsafe {
+         shader.useProgram();
+         shader.setInt(c_str!("texture1"), texture.get_id() as i32);
+      }
+
+      Self {
+         shader,
+         texture,
+      }
     }
 
     pub fn bind(&self) {
