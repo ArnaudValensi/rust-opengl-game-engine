@@ -6,6 +6,7 @@ use glbs::main_1_2_2;
 use glbs::main_1_7_2;
 use glbs::main_1_7_3;
 use glbs::main_10_1_1;
+use glbs::main_100_1;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -22,6 +23,7 @@ fn main() {
         "1_7_2" => main_1_7_2(),
         "1_7_3" => main_1_7_3(),
         "10_1_1" => main_10_1_1(),
+        "100_1" => main_100_1(),
         _     => println!("Unknown tutorial id")
     }
 }

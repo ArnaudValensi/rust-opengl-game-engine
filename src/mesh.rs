@@ -10,13 +10,14 @@ use gl;
 use vertex::Vertex;
 use mesh_data::MeshData;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Texture {
     pub id: u32,
     pub type_: String,
     pub path: String,
 }
 
+#[derive(Debug)]
 pub struct Mesh {
     /*  Mesh Data  */
     pub vertices: Vec<Vertex>,

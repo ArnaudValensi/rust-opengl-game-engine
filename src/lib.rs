@@ -3,6 +3,7 @@ extern crate image;
 extern crate cgmath;
 extern crate floating_duration;
 #[macro_use] extern crate error_chain;
+extern crate specs;
 
 pub mod errors;
 pub mod common;
@@ -17,6 +18,7 @@ pub mod mesh_data;
 pub mod texture;
 pub mod camera;
 pub mod material;
+pub mod components;
 
 mod _1_1_2_hello_window;
 pub use self::_1_1_2_hello_window::*;
@@ -30,3 +32,5 @@ mod _1_7_3_camera_mouse;
 pub use self::_1_7_3_camera_mouse::*;
 mod _10_1_1_load_vox;
 pub use self::_10_1_1_load_vox::*;
+mod _100_1_ecs;
+pub use self::_100_1_ecs::*;

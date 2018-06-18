@@ -3,6 +3,7 @@
 
 extern crate gl;
 extern crate glutin;
+extern crate specs;
 
 use common::{Window, process_events};
 use input::keyboard::{KeyCode};
