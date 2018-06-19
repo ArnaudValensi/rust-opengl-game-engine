@@ -4,8 +4,8 @@ use mesh::Mesh;
 
 #[derive(Debug)]
 pub struct MeshRender {
-    material: Material,
-    mesh: Mesh,
+    pub material: Material,
+    pub mesh: Mesh,
 }
 
 impl Component for MeshRender {
