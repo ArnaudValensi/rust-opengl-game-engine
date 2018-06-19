@@ -1,6 +1,6 @@
 use vertex::Vertex;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 #[repr(C)]
 pub struct MeshData {
     pub vertices: Vec<Vertex>,

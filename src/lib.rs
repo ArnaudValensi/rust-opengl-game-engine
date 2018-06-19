@@ -19,6 +19,8 @@ pub mod texture;
 pub mod camera;
 pub mod material;
 pub mod components;
+pub mod systems;
+pub mod config;
 
 mod _1_1_2_hello_window;
 pub use self::_1_1_2_hello_window::*;

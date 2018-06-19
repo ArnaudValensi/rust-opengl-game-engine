@@ -6,7 +6,7 @@ use super::position::Position;
 
 const ERROR_VOXEL_OUT_OF_BOUND: &str = "the position of the voxel you are trying to set is out of bound";
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Chunk {
     pub size_x: u8,
     pub size_y: u8,

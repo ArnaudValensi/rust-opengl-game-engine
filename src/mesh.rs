@@ -17,7 +17,7 @@ pub struct Texture {
     pub path: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Mesh {
     /*  Mesh Data  */
     pub vertices: Vec<Vertex>,

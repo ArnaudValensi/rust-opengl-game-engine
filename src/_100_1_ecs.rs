@@ -2,24 +2,25 @@ extern crate gl;
 extern crate glutin;
 
 use errors::*;
-use specs::World;
-use cgmath::{Matrix4, vec3,  Deg, perspective};
+use specs::{World, DispatcherBuilder};
+use cgmath::{Matrix4,  Deg, perspective, Point3};
 use components::transform::Transform;
 use components::mesh_render::MeshRender;
 use components::camera::Camera;
+use systems::render::Render;
 use voxel::chunk::Chunk;
 use mesh::Mesh;
 use material::Material;
 use voxel::voxel_mesh_builder::build_mesh;
+use config::{SCR_WIDTH, SCR_HEIGHT};
 
 // settings
-const SCR_WIDTH: u32 = 800;
-const SCR_HEIGHT: u32 = 600;
 const FOV: f32 = 45.0;
 
 fn run() -> Result<()> {
     println!("Hi!");
 
+    let render_system = Render::new();
     let material = Material::new();
     let projection: Matrix4<f32> = perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
 
@@ -46,17 +47,30 @@ fn run() -> Result<()> {
     world.register::<MeshRender>();
     world.register::<Camera>();
 
-    let camera = world.create_entity()
-        .with(Transform { position: vec3(0.0, 0.0, 3.0) })
+    world.create_entity()
+        .with(Transform { position: Point3::new(0.0, 0.0, 3.0) })
         .with(Camera)
         .build();
 
-    let terrain = world.create_entity()
-        .with(Transform { position: vec3(0.0, 0.0, 0.0) })
-        .with(MeshRender { material, mesh: chunk_mesh })
+    world.create_entity()
+        .with(Transform { position: Point3::new(0.0, 0.0, 0.0) })
+        .with(MeshRender { material: material.clone(), mesh: chunk_mesh.clone() })
         .build();
 
-    // println!("camera: {:?}", camera);
+    // world.create_entity()
+    //     .with(Transform { position: Point3::new(0.0, 0.0, 0.0) })
+    //     .with(MeshRender { material, mesh: chunk_mesh })
+    //     .build();
+
+    let mut dispatcher_builder = DispatcherBuilder::new();
+        // .with(render_system, "render_system", &[])
+    dispatcher_builder.add_thread_local(render_system);
+    let mut dispatcher = dispatcher_builder.build();
+
+    // dispatcher.dispatch(&mut world.res);
+    loop {
+        dispatcher.dispatch(&mut world.res);
+    }
 
     Ok(())
 }

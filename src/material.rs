@@ -3,7 +3,7 @@ use cgmath::Matrix4;
 use shader::Shader;
 use texture::Texture;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Material {
    shader: Shader,
    texture: Texture,

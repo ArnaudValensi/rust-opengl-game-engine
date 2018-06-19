@@ -1,9 +1,9 @@
 use specs::{Component, VecStorage};
-use cgmath::Vector3;
+use cgmath::Point3;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Transform {
-    pub position: Vector3<f32>,
+    pub position: Point3<f32>,
 }
 
 impl Component for Transform {

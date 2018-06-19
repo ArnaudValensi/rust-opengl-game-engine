@@ -7,7 +7,7 @@ use std::os::raw::c_void;
 
 static OBJECT_COUNTER: AtomicUsize = atomic::ATOMIC_USIZE_INIT;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Texture {
     pub path: String,
     id: u32,
