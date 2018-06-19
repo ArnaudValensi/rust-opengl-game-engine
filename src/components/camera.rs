@@ -1,8 +1,8 @@
 use specs::{Component, VecStorage};
 
 #[derive(Debug)]
-pub struct Transform;
+pub struct Camera;
 
-impl Component for Transform {
+impl Component for Camera {
     type Storage = VecStorage<Self>;
 }

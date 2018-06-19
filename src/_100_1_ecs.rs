@@ -1,6 +1,8 @@
 use errors::*;
 use specs::World;
 use components::transform::Transform;
+use components::mesh_render::MeshRender;
+use components::camera::Camera;
 
 fn run() -> Result<()> {
     println!("Hi!");
@@ -8,6 +10,8 @@ fn run() -> Result<()> {
     let mut world = World::new();
 
     world.register::<Transform>();
+    world.register::<MeshRender>();
+    world.register::<Camera>();
 
     Ok(())
 }
