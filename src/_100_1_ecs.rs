@@ -13,6 +13,7 @@ use mesh::Mesh;
 use material::Material;
 use voxel::voxel_mesh_builder::build_mesh;
 use config::{SCR_WIDTH, SCR_HEIGHT};
+use lifecycle::{Lifecycle, Event};
 
 // settings
 const FOV: f32 = 45.0;
@@ -23,6 +24,7 @@ fn run() -> Result<()> {
     let render_system = Render::new();
     let material = Material::new();
     let projection: Matrix4<f32> = perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
+    let mut event_loop = Lifecycle::new();
 
     unsafe {
         // configure global opengl state
@@ -67,9 +69,15 @@ fn run() -> Result<()> {
     dispatcher_builder.add_thread_local(render_system);
     let mut dispatcher = dispatcher_builder.build();
 
-    // dispatcher.dispatch(&mut world.res);
-    loop {
-        dispatcher.dispatch(&mut world.res);
+    while let Some(event) = event_loop.next() {
+        match event {
+            Event::FixedUpdate => {}
+            Event::OnInput => {}
+            Event::Update => {
+                dispatcher.dispatch(&mut world.res);
+            }
+            Event::Render => {}
+        }
     }
 
     Ok(())

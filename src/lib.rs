@@ -21,6 +21,7 @@ pub mod material;
 pub mod components;
 pub mod systems;
 pub mod config;
+pub mod lifecycle;
 
 mod _1_1_2_hello_window;
 pub use self::_1_1_2_hello_window::*;
