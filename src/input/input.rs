@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use input::keyboard::KeyCode;
 
-#[derive(Debug)]
+#[derive(Default, Debug)]
 pub struct Input {
     keys_down: HashSet<KeyCode>,
     keys_down_this_tick: HashSet<KeyCode>,

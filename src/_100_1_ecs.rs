@@ -8,6 +8,7 @@ use components::transform::Transform;
 use components::mesh_render::MeshRender;
 use components::camera::Camera;
 use systems::render::Render;
+use systems::window_event::WindowEvent;
 use voxel::chunk::Chunk;
 use mesh::Mesh;
 use material::Material;
@@ -26,6 +27,7 @@ fn run() -> Result<()> {
 
     let window = Rc::new(Window::new(SCR_WIDTH, SCR_HEIGHT));
     let render_system = Render::new(Rc::clone(&window));
+    let window_event_system = WindowEvent::new(Rc::clone(&window));
     let input = Input::new();
     let material = Material::new();
     let projection: Matrix4<f32> = perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
@@ -74,6 +76,8 @@ fn run() -> Result<()> {
     let mut dispatcher_builder = DispatcherBuilder::new();
         // .with(render_system, "render_system", &[])
     dispatcher_builder.add_thread_local(render_system);
+    dispatcher_builder.add_thread_local(window_event_system);
+
     let mut dispatcher = dispatcher_builder.build();
 
     while let Some(event) = event_loop.next() {
