@@ -17,7 +17,6 @@ pub mod vertex;
 pub mod mesh;
 pub mod mesh_data;
 pub mod texture;
-pub mod camera;
 pub mod material;
 pub mod components;
 pub mod systems;
