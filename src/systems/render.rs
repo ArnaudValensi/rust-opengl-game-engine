@@ -4,12 +4,12 @@ extern crate glutin;
 use specs::{ReadStorage, System, Join};
 use std::time::{Instant, Duration};
 use cgmath::{Vector3, Matrix4, vec3, Point3};
-use config::{SCR_WIDTH, SCR_HEIGHT};
 use components::transform::Transform;
 use components::mesh_render::MeshRender;
 use components::camera::Camera;
-use common::Window;
+use window::Window;
 use self::glutin::GlContext;
+use std::rc::Rc;
 
 const CAMERA_UP: Vector3<f32> = Vector3 {
     x: 0.0,
@@ -20,15 +20,15 @@ const CAMERA_UP: Vector3<f32> = Vector3 {
 pub struct Render {
     delta_time: Duration,
     last_frame: Instant,
-    window: Window,
+    window: Rc<Window>,
 }
 
 impl Render {
-    pub fn new() -> Self {
+    pub fn new(window: Rc<Window>) -> Self {
         Self {
             delta_time: Duration::default(),
             last_frame: Instant::now(),
-            window: Window::new(SCR_WIDTH, SCR_HEIGHT),
+            window,
         }
     }
 }
@@ -37,7 +37,7 @@ impl<'a> System<'a> for Render {
     type SystemData = (
         ReadStorage<'a, Transform>,
         ReadStorage<'a, MeshRender>,
-        ReadStorage<'a, Camera>
+        ReadStorage<'a, Camera>,
     );
 
     fn run(&mut self, data: Self::SystemData) {
@@ -56,13 +56,13 @@ impl<'a> System<'a> for Render {
 
         for (mesh_transform, mesh_render) in (&tranform_storage, &mesh_render_storage).join() {
             // println!("= transform, mesh_render");
-            render_mesh(&self.window, &mesh_transform, &mesh_render, &camera_transform);
+            render_mesh(Rc::clone(&self.window), &mesh_transform, &mesh_render, &camera_transform);
         }
     }
 }
 
 fn render_mesh(
-    window: &Window,
+    window: Rc<Window>,
     mesh_tranform: &Transform,
     mesh_render: &MeshRender,
     camera_tranform: &Transform

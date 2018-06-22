@@ -14,14 +14,19 @@ use material::Material;
 use voxel::voxel_mesh_builder::build_mesh;
 use config::{SCR_WIDTH, SCR_HEIGHT};
 use lifecycle::{Lifecycle, Event};
+use input::input::Input;
+use window::Window;
+use std::rc::Rc;
 
 // settings
 const FOV: f32 = 45.0;
 
 fn run() -> Result<()> {
-    println!("Hi!");
+    println!(" 🦄 Starting engine...");
 
-    let render_system = Render::new();
+    let window = Rc::new(Window::new(SCR_WIDTH, SCR_HEIGHT));
+    let render_system = Render::new(Rc::clone(&window));
+    let input = Input::new();
     let material = Material::new();
     let projection: Matrix4<f32> = perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
     let mut event_loop = Lifecycle::new();
@@ -48,6 +53,8 @@ fn run() -> Result<()> {
     world.register::<Transform>();
     world.register::<MeshRender>();
     world.register::<Camera>();
+
+    world.add_resource(input);
 
     world.create_entity()
         .with(Transform { position: Point3::new(0.0, 0.0, 3.0) })

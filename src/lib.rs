@@ -6,6 +6,7 @@ extern crate floating_duration;
 extern crate specs;
 
 pub mod errors;
+pub mod window;
 pub mod common;
 pub mod shader;
 pub mod macros;
