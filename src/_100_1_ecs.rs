@@ -18,6 +18,7 @@ use lifecycle::{Lifecycle, Event};
 use input::input::Input;
 use window::Window;
 use std::rc::Rc;
+use std::cell::RefCell;
 
 // settings
 const FOV: f32 = 45.0;
@@ -25,7 +26,7 @@ const FOV: f32 = 45.0;
 fn run() -> Result<()> {
     println!(" 🦄 Starting engine...");
 
-    let window = Rc::new(Window::new(SCR_WIDTH, SCR_HEIGHT));
+    let window = Rc::new(RefCell::new(Window::new(SCR_WIDTH, SCR_HEIGHT)));
     let render_system = Render::new(Rc::clone(&window));
     let window_event_system = WindowEvent::new(Rc::clone(&window));
     let input = Input::new();

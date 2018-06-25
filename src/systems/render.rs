@@ -10,6 +10,7 @@ use components::camera::Camera;
 use window::Window;
 use self::glutin::GlContext;
 use std::rc::Rc;
+use std::cell::RefCell;
 
 const CAMERA_UP: Vector3<f32> = Vector3 {
     x: 0.0,
@@ -20,11 +21,11 @@ const CAMERA_UP: Vector3<f32> = Vector3 {
 pub struct Render {
     delta_time: Duration,
     last_frame: Instant,
-    window: Rc<Window>,
+    window: Rc<RefCell<Window>>,
 }
 
 impl Render {
-    pub fn new(window: Rc<Window>) -> Self {
+    pub fn new(window: Rc<RefCell<Window>>) -> Self {
         Self {
             delta_time: Duration::default(),
             last_frame: Instant::now(),
@@ -62,7 +63,7 @@ impl<'a> System<'a> for Render {
 }
 
 fn render_mesh(
-    window: Rc<Window>,
+    window: Rc<RefCell<Window>>,
     mesh_tranform: &Transform,
     mesh_render: &MeshRender,
     camera_tranform: &Transform
@@ -96,7 +97,7 @@ fn render_mesh(
         mesh_render.mesh.Draw();
     }
 
-    window.gl_window.swap_buffers().unwrap();
+    window.borrow().gl_window.swap_buffers().unwrap();
 }
 
 // Only one camera is available.
