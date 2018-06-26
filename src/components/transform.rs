@@ -5,6 +5,8 @@ use cgmath::prelude::*;
 #[derive(Debug, Clone)]
 pub struct Transform {
     pub position: Point3<f32>,
+    // rotation
+    // scale
     pub forward: Vector3<f32>,
 }
 
