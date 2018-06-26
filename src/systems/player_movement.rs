@@ -33,24 +33,12 @@ impl<'a> System<'a> for PlayerMovement {
 
     fn run(&mut self, data: Self::SystemData) {
         let (mut tranform_storage, player_storage, input) = data;
-        let camera_up = Vector3::unit_y();
         // let camera_speed: f32 = 2.5 * deltaTime.as_fractional_secs() as f32;
 
         for (transform, _) in (&mut tranform_storage, &player_storage).join() {
-            if input.get_key(KeyCode::W) {
-                transform.position += CAMERA_SPEED * transform.forward;
-            }
-            if input.get_key(KeyCode::S) {
-                transform.position += -(CAMERA_SPEED * transform.forward);
-            }
-            if input.get_key(KeyCode::A) {
-                transform.position += -(transform.forward.cross(camera_up).normalize() * CAMERA_SPEED);
-            }
-            if input.get_key(KeyCode::D) {
-                transform.position += transform.forward.cross(camera_up).normalize() * CAMERA_SPEED;
-            }
 
-            process_mouse(
+            process_position(&input, transform);
+            process_rotation(
                 &input.mouse_axis,
                 &mut self.yaw,
                 &mut self.pitch,
@@ -60,7 +48,25 @@ impl<'a> System<'a> for PlayerMovement {
     }
 }
 
-fn process_mouse(
+fn process_position(input: &Input, transform: &mut Transform) {
+    let camera_forward = transform.forward;
+    let camera_right = transform.right();
+
+    if input.get_key(KeyCode::W) {
+        transform.position += CAMERA_SPEED * camera_forward;
+    }
+    if input.get_key(KeyCode::S) {
+        transform.position += -(CAMERA_SPEED * camera_forward);
+    }
+    if input.get_key(KeyCode::A) {
+        transform.position += -(CAMERA_SPEED * camera_right);
+    }
+    if input.get_key(KeyCode::D) {
+        transform.position += CAMERA_SPEED * camera_right;
+    }
+}
+
+fn process_rotation(
     mouse_axis: &(f64, f64),
     yaw: &mut f32,
     pitch: &mut f32,
