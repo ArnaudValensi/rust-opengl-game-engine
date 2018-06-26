@@ -7,8 +7,10 @@ use cgmath::{Matrix4,  Deg, perspective, Point3};
 use components::transform::Transform;
 use components::mesh_render::MeshRender;
 use components::camera::Camera;
+use components::player::Player;
 use systems::render::Render;
 use systems::window_event::WindowEvent;
+use systems::player_movement::PlayerMovement;
 use voxel::chunk::Chunk;
 use mesh::Mesh;
 use material::Material;
@@ -56,12 +58,14 @@ fn run() -> Result<()> {
     world.register::<Transform>();
     world.register::<MeshRender>();
     world.register::<Camera>();
+    world.register::<Player>();
 
     world.add_resource(input);
 
     world.create_entity()
         .with(Transform { position: Point3::new(0.0, 0.0, 3.0) })
         .with(Camera)
+        .with(Player)
         .build();
 
     world.create_entity()
@@ -78,6 +82,7 @@ fn run() -> Result<()> {
         // .with(render_system, "render_system", &[])
     dispatcher_builder.add_thread_local(render_system);
     dispatcher_builder.add_thread_local(window_event_system);
+    dispatcher_builder.add_thread_local(PlayerMovement {});
 
     let mut dispatcher = dispatcher_builder.build();
 
@@ -87,6 +92,10 @@ fn run() -> Result<()> {
             Event::OnInput => {}
             Event::Update => {
                 dispatcher.dispatch(&mut world.res);
+
+                if !window.borrow().running {
+                    return Ok(());
+                }
             }
             Event::Render => {}
         }
