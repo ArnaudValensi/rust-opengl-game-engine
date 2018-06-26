@@ -68,13 +68,8 @@ fn render_mesh(
     mesh_render: &MeshRender,
     camera_tranform: &Transform
 ) {
-    let camera_front: Vector3<f32> = Vector3 {
-        x: 0.0,
-        y: 0.0,
-        z: -1.0,
-    };
-
     let camera_pos = camera_tranform.position;
+    let camera_forward = camera_tranform.forward;
 
     unsafe {
         gl::ClearColor(0.2, 0.3, 0.3, 1.0);
@@ -85,7 +80,7 @@ fn render_mesh(
         // camera/view transformation
         let view: Matrix4<f32> = Matrix4::look_at(
             camera_pos,
-            camera_pos + camera_front,
+            camera_pos + camera_forward,
             CAMERA_UP
         );
         mesh_render.material.set_matrix4("view", &view);
