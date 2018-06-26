@@ -86,9 +86,9 @@ fn run() -> Result<()> {
 
     let mut dispatcher_builder = DispatcherBuilder::new();
         // .with(render_system, "render_system", &[])
-    dispatcher_builder.add_thread_local(render_system);
     dispatcher_builder.add_thread_local(window_event_system);
     dispatcher_builder.add_thread_local(PlayerMovement::new());
+    dispatcher_builder.add_thread_local(render_system);
 
     let mut dispatcher = dispatcher_builder.build();
 
