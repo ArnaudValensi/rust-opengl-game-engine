@@ -1,3 +1,5 @@
+// TODO: use quaternion in Transform
+// TODO: use delta time
 use specs::{WriteStorage, ReadStorage, System, Join, Read};
 use cgmath::Vector3;
 use cgmath::prelude::*;

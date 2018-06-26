@@ -33,7 +33,7 @@ impl WindowEvent {
         let running = &mut tmp.running;
         let gl_window = &tmp.gl_window;
 
-        // input_ctx.new_tick();
+        input_ctx.new_tick();
 
         events_loop.poll_events(|event| {
             match event {
