@@ -50,7 +50,6 @@ impl WindowEvent {
                                 match state {
                                     ElementState::Pressed => {
                                         input_ctx.set_key_down(normalized_key);
-                                        println!("normalized_key: {:?}", normalized_key);
                                     }
                                     ElementState::Released => {
                                         input_ctx.set_key_up(normalized_key);
