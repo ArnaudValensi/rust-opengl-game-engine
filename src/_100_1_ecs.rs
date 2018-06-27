@@ -3,7 +3,7 @@ extern crate glutin;
 
 use errors::*;
 use specs::{World, DispatcherBuilder};
-use cgmath::{Matrix4,  Deg, perspective, Point3, Vector3};
+use cgmath::{Matrix4,  Deg, perspective, Point3};
 use components::transform::Transform;
 use components::mesh_render::MeshRender;
 use components::camera::Camera;
@@ -63,19 +63,13 @@ fn run() -> Result<()> {
     world.add_resource(input);
 
     world.create_entity()
-        .with(Transform {
-            position: Point3::new(0.0, 0.0, 3.0),
-            forward: -Vector3::unit_z(),
-        })
+        .with(Transform::new(Point3::new(0.0, 0.0, 3.0)))
         .with(Camera)
         .with(Player)
         .build();
 
     world.create_entity()
-        .with(Transform {
-            position: Point3::new(0.0, 0.0, 0.0),
-            forward: -Vector3::unit_z(),
-        })
+        .with(Transform::new(Point3::new(0.0, 0.0, 0.0)))
         .with(MeshRender { material: material.clone(), mesh: chunk_mesh.clone() })
         .build();
 

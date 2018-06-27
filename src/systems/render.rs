@@ -3,7 +3,7 @@ extern crate glutin;
 
 use specs::{ReadStorage, System, Join};
 use std::time::{Instant, Duration};
-use cgmath::{Vector3, Matrix4, vec3, Point3};
+use cgmath::{Vector3, Matrix4, vec3, Point3, Euler};
 use components::transform::Transform;
 use components::mesh_render::MeshRender;
 use components::camera::Camera;
@@ -69,7 +69,10 @@ fn render_mesh(
     camera_tranform: &Transform
 ) {
     let camera_pos = camera_tranform.position;
-    let camera_forward = camera_tranform.forward;
+    let camera_forward = camera_tranform.forward();
+
+    // println!("camera_tranform.rotation: {:?}", camera_tranform.rotation);
+    // println!("camera_tranform.rotation: {:#?}", Euler::from(camera_tranform.rotation));
 
     unsafe {
         gl::ClearColor(0.2, 0.3, 0.3, 1.0);
