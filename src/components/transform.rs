@@ -43,6 +43,12 @@ impl Transform {
         forward
     }
 
+    pub fn set_forward(&mut self, new_forward: Vector3<f32>) {
+        let up = Vector3::unit_y();
+
+        self.rotation = Quaternion::look_at(new_forward, up);
+    }
+
     // THINK: maybe change to left
     pub fn right(&self) -> Vector3<f32> {
         self.rotation * -Vector3::unit_x()
