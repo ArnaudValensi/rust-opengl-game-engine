@@ -43,7 +43,7 @@ impl<'a> System<'a> for PlayerMovement {
 
 fn process_position(input: &Input, transform: &mut Transform) {
     let camera_forward = transform.forward();
-    let camera_left = transform.right();
+    let camera_left = transform.left();
 
     if input.get_key(KeyCode::W) {
         transform.position += CAMERA_SPEED * camera_forward;
@@ -52,10 +52,10 @@ fn process_position(input: &Input, transform: &mut Transform) {
         transform.position += -(CAMERA_SPEED * camera_forward);
     }
     if input.get_key(KeyCode::A) {
-        transform.position += -(CAMERA_SPEED * camera_left);
+        transform.position += CAMERA_SPEED * camera_left;
     }
     if input.get_key(KeyCode::D) {
-        transform.position += CAMERA_SPEED * camera_left;
+        transform.position += -(CAMERA_SPEED * camera_left);
     }
 }
 
@@ -66,8 +66,8 @@ fn process_rotation(
     let (xpos, ypos) = (mouse_axis.0 as f32, mouse_axis.1 as f32);
     let sensitivity: f32 = 0.1;
     let yaw_offset = -xpos * sensitivity;
-    let pitch_offset = -ypos * sensitivity;
+    let pitch_offset = ypos * sensitivity;
 
-    let rotation = transform.right() * pitch_offset + Vector3::unit_y() * yaw_offset;
+    let rotation = transform.left() * pitch_offset + Vector3::unit_y() * yaw_offset;
     transform.rotate(rotation);
 }

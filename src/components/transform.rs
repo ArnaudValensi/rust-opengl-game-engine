@@ -47,16 +47,16 @@ impl Transform {
         self.rotation = Quaternion::look_at(new_forward, up);
     }
 
-    pub fn right(&self) -> Vector3<f32> {
-        // self.rotation * Vector3::unit_x()
-        let up = Vector3::unit_y();
+    pub fn left(&self) -> Vector3<f32> {
+        // (self.rotation * Vector3::unit_x()).normalize()
+        let down = -Vector3::unit_y();
 
-        self.forward().cross(up).normalize()
+        self.forward().cross(down).normalize()
     }
 
     pub fn rotate(&mut self, rotation: Vector3<f32>) {
         println!("rotation: {:#?}", rotation);
-        self.rotation =  (Quaternion::from(Euler {
+        self.rotation = (Quaternion::from(Euler {
             x: Deg(rotation.x),
             y: Deg(rotation.y),
             z: Deg(rotation.z),
