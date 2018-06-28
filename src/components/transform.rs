@@ -63,7 +63,10 @@ impl Transform {
         });
     }
 
-    // TODO: rotate_around_world_space(&mut self, rotation: Vector3<f32>)
+    // TODO:
+    // - rotate_around_world_space(&mut self, rotation: Vector3<f32>)
+    // - set_right/set_up
+    // - up
 }
 
 impl Component for Transform {
