@@ -1,7 +1,7 @@
 // TODO: use quaternion in Transform
 // TODO: use delta time
 use specs::{WriteStorage, ReadStorage, System, Join, Read};
-use cgmath::{Vector3, Quaternion, Euler, Deg};
+use cgmath::{Vector3};
 use cgmath::prelude::*;
 use components::transform::Transform;
 use components::player::Player;
@@ -11,16 +11,12 @@ use input::keyboard::KeyCode;
 const CAMERA_SPEED: f32 = 0.02;
 
 pub struct PlayerMovement {
-    yaw: f32,
     pitch: f32,
 }
 
 impl PlayerMovement {
     pub fn new() -> Self {
         Self {
-            // yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector
-            // pointing to the right so we initially rotate a bit to the left.
-            yaw: 180.0,
             pitch: 0.0,
         }
     }
@@ -42,7 +38,6 @@ impl<'a> System<'a> for PlayerMovement {
             process_position(&input, transform);
             process_rotation(
                 &input.mouse_axis,
-                &mut self.yaw,
                 &mut self.pitch,
                 &mut transform,
             );
@@ -70,7 +65,6 @@ fn process_position(input: &Input, transform: &mut Transform) {
 
 fn process_rotation(
     mouse_axis: &(f64, f64),
-    yaw: &mut f32,
     pitch: &mut f32,
     transform: &mut Transform,
 ) {
@@ -84,7 +78,6 @@ fn process_rotation(
     let rotation = Vector3::unit_y() * xoffset;
     transform.rotate(rotation);
 
-    // *yaw += xoffset;
     // *pitch += yoffset;
     //
     // // make sure that when pitch is out of bounds, screen doesn't get flipped
