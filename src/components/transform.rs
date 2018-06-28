@@ -43,11 +43,9 @@ impl Transform {
         forward
     }
 
+    // THINK: maybe change to left
     pub fn right(&self) -> Vector3<f32> {
-        let up = Vector3::unit_y();
-
-        // TODO: implement like forward
-        self.forward().cross(up).normalize()
+        self.rotation * -Vector3::unit_x()
     }
 
     pub fn rotate(&mut self, rotation: Vector3<f32>) {
