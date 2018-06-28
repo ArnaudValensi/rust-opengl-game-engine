@@ -47,7 +47,7 @@ impl<'a> System<'a> for PlayerMovement {
 
 fn process_position(input: &Input, transform: &mut Transform) {
     let camera_forward = transform.forward();
-    let camera_right = transform.right();
+    let camera_left = transform.left();
 
     if input.get_key(KeyCode::W) {
         transform.position += CAMERA_SPEED * camera_forward;
@@ -56,10 +56,10 @@ fn process_position(input: &Input, transform: &mut Transform) {
         transform.position += -(CAMERA_SPEED * camera_forward);
     }
     if input.get_key(KeyCode::A) {
-        transform.position += -(CAMERA_SPEED * camera_right);
+        transform.position += CAMERA_SPEED * camera_left;
     }
     if input.get_key(KeyCode::D) {
-        transform.position += CAMERA_SPEED * camera_right;
+        transform.position += -(CAMERA_SPEED * camera_left);
     }
 }
 

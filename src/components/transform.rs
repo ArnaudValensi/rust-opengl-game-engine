@@ -49,9 +49,8 @@ impl Transform {
         self.rotation = Quaternion::look_at(new_forward, up);
     }
 
-    // THINK: maybe change to left
-    pub fn right(&self) -> Vector3<f32> {
-        self.rotation * -Vector3::unit_x()
+    pub fn left(&self) -> Vector3<f32> {
+        self.rotation * Vector3::unit_x()
     }
 
     pub fn rotate(&mut self, rotation: Vector3<f32>) {
@@ -65,7 +64,7 @@ impl Transform {
 
     // TODO:
     // - rotate_around_world_space(&mut self, rotation: Vector3<f32>)
-    // - set_right/set_up
+    // - set_left/set_up
     // - up
 }
 
