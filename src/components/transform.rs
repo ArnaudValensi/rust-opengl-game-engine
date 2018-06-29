@@ -63,8 +63,14 @@ impl Transform {
         }) * self.rotation).normalize();
     }
 
-    pub fn get_euler_angles(&self) -> Euler<Rad<f32>> {
-        Euler::from(self.rotation)
+    pub fn get_local_euler_angles(&self) -> Vector3<f32> {
+        let euler: Euler<Rad<f32>> = Euler::from(self.rotation);
+
+        Vector3 {
+            x: Deg::from(euler.x).0,
+            y: Deg::from(euler.y).0,
+            z: Deg::from(euler.z).0,
+        }
     }
 }
 

@@ -70,4 +70,7 @@ fn process_rotation(
 
     let rotation = transform.left() * pitch_offset + Vector3::unit_y() * yaw_offset;
     transform.rotate(rotation);
+
+    let euler_angles = transform.get_local_euler_angles();
+    println!("euler_angles: {:#?}", euler_angles);
 }
