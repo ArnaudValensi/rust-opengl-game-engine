@@ -22,6 +22,7 @@ pub mod components;
 pub mod systems;
 pub mod config;
 pub mod lifecycle;
+pub mod math;
 
 mod _1_1_2_hello_window;
 pub use self::_1_1_2_hello_window::*;
