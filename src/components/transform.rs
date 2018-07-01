@@ -4,12 +4,13 @@
 // - up
 
 use specs::{Component, VecStorage};
-use cgmath::{Point3, Vector3, Quaternion, Euler, Deg, Rad, Angle};
+use cgmath::{Point3, Vector3, Quaternion, Euler, Deg, Rad};
 use cgmath::prelude::*;
 use std::f32::consts::PI;
 use std::f32;
 
 const RAD_TO_DEG: f32 = 180.0 / PI as f32;
+const DEG_TO_RAD: f32 = PI / 180.0 as f32;
 
 #[derive(Debug, Clone)]
 pub struct Transform {
@@ -114,6 +115,10 @@ impl Transform {
         v.z = (2_f32 * q.v.x * q.v.y + 2_f32 * q.v.z * q.s).atan2(1.0 - 2_f32 * (q.v.y * q.v.y + q.v.z * q.v.z)) as f32; // Roll
         return normalize_angles_vector(v * RAD_TO_DEG);
     }
+
+    pub fn set_rotation(&mut self, x: f32, y: f32, z: f32) {
+        self.rotation = euler_to_quaternion(x, y, z);
+    }
 }
 
 fn normalize_angles_vector(angles: Vector3<f32>) -> Vector3<f32> {
@@ -136,6 +141,30 @@ fn normalize_angle(angle: f32) -> f32 {
     }
 
     return new_angle;
+}
+
+fn euler_to_quaternion(x: f32, y: f32, z: f32) -> Quaternion<f32> {
+    let pitch = (x * DEG_TO_RAD) as f64;
+    let roll = (z * DEG_TO_RAD) as f64;
+    let yaw = (y * DEG_TO_RAD) as f64;
+
+    let pitch_over_2: f64 = pitch * 0.5_f64;
+    let roll_over_2: f64 = roll * 0.5_f64;
+    let yaw_over_2: f64 = yaw * 0.5_f64;
+
+    let cy: f64 = yaw_over_2.cos();
+    let sy: f64 = yaw_over_2.sin();
+    let cr: f64 = roll_over_2.cos();
+    let sr: f64 = roll_over_2.sin();
+    let cp: f64 = pitch_over_2.cos();
+    let sp: f64 = pitch_over_2.sin();
+
+    let w: f32 = (cy * cr * cp + sy * sr * sp) as f32;
+    let x: f32 = (cy * cr * sp + sy * sr * cp) as f32;
+    let y: f32 = (sy * cr * cp - cy * sr * sp) as f32;
+    let z: f32 = (cy * sr * cp - sy * cr * sp) as f32;
+
+    Quaternion::<f32>::new(w, x, y, z)
 }
 
 impl Component for Transform {

@@ -16,6 +16,7 @@ const MAX_Y: f32 = 60.0;
 
 pub struct PlayerMovement {
     pitch: f32,
+    yaw: f32,
     // rotation_y: f32,
 }
 
@@ -23,6 +24,7 @@ impl PlayerMovement {
     pub fn new() -> Self {
         Self {
             pitch: 0.0,
+            yaw: 180.0,
             // rotation_y: 0.0,
         }
     }
@@ -51,48 +53,20 @@ impl PlayerMovement {
         transform: &mut Transform,
     ) {
         let (xpos, ypos) = (mouse_axis.0 as f32, mouse_axis.1 as f32);
-        // let sensitivity: f32 = 0.1;
-        // let yaw_offset = -xpos * sensitivity;
-        // let pitch_offset = ypos * sensitivity;
-        //
-        // let rotation = transform.left() * pitch_offset + Vector3::unit_y() * yaw_offset;
-        // transform.rotate(rotation);
-
-        // let euler_angles = transform.get_local_euler_angles();
-        // println!("euler_angles: {:#?}", euler_angles);
-
         let euler_angles = transform.get_local_euler_angles();
 
         println!("euler_angles: {:#?}", euler_angles);
 
-        let yaw = euler_angles.y + xpos * SENSITIVITY;
+        self.yaw -= xpos * SENSITIVITY;
 
-        self.pitch -= ypos * SENSITIVITY;
+        self.pitch += ypos * SENSITIVITY;
         self.pitch = clamp(self.pitch, MIN_Y, MAX_Y);
 
-        transform.rotation = Quaternion::from(Euler {
-            x: Deg(self.pitch),
-            y: Deg(yaw),
-            z: Deg(0.0),
-        });
+        println!("yaw: {:?}", self.yaw);
+
+        transform.set_rotation(self.pitch, self.yaw, 0.0);
     }
 }
-
-// if (axes == RotationAxes.MouseXAndY) {
-//     float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
-//
-//     rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
-//     rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
-//
-//     transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
-// } else if (axes == RotationAxes.MouseX) {
-//     transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivityX, 0);
-// } else {
-//     rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
-//     rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
-//
-//     transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
-// }
 
 impl<'a> System<'a> for PlayerMovement {
     type SystemData = (
@@ -106,7 +80,7 @@ impl<'a> System<'a> for PlayerMovement {
         // let camera_speed: f32 = 2.5 * deltaTime.as_fractional_secs() as f32;
 
         for (mut transform, _) in (&mut tranform_storage, &player_storage).join() {
-            // self.process_position(&input, transform);
+            self.process_position(&input, transform);
             self.process_rotation(&input.mouse_axis, &mut transform);
         }
     }
