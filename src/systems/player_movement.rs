@@ -57,7 +57,11 @@ impl PlayerMovement {
 
         println!("euler_angles: {:#?}", euler_angles);
 
-        self.yaw -= xpos * SENSITIVITY;
+        self.yaw = (self.yaw - xpos * SENSITIVITY) % 360.0;
+
+        if self.yaw < 0.0 {
+            self.yaw += 360.0;
+        }
 
         self.pitch += ypos * SENSITIVITY;
         self.pitch = clamp(self.pitch, MIN_Y, MAX_Y);
