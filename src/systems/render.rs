@@ -3,13 +3,13 @@ extern crate glutin;
 extern crate imgui;
 extern crate imgui_opengl_renderer;
 
-use specs::{ReadStorage, System, Join};
-use std::time::{Instant, Duration};
-use cgmath::{Vector3, Matrix4, vec3, Point3, Euler};
+use specs::{ReadStorage, System, Join, Read};
+use cgmath::{Vector3, Matrix4, vec3, Point3};
 use components::transform::Transform;
 use components::mesh_render::MeshRender;
 use components::camera::Camera;
 use window::Window;
+use time::Time;
 use self::glutin::GlContext;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -23,9 +23,6 @@ const CAMERA_UP: Vector3<f32> = Vector3 {
 };
 
 pub struct Render {
-    delta_time: Duration,
-    delta_time_seconds: f32,
-    last_frame: Instant,
     window: Rc<RefCell<Window>>,
     ui_renderer: Renderer,
     imgui: ImGui,
@@ -46,9 +43,6 @@ impl Render {
         };
 
         Self {
-            delta_time: Duration::default(),
-            delta_time_seconds: 0.0,
-            last_frame: Instant::now(),
             window,
             ui_renderer,
             imgui,
@@ -61,22 +55,18 @@ impl<'a> System<'a> for Render {
         ReadStorage<'a, Transform>,
         ReadStorage<'a, MeshRender>,
         ReadStorage<'a, Camera>,
+        Read<'a, Time>,
     );
 
     fn run(&mut self, data: Self::SystemData) {
-        let (tranform_storage, mesh_render_storage, camera_storage) = data;
+        let (tranform_storage, mesh_render_storage, camera_storage, time) = data;
+
+        let delta_time_in_seconds = time.get_delta_time_in_seconds();
 
         // yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector
         // pointing to the right so we initially rotate a bit to the left.
         let mut _yaw: f32 = -90.0;
         let mut _pitch: f32 = 0.0;
-
-        let now = Instant::now();
-        self.delta_time = now - self.last_frame;
-        self.delta_time_seconds =
-            self.delta_time.as_secs() as f32 +
-            self.delta_time.subsec_nanos() as f32 / 1_000_000_000.0;
-        self.last_frame = now;
 
         let camera_transform = get_camera_transform(&tranform_storage, &camera_storage);
 
@@ -89,7 +79,7 @@ impl<'a> System<'a> for Render {
                 &camera_transform,
                 &mut self.imgui,
                 &self.ui_renderer,
-                self.delta_time_seconds,
+                delta_time_in_seconds,
             );
         }
     }

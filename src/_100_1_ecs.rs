@@ -18,6 +18,7 @@ use voxel::voxel_mesh_builder::build_mesh;
 use config::{SCR_WIDTH, SCR_HEIGHT};
 use lifecycle::{Lifecycle, Event};
 use input::input::Input;
+use time::Time;
 use window::Window;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -32,6 +33,7 @@ fn run() -> Result<()> {
     let render_system = Render::new(Rc::clone(&window));
     let window_event_system = WindowEvent::new(Rc::clone(&window));
     let input = Input::new();
+    let time = Time::new();
     let material = Material::new();
     let projection: Matrix4<f32> = perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
     let mut event_loop = Lifecycle::new();
@@ -60,6 +62,7 @@ fn run() -> Result<()> {
     world.register::<Camera>();
     world.register::<Player>();
 
+    world.add_resource(time);
     world.add_resource(input);
 
     world.create_entity()
@@ -91,6 +94,11 @@ fn run() -> Result<()> {
             Event::FixedUpdate => {}
             Event::OnInput => {}
             Event::Update => {
+                {
+                    let mut time = world.write_resource::<Time>();
+                    (*time).update();
+                }
+
                 dispatcher.dispatch(&mut world.res);
 
                 if !window.borrow().running {
