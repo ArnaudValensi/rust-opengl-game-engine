@@ -41,8 +41,6 @@ impl Transform {
     pub fn forward(&self) -> Vector3<f32> {
         let forward = self.rotation * Vector3::unit_z();
 
-        println!("forward: {:#?}", forward);
-
         forward
     }
 

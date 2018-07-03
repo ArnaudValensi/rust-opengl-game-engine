@@ -14,7 +14,6 @@ const MAX_Y: f32 = 60.0;
 pub struct PlayerMovement {
     pitch: f32,
     yaw: f32,
-    // rotation_y: f32,
 }
 
 impl PlayerMovement {
@@ -22,7 +21,6 @@ impl PlayerMovement {
         Self {
             pitch: 0.0,
             yaw: 180.0,
-            // rotation_y: 0.0,
         }
     }
 
@@ -50,9 +48,6 @@ impl PlayerMovement {
         transform: &mut Transform,
     ) {
         let (xpos, ypos) = (mouse_axis.0 as f32, mouse_axis.1 as f32);
-        let euler_angles = transform.get_local_euler_angles();
-
-        println!("euler_angles: {:#?}", euler_angles);
 
         self.yaw = (self.yaw - xpos * SENSITIVITY) % 360.0;
 
@@ -62,8 +57,6 @@ impl PlayerMovement {
 
         self.pitch += ypos * SENSITIVITY;
         self.pitch = clamp(self.pitch, MIN_Y, MAX_Y);
-
-        println!("yaw: {:?}", self.yaw);
 
         transform.set_rotation(self.pitch, self.yaw, 0.0);
     }

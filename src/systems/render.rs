@@ -35,7 +35,6 @@ impl<'a> System<'a> for Render {
         let camera_transform = get_camera_transform(&tranform_storage, &camera_storage);
 
         for (mesh_transform, mesh_render) in (&tranform_storage, &mesh_render_storage).join() {
-            // println!("= transform, mesh_render");
             render_mesh(
                 &mesh_transform,
                 &mesh_render,
@@ -73,8 +72,6 @@ fn render_mesh(
 
         mesh_render.mesh.Draw();
     }
-
-    // gl_window.swap_buffers().unwrap();
 }
 
 // Only one camera is available.

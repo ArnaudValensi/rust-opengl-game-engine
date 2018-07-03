@@ -80,13 +80,8 @@ fn run() -> Result<()> {
         .with(MeshRender { material: material.clone(), mesh: chunk_mesh.clone() })
         .build();
 
-    // world.create_entity()
-    //     .with(Transform { position: Point3::new(0.0, 0.0, 0.0) })
-    //     .with(MeshRender { material, mesh: chunk_mesh })
-    //     .build();
-
     let mut dispatcher_builder = DispatcherBuilder::new();
-        // .with(render_system, "render_system", &[])
+
     dispatcher_builder.add_thread_local(window_event_system);
     dispatcher_builder.add_thread_local(PlayerMovement::new());
     dispatcher_builder.add_thread_local(render_system);

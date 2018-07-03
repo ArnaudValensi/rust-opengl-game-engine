@@ -12,7 +12,6 @@ use self::glutin::{
 
 pub struct Window {
     pub gl_window: GlWindow,
-    // pub input: Input,
     pub running: bool,
     pub events_loop: EventsLoop,
     cursor_locked: bool,
@@ -21,7 +20,6 @@ pub struct Window {
 impl Window {
     pub fn new(width: u32, height: u32) -> Window {
         let events_loop = EventsLoop::new();
-        // let input = Input::new();
         let window = WindowBuilder::new()
             .with_title("Hello, world!")
             .with_dimensions(width, height);
@@ -43,7 +41,6 @@ impl Window {
 
         Window {
             events_loop,
-            // input,
             gl_window,
             running: true,
             cursor_locked: true,
