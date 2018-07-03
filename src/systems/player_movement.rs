@@ -1,8 +1,5 @@
-// TODO: use quaternion in Transform
 // TODO: use delta time
 use specs::{WriteStorage, ReadStorage, System, Join, Read};
-use cgmath::{Vector3, Quaternion, Euler, Deg};
-use cgmath::prelude::*;
 use components::transform::Transform;
 use components::player::Player;
 use input::input::Input;
