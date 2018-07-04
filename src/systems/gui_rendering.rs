@@ -76,3 +76,22 @@ impl<'a> System<'a> for GuiRendering {
         self.ui_renderer.render(ui);
     }
 }
+
+// fn update_mouse(imgui: &mut ImGui, mouse_state: &mut MouseState) {
+//     let scale = imgui.display_framebuffer_scale();
+//     imgui.set_mouse_pos(
+//         mouse_state.pos.0 as f32 / scale.0,
+//         mouse_state.pos.1 as f32 / scale.1,
+//     );
+//     imgui.set_mouse_down(
+//         &[
+//             mouse_state.pressed.0,
+//             mouse_state.pressed.1,
+//             mouse_state.pressed.2,
+//             false,
+//             false,
+//         ],
+//     );
+//     imgui.set_mouse_wheel(mouse_state.wheel / scale.1);
+//     mouse_state.wheel = 0.0;
+// }
