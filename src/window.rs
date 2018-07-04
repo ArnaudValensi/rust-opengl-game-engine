@@ -14,7 +14,6 @@ pub struct Window {
     pub gl_window: GlWindow,
     pub running: bool,
     pub events_loop: EventsLoop,
-    cursor_locked: bool,
 }
 
 impl Window {
@@ -43,12 +42,7 @@ impl Window {
             events_loop,
             gl_window,
             running: true,
-            cursor_locked: true,
         }
-    }
-
-    pub fn set_cursor_locked(&mut self, lock: bool) {
-        self.cursor_locked = lock;
     }
 
     pub fn center_mouse_cursor(gl_window: &GlWindow) {
@@ -58,8 +52,8 @@ impl Window {
         let posy = window_size.1 as i32 / hidpi_factor / 2;
 
         gl_window
-        .set_cursor_position(posx, posy)
-        .ok()
-        .expect("could not center mouse cursor");
+            .set_cursor_position(posx, posy)
+            .ok()
+            .expect("could not center mouse cursor");
     }
 }

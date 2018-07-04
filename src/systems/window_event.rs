@@ -59,18 +59,12 @@ impl WindowEvent {
                             _ => ()
                         }
                     }
-                    // TODO: Add in input a way to free the mouse
                     GlutinWindowEvent::CursorMoved { position, .. } => {
                         let window_size = gl_window.get_inner_size().unwrap();
                         let window_center_x = window_size.0 as f64 / 2.0;
                         let window_center_y = window_size.1 as f64 / 2.0;
 
-                        input_ctx.mouse_axis = (
-                            position.0 - window_center_x,
-                            position.1 - window_center_y
-                        );
-
-                        Window::center_mouse_cursor(gl_window);
+                        input_ctx.set_mouse_position(position, (window_center_x, window_center_y));
                     }
                     _ => ()
                 },

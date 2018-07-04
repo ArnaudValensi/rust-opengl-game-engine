@@ -13,6 +13,7 @@ use systems::gui_rendering::GuiRendering;
 use systems::swap_frame_buffer::SwapFrameBuffer;
 use systems::window_event::WindowEvent;
 use systems::player_movement::PlayerMovement;
+use systems::mouse_control::MouseControl;
 use voxel::chunk::Chunk;
 use mesh::Mesh;
 use material::Material;
@@ -35,6 +36,7 @@ fn run() -> Result<()> {
     let render_system = Render::new();
     let swap_frame_buffer_system = SwapFrameBuffer::new(Rc::clone(&window));
     let window_event_system = WindowEvent::new(Rc::clone(&window));
+    let mouse_control_system = MouseControl::new(Rc::clone(&window));
     let gui_rendering_system = GuiRendering::new(Rc::clone(&window));
     let input = Input::new();
     let time = Time::new();
@@ -83,6 +85,7 @@ fn run() -> Result<()> {
     let mut dispatcher_builder = DispatcherBuilder::new();
 
     dispatcher_builder.add_thread_local(window_event_system);
+    dispatcher_builder.add_thread_local(mouse_control_system);
     dispatcher_builder.add_thread_local(PlayerMovement::new());
     dispatcher_builder.add_thread_local(render_system);
     dispatcher_builder.add_thread_local(gui_rendering_system);

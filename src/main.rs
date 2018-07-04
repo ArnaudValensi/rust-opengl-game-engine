@@ -1,11 +1,5 @@
 extern crate glbs;
 
-use glbs::main_1_1_2;
-use glbs::main_1_2_1;
-use glbs::main_1_2_2;
-use glbs::main_1_7_2;
-use glbs::main_1_7_3;
-use glbs::main_10_1_1;
 use glbs::main_100_1;
 
 fn main() {
@@ -17,12 +11,6 @@ fn main() {
     let tutorial_id = &args[1];
 
     match tutorial_id.as_str() {
-        "1_1_2" => main_1_1_2(),
-        "1_2_1" => main_1_2_1(),
-        "1_2_2" => main_1_2_2(),
-        "1_7_2" => main_1_7_2(),
-        "1_7_3" => main_1_7_3(),
-        "10_1_1" => main_10_1_1(),
         "100_1" => main_100_1(),
         _     => println!("Unknown tutorial id")
     }

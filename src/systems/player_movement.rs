@@ -44,7 +44,7 @@ impl PlayerMovement {
 
     fn process_rotation(
         &mut self,
-        mouse_axis: &(f64, f64),
+        mouse_axis: (f64, f64),
         transform: &mut Transform,
     ) {
         let (xpos, ypos) = (mouse_axis.0 as f32, mouse_axis.1 as f32);
@@ -75,7 +75,7 @@ impl<'a> System<'a> for PlayerMovement {
 
         for (mut transform, _) in (&mut tranform_storage, &player_storage).join() {
             self.process_position(&input, transform);
-            self.process_rotation(&input.mouse_axis, &mut transform);
+            self.process_rotation(input.get_mouse_axis(), &mut transform);
         }
     }
 }
