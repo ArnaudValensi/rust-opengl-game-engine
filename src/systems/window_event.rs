@@ -10,7 +10,6 @@ use self::glutin::{
     Event,
     WindowEvent as GlutinWindowEvent,
     GlContext,
-    ElementState,
     KeyboardInput,
     MouseButton,
 };

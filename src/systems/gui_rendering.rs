@@ -64,18 +64,20 @@ impl<'a> System<'a> for GuiRendering {
 
         let ui = self.imgui.frame(size_points, size_pixels, delta_time_in_seconds);
 
-        ui.window(im_str!("Hello world"))
-            .size((600.0, 200.0), ImGuiCond::FirstUseEver)
-            .build(|| {
-                ui.text(im_str!("Hello world!"));
-                ui.separator();
-                let mouse_pos = ui.imgui().mouse_pos();
-                ui.text(im_str!(
-                    "Mouse Position: ({:.1},{:.1})",
-                    mouse_pos.0,
-                    mouse_pos.1
-                ));
-            });
+        let mut open = true;
+        ui.show_demo_window(&mut open);
+        // ui.window(im_str!("Hello world"))
+        //     .size((600.0, 200.0), ImGuiCond::FirstUseEver)
+        //     .build(|| {
+        //         ui.text(im_str!("Hello world!"));
+        //         ui.separator();
+        //         let mouse_pos = ui.imgui().mouse_pos();
+        //         ui.text(im_str!(
+        //             "Mouse Position: ({:.1},{:.1})",
+        //             mouse_pos.0,
+        //             mouse_pos.1
+        //         ));
+        //     });
 
         self.ui_renderer.render(ui);
     }
