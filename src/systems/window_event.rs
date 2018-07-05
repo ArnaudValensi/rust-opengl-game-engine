@@ -12,7 +12,9 @@ use self::glutin::{
     GlContext,
     ElementState,
     KeyboardInput,
+    MouseButton,
 };
+use self::glutin::ElementState::{Pressed, Released};
 
 // NOTE: WindowEvent must be run on the main thread.
 pub struct WindowEvent {
@@ -48,10 +50,10 @@ impl WindowEvent {
                                 let normalized_key = normalize_key(key);
 
                                 match state {
-                                    ElementState::Pressed => {
+                                    Pressed => {
                                         input_ctx.set_key_down(normalized_key);
                                     }
-                                    ElementState::Released => {
+                                    Released => {
                                         input_ctx.set_key_up(normalized_key);
                                     }
                                 }
@@ -65,6 +67,14 @@ impl WindowEvent {
                         let window_center_y = window_size.1 as f64 / 2.0;
 
                         input_ctx.set_mouse_position(position, (window_center_x, window_center_y));
+                    }
+                    GlutinWindowEvent::MouseInput { state, button, .. } => {
+                        match button {
+                            MouseButton::Left => input_ctx.set_mouse_left(state == Pressed),
+                            MouseButton::Right => input_ctx.set_mouse_right(state == Pressed),
+                            MouseButton::Middle => input_ctx.set_mouse_middle(state == Pressed),
+                            _ => {}
+                        }
                     }
                     _ => ()
                 },

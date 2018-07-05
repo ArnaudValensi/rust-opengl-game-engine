@@ -6,6 +6,7 @@ extern crate imgui_opengl_renderer;
 use specs::{System, Read};
 use window::Window;
 use time::Time;
+use input::input::Input;
 use self::glutin::GlContext;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -43,10 +44,11 @@ impl GuiRendering {
 impl<'a> System<'a> for GuiRendering {
     type SystemData = (
         Read<'a, Time>,
+        Read<'a, Input>,
     );
 
     fn run(&mut self, data: Self::SystemData) {
-        let (time,) = data;
+        let (time, input) = data;
 
         let delta_time_in_seconds = time.get_delta_time_in_seconds();
         let gl_window = &self.window.borrow().gl_window;
@@ -57,6 +59,8 @@ impl<'a> System<'a> for GuiRendering {
             (size_pixels.0 as f32 / hdipi) as u32,
             (size_pixels.1 as f32 / hdipi) as u32,
         );
+
+        update_mouse(&mut self.imgui, &input);
 
         let ui = self.imgui.frame(size_points, size_pixels, delta_time_in_seconds);
 
@@ -77,21 +81,25 @@ impl<'a> System<'a> for GuiRendering {
     }
 }
 
-// fn update_mouse(imgui: &mut ImGui, mouse_state: &mut MouseState) {
-//     let scale = imgui.display_framebuffer_scale();
-//     imgui.set_mouse_pos(
-//         mouse_state.pos.0 as f32 / scale.0,
-//         mouse_state.pos.1 as f32 / scale.1,
-//     );
-//     imgui.set_mouse_down(
-//         &[
-//             mouse_state.pressed.0,
-//             mouse_state.pressed.1,
-//             mouse_state.pressed.2,
-//             false,
-//             false,
-//         ],
-//     );
-//     imgui.set_mouse_wheel(mouse_state.wheel / scale.1);
-//     mouse_state.wheel = 0.0;
-// }
+fn update_mouse(imgui: &mut ImGui, input: &Input) {
+    let mouse_position = input.get_mouse_position();
+    let scale = imgui.display_framebuffer_scale();
+
+    imgui.set_mouse_pos(
+        mouse_position.0 as f32 / scale.0,
+        mouse_position.1 as f32 / scale.1,
+    );
+
+    imgui.set_mouse_down(
+        &[
+            input.get_mouse_left(),
+            input.get_mouse_right(),
+            input.get_mouse_middle(),
+            false,
+            false,
+        ],
+    );
+
+    // imgui.set_mouse_wheel(mouse_state.wheel / scale.1);
+    // mouse_state.wheel = 0.0;
+}
