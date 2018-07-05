@@ -12,8 +12,8 @@ floating-duration = "0.1.2"
 dot_vox = "1.0.0"
 error-chain = "0.12.0"
 specs = "0.11"
-imgui-opengl-renderer = "0.2.2"
-imgui = "^0.0"
+imgui-opengl-renderer = { path = "../rust-imgui-opengl-renderer" }
+imgui = "0.0.19-pre"
 
-# [patch.crates-io]
-# imgui = { git = "https://github.com/Gekkio/imgui-rs.git" }
+[patch.crates-io]
+imgui = { git = "https://github.com/Gekkio/imgui-rs.git" }
