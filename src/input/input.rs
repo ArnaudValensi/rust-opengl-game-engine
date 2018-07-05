@@ -10,6 +10,7 @@ pub struct Input {
     mouse_position: (f64, f64),
     // NOTE: Only set if cursor is locked.
     mouse_axis: (f64, f64),
+    mouse_wheel: f32,
     mouse_left_pressed: bool,
     mouse_middle_pressed: bool,
     mouse_right_pressed: bool,
@@ -28,6 +29,7 @@ impl Input {
             cursor_locked: true,
             mouse_position: (0.0, 0.0),
             mouse_axis: (0.0, 0.0),
+            mouse_wheel: 0.0,
             mouse_left_pressed: false,
             mouse_middle_pressed: false,
             mouse_right_pressed: false,
@@ -62,6 +64,7 @@ impl Input {
         self.keys_down_this_tick.clear();
         self.keys_up_this_tick.clear();
         self.mouse_axis = (0.0, 0.0);
+        self.mouse_wheel = 0.0;
     }
 
     pub fn set_mouse_position(&mut self, mouse_position: (f64, f64), screen_center: (f64, f64)) {
@@ -81,6 +84,14 @@ impl Input {
 
     pub fn get_mouse_axis(&self) -> (f64, f64) {
         self.mouse_axis
+    }
+
+    pub fn set_mouse_wheel(&mut self, mouse_wheel: f32) {
+        self.mouse_wheel = mouse_wheel;
+    }
+
+    pub fn get_mouse_wheel(&self) -> f32 {
+        self.mouse_wheel
     }
 
     pub fn toggle_cursor_lock(&mut self) {

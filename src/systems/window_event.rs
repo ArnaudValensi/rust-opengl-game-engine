@@ -12,6 +12,8 @@ use self::glutin::{
     GlContext,
     KeyboardInput,
     MouseButton,
+    MouseScrollDelta,
+    TouchPhase,
 };
 use self::glutin::ElementState::{Pressed, Released};
 
@@ -75,6 +77,16 @@ impl WindowEvent {
                             _ => {}
                         }
                     }
+                    GlutinWindowEvent::MouseWheel {
+                        delta: MouseScrollDelta::LineDelta(_, y),
+                        phase: TouchPhase::Moved,
+                        ..
+                    } |
+                    GlutinWindowEvent::MouseWheel {
+                        delta: MouseScrollDelta::PixelDelta(_, y),
+                        phase: TouchPhase::Moved,
+                        ..
+                    } => input_ctx.set_mouse_wheel(y),
                     _ => ()
                 },
                 _ => ()

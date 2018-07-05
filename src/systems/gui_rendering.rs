@@ -102,6 +102,5 @@ fn update_mouse(imgui: &mut ImGui, input: &Input) {
         ],
     );
 
-    // imgui.set_mouse_wheel(mouse_state.wheel / scale.1);
-    // mouse_state.wheel = 0.0;
+    imgui.set_mouse_wheel(input.get_mouse_wheel() / scale.1 * 0.05);
 }
