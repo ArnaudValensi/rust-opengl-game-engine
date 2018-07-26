@@ -76,18 +76,18 @@ fn run() -> Result<()> {
     world.add_resource(input);
 
     world.create_entity()
-        .with(Transform::new(Point3::new(0.0, 0.0, 3.0)))
+        .with(Transform::new(Point3::new(0.0, 0.0, 3.0), "Camera"))
         .with(Camera)
         .with(Player)
         .build();
 
     world.create_entity()
-        .with(Transform::new(Point3::new(0.0, 0.0, 0.0)))
+        .with(Transform::new(Point3::new(0.0, 0.0, 0.0), "Chunk0"))
         .with(MeshRender { material: material.clone(), mesh: chunk_mesh.clone() })
         .build();
 
     world.create_entity()
-        .with(Transform::new(Point3::new(0.0, 0.0, -1.0)))
+        .with(Transform::new(Point3::new(0.0, 0.0, -1.0), "Chunk1"))
         .with(MeshRender { material: material.clone(), mesh: chunk_mesh2.clone() })
         .build();
 
