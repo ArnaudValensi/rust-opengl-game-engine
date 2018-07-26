@@ -52,14 +52,18 @@ fn run() -> Result<()> {
     }
 
     let mut chunk = Chunk::new(2, 3, 4);
+    let mut chunk2 = Chunk::new(2, 2, 2);
 
     chunk.set_voxel(0, 0, 0, 1)?;
     chunk.set_voxel(1, 0, 0, 1)?;
+    chunk2.set_voxel(0, 0, 0, 1)?;
 
     println!("chunk: {:#?}", chunk);
 
     let chunk_mesh_data = build_mesh(&chunk);
     let chunk_mesh = Mesh::new(chunk_mesh_data, Vec::default());
+    let chunk_mesh_data2 = build_mesh(&chunk2);
+    let chunk_mesh2 = Mesh::new(chunk_mesh_data2, Vec::default());
 
     let mut world = World::new();
 
@@ -80,6 +84,11 @@ fn run() -> Result<()> {
     world.create_entity()
         .with(Transform::new(Point3::new(0.0, 0.0, 0.0)))
         .with(MeshRender { material: material.clone(), mesh: chunk_mesh.clone() })
+        .build();
+
+    world.create_entity()
+        .with(Transform::new(Point3::new(0.0, 0.0, -1.0)))
+        .with(MeshRender { material: material.clone(), mesh: chunk_mesh2.clone() })
         .build();
 
     let mut dispatcher_builder = DispatcherBuilder::new();

@@ -34,6 +34,8 @@ impl<'a> System<'a> for Render {
         let (tranform_storage, mesh_render_storage, camera_storage) = data;
         let camera_transform = get_camera_transform(&tranform_storage, &camera_storage);
 
+        clear_screen();
+
         for (mesh_transform, mesh_render) in (&tranform_storage, &mesh_render_storage).join() {
             render_mesh(
                 &mesh_transform,
@@ -41,6 +43,13 @@ impl<'a> System<'a> for Render {
                 &camera_transform,
             );
         }
+    }
+}
+
+fn clear_screen() {
+    unsafe {
+        gl::ClearColor(0.2, 0.3, 0.3, 1.0);
+        gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
     }
 }
 
@@ -53,12 +62,9 @@ fn render_mesh(
     let camera_forward = camera_tranform.forward();
 
     unsafe {
-        gl::ClearColor(0.2, 0.3, 0.3, 1.0);
-        gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
-
+        // TODO: batch entities with the same material
         mesh_render.material.bind();
 
-        // camera/view transformation
         let view: Matrix4<f32> = Matrix4::look_at(
             camera_pos,
             camera_pos + camera_forward,
@@ -74,7 +80,7 @@ fn render_mesh(
     }
 }
 
-// Only one camera is available.
+// NOTE: Only one camera is available.
 fn get_camera_transform(
     tranform_storage: &ReadStorage<Transform>,
     camera_storage: &ReadStorage<Camera>
