@@ -67,8 +67,8 @@ impl<'a> System<'a> for GuiRendering {
         let ui = self.imgui.frame(size_points, size_pixels, delta_time_in_seconds);
 
         let mut open = true;
-        // ui.show_demo_window(&mut open);
-        ui.show_metrics_window(&mut open);
+        ui.show_demo_window(&mut open);
+        // ui.show_metrics_window(&mut open);
         // ui.show_default_style_editor();
         // ui.window(im_str!("Hello world"))
         //     .size((600.0, 200.0), ImGuiCond::FirstUseEver)
@@ -83,23 +83,29 @@ impl<'a> System<'a> for GuiRendering {
         //         ));
         //     });
 
-        // ui.window(im_str!("Hello world"))
-        //     .size((200.0, 600.0), ImGuiCond::FirstUseEver)
-        //     .build(|| {
-        //         ui.text(im_str!("Hello world!"));
-        //         ui.separator();
-        //         let mouse_pos = ui.imgui().mouse_pos();
-        //         ui.text(im_str!(
-        //             "Mouse Position: ({:.1},{:.1})",
-        //             mouse_pos.0,
-        //             mouse_pos.1
-        //         ));
-        //     });
+        ui.window(im_str!("Inspector"))
+        .size((200.0, 600.0), ImGuiCond::FirstUseEver)
+        .build(|| {
+            for (transform,) in (&tranform_storage,).join() {
+                ui.text(im_str!("{}", transform.name));
+            }
 
-        println!("====");
-        for (trasform,) in (&tranform_storage,).join() {
-            println!("trasform: {:#?}", trasform);
-        }
+            let mut slected_item: i32 = 0;
+            ui.combo(
+                im_str!("combo"),
+                &mut slected_item,
+                &[
+                    im_str!("aaaa"),
+                    im_str!("bbbb"),
+                    im_str!("cccc"),
+                    im_str!("dddd"),
+                    im_str!("eeee"),
+                ],
+                -1,
+            );
+
+            println!("slected_item: {:#?}", slected_item);
+        });
 
         self.ui_renderer.render(ui);
     }
