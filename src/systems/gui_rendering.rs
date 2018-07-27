@@ -3,21 +3,22 @@ extern crate glutin;
 extern crate imgui;
 extern crate imgui_opengl_renderer;
 
-use specs::{System, Read, ReadStorage, Join};
-use window::Window;
-use time::Time;
-use input::input::Input;
-use components::transform::Transform;
 use self::glutin::GlContext;
-use std::rc::Rc;
-use std::cell::RefCell;
 use self::imgui::*;
 use self::imgui_opengl_renderer::Renderer;
+use components::transform::Transform;
+use input::input::Input;
+use specs::{Join, Read, ReadStorage, System};
+use std::cell::RefCell;
+use std::rc::Rc;
+use time::Time;
+use window::Window;
 
 pub struct GuiRendering {
     window: Rc<RefCell<Window>>,
     ui_renderer: Renderer,
     imgui: ImGui,
+    selected_entity_index: i32,
 }
 
 impl GuiRendering {
@@ -27,9 +28,9 @@ impl GuiRendering {
             let mut imgui = imgui::ImGui::init();
 
             imgui.set_ini_filename(None);
-            let ui_renderer = imgui_opengl_renderer::Renderer::new(
-                &mut imgui, |symbol| gl_window.get_proc_address(symbol) as _
-            );
+            let ui_renderer = imgui_opengl_renderer::Renderer::new(&mut imgui, |symbol| {
+                gl_window.get_proc_address(symbol) as _
+            });
 
             (imgui, ui_renderer)
         };
@@ -38,16 +39,13 @@ impl GuiRendering {
             window,
             ui_renderer,
             imgui,
+            selected_entity_index: 0,
         }
     }
 }
 
 impl<'a> System<'a> for GuiRendering {
-    type SystemData = (
-        Read<'a, Time>,
-        Read<'a, Input>,
-        ReadStorage<'a, Transform>,
-    );
+    type SystemData = (Read<'a, Time>, Read<'a, Input>, ReadStorage<'a, Transform>);
 
     fn run(&mut self, data: Self::SystemData) {
         let (time, input, tranform_storage) = data;
@@ -64,10 +62,12 @@ impl<'a> System<'a> for GuiRendering {
 
         update_mouse(&mut self.imgui, &input);
 
-        let ui = self.imgui.frame(size_points, size_pixels, delta_time_in_seconds);
+        let ui = self
+            .imgui
+            .frame(size_points, size_pixels, delta_time_in_seconds);
 
         let mut open = true;
-        ui.show_demo_window(&mut open);
+        // ui.show_demo_window(&mut open);
         // ui.show_metrics_window(&mut open);
         // ui.show_default_style_editor();
         // ui.window(im_str!("Hello world"))
@@ -83,29 +83,24 @@ impl<'a> System<'a> for GuiRendering {
         //         ));
         //     });
 
+        let selected_entity_index = &mut self.selected_entity_index;
         ui.window(im_str!("Inspector"))
-        .size((200.0, 600.0), ImGuiCond::FirstUseEver)
-        .build(|| {
-            for (transform,) in (&tranform_storage,).join() {
-                ui.text(im_str!("{}", transform.name));
-            }
+            .size((200.0, 600.0), ImGuiCond::FirstUseEver)
+            .build(|| {
+                let mut tranform_names: Vec<ImString> = Vec::new();
+                for (transform,) in (&tranform_storage,).join() {
+                    tranform_names.push(ImString::new(transform.name.clone()));
+                }
 
-            let mut slected_item: i32 = 0;
-            ui.combo(
-                im_str!("combo"),
-                &mut slected_item,
-                &[
-                    im_str!("aaaa"),
-                    im_str!("bbbb"),
-                    im_str!("cccc"),
-                    im_str!("dddd"),
-                    im_str!("eeee"),
-                ],
-                -1,
-            );
+                let tranform_names: Vec<&ImStr> = tranform_names.iter().map(|s| s.as_ref()).collect();
 
-            println!("slected_item: {:#?}", slected_item);
-        });
+                ui.combo(
+                    im_str!("Entity"),
+                    selected_entity_index,
+                    &tranform_names[..],
+                    -1,
+                );
+            });
 
         self.ui_renderer.render(ui);
     }
@@ -120,15 +115,13 @@ fn update_mouse(imgui: &mut ImGui, input: &Input) {
         mouse_position.1 as f32 / scale.1,
     );
 
-    imgui.set_mouse_down(
-        &[
-            input.get_mouse_left(),
-            input.get_mouse_right(),
-            input.get_mouse_middle(),
-            false,
-            false,
-        ],
-    );
+    imgui.set_mouse_down(&[
+        input.get_mouse_left(),
+        input.get_mouse_right(),
+        input.get_mouse_middle(),
+        false,
+        false,
+    ]);
 
     imgui.set_mouse_wheel(input.get_mouse_wheel() / scale.1 * 0.05);
 }
