@@ -13,6 +13,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use time::Time;
 use window::Window;
+use cgmath::{Vector3};
 
 pub struct GuiRendering {
     window: Rc<RefCell<Window>>,
@@ -39,7 +40,7 @@ impl GuiRendering {
             window,
             ui_renderer,
             imgui,
-            selected_entity_index: 0,
+            selected_entity_index: -1,
         }
     }
 }
@@ -66,7 +67,7 @@ impl<'a> System<'a> for GuiRendering {
             .imgui
             .frame(size_points, size_pixels, delta_time_in_seconds);
 
-        let mut open = true;
+        // let mut open = true;
         // ui.show_demo_window(&mut open);
         // ui.show_metrics_window(&mut open);
         // ui.show_default_style_editor();
@@ -85,9 +86,10 @@ impl<'a> System<'a> for GuiRendering {
 
         let selected_entity_index = &mut self.selected_entity_index;
         ui.window(im_str!("Inspector"))
-            .size((200.0, 600.0), ImGuiCond::FirstUseEver)
+            .size((370.0, 600.0), ImGuiCond::FirstUseEver)
             .build(|| {
                 let mut tranform_names: Vec<ImString> = Vec::new();
+
                 for (transform,) in (&tranform_storage,).join() {
                     tranform_names.push(ImString::new(transform.name.clone()));
                 }
@@ -100,6 +102,29 @@ impl<'a> System<'a> for GuiRendering {
                     &tranform_names[..],
                     -1,
                 );
+
+                if *selected_entity_index != -1 {
+                    let selected_transform = (&tranform_storage,)
+                        .join()
+                        .nth(*selected_entity_index as usize)
+                        .unwrap()
+                        .0;
+
+                    let mut position: [f32; 3] = [
+                        selected_transform.position.x,
+                        selected_transform.position.y,
+                        selected_transform.position.z,
+                    ];
+                    let rotation_vector: Vector3<f32> = selected_transform.to_euler_angles();
+                    let mut rotation: [f32; 3] = [
+                        rotation_vector.x,
+                        rotation_vector.y,
+                        rotation_vector.z,
+                    ];
+
+                    ui.input_float3(im_str!("Position"), &mut position).build();
+                    ui.input_float3(im_str!("Rotation"), &mut rotation).build();
+                }
             });
 
         self.ui_renderer.render(ui);

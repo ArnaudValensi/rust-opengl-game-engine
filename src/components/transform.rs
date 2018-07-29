@@ -4,7 +4,7 @@
 // - up
 
 use specs::{Component, VecStorage};
-use cgmath::{Point3, Vector3, Quaternion, Euler, Deg, Rad};
+use cgmath::{Point3, Vector3, Quaternion, Euler};
 use cgmath::prelude::*;
 use std::f32::consts::PI;
 use std::f32;
@@ -57,25 +57,6 @@ impl Transform {
         let down = -Vector3::unit_y();
 
         self.forward().cross(down).normalize()
-    }
-
-    pub fn rotate(&mut self, rotation: Vector3<f32>) {
-        println!("rotation: {:#?}", rotation);
-        self.rotation = (Quaternion::from(Euler {
-            x: Deg(rotation.x),
-            y: Deg(rotation.y),
-            z: Deg(rotation.z),
-        }) * self.rotation).normalize();
-    }
-
-    pub fn get_local_euler_angles(&self) -> Vector3<f32> {
-        let euler: Euler<Rad<f32>> = Euler::from(self.rotation);
-
-        Vector3 {
-            x: Deg::from(euler.x).0,
-            y: Deg::from(euler.y).0,
-            z: Deg::from(euler.z).0,
-        }
     }
 
     // NOTE: Inspired from:
