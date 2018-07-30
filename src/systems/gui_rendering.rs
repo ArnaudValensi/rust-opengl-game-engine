@@ -86,7 +86,7 @@ impl<'a> System<'a> for GuiRendering {
 
         let selected_entity_index = &mut self.selected_entity_index;
         ui.window(im_str!("Inspector"))
-            .size((370.0, 600.0), ImGuiCond::FirstUseEver)
+            .size((370.0, 100.0), ImGuiCond::FirstUseEver)
             .build(|| {
                 let mut tranform_names: Vec<ImString> = Vec::new();
 
