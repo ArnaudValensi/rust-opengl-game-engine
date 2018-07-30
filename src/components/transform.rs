@@ -4,7 +4,7 @@
 // - up
 
 use specs::{Component, VecStorage};
-use cgmath::{Point3, Vector3, Quaternion, Euler};
+use cgmath::{Point3, Vector3, Quaternion};
 use cgmath::prelude::*;
 use std::f32::consts::PI;
 use std::f32;
@@ -26,18 +26,11 @@ impl Transform {
         let forward = -Vector3::unit_z();
         let rotation = Quaternion::look_at(forward, up);
 
-        println!("= rotation: {:?}", rotation);
-        println!("= rotation: {:#?}", Euler::from(rotation));
-
-        let t = Transform {
+        Transform {
             name,
             position,
             rotation,
-        };
-
-        println!("= forward: {:#?}", t.forward());
-
-        t
+        }
     }
 
     pub fn forward(&self) -> Vector3<f32> {
