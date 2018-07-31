@@ -23,6 +23,7 @@ pub mod config;
 pub mod lifecycle;
 pub mod math;
 pub mod time;
+pub mod tree;
 
 mod _100_1_ecs;
 pub use self::_100_1_ecs::*;
