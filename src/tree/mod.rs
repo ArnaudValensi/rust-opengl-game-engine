@@ -1,4 +1,4 @@
-use std::fmt;
+use std::{fmt, mem, cmp};
 use std::ops::{Index, IndexMut};
 
 #[derive(Debug, Copy, Clone)]
@@ -6,44 +6,28 @@ pub struct NodeId {
     index: usize,
 }
 
-// |---|
-// | A |
-// |---|
-//
-// |---|  |---|
-// | B |  | C |
-// |---|  |---|
 impl NodeId {
-    // unlink
-
-    // self.parent = parent
-
-    // if self.parent.first_child != None {
-    //   self.parent.first_child.next_sibling = self;
-    //   self.previous_sibling = self.parent.first_child;
-    // }
-
-    // if self.parent.first_child != None && self.parent.first_child == self.parent.last_child { self.parent.first_child = self; self.parent.last_child = self; }
-    // else self.parent.last_child = self;
-
-    // self.previous_sibling = parent.last_child
-    pub fn set_parent<T>(&self, parent_id: NodeId, tree: &mut Tree<T>) {
-        // let self_node = {
-        //     tree.get_mut(*self).unwrap()
-        // };
-        //
-        // // TODO: remove links
-        //
-        // let parent_node = tree.get(parent_id).unwrap();
-        //
-        // self_node.parent = Some(parent_id);
-        //
-        // if let Some(parent_first_child_id) = parent_node.first_child {
-        //     let mut parent_first_child = tree.get_mut(parent_first_child_id).unwrap();
-        //
-        //     parent_first_child.next_sibling = Some(*self);
-        //     self_node.previous_sibling = Some(parent_first_child_id);
-        // }
+    pub fn add_child<T>(self, new_child: NodeId, tree: &mut Tree<T>) {
+        new_child.detach(tree);
+        let last_child_opt;
+        {
+            let (self_borrow, new_child_borrow) =
+                tree
+                    .nodes
+                    .get_pair_mut(self.index, new_child.index, "Can not append a node to itself");
+            new_child_borrow.parent = Some(self);
+            last_child_opt = mem::replace(&mut self_borrow.last_child, Some(new_child));
+            if let Some(last_child) = last_child_opt {
+                new_child_borrow.previous_sibling = Some(last_child);
+            } else {
+                debug_assert!(self_borrow.first_child.is_none());
+                self_borrow.first_child = Some(new_child);
+            }
+        }
+        if let Some(last_child) = last_child_opt {
+            debug_assert!(tree[last_child].next_sibling.is_none());
+            tree[last_child].next_sibling = Some(new_child);
+        }
     }
 
     pub fn detach<T>(self, tree: &mut Tree<T>) {
@@ -113,6 +97,7 @@ impl<T> Node<T> {
     }
 }
 
+// TODO: Change name "Tree" to "Pool"?
 #[derive(Debug)]
 pub struct Tree<T> {
     nodes: Vec<Node<T>>,
@@ -151,6 +136,25 @@ impl<T> Tree<T> {
     }
 }
 
+trait GetPairMut<T> {
+    /// Get mutable references to two distinct nodes. Panics if the two given IDs are the same.
+    fn get_pair_mut(&mut self, a: usize, b: usize, same_index_error_message: &'static str) -> (&mut T, &mut T);
+}
+
+impl<T> GetPairMut<T> for Vec<T> {
+    fn get_pair_mut(&mut self, a: usize, b: usize, same_index_error_message: &'static str) -> (&mut T, &mut T) {
+        if a == b {
+            panic!(same_index_error_message)
+        }
+        let (xs, ys) = self.split_at_mut(cmp::max(a, b));
+        if a < b {
+            (&mut xs[a], &mut ys[0])
+        } else {
+            (&mut ys[0], &mut xs[b])
+        }
+    }
+}
+
 impl<T> Index<NodeId> for Tree<T> {
     type Output = Node<T>;
 
@@ -171,14 +175,15 @@ mod tests {
 
     #[test]
     fn create_tree() {
-         let mut tree = Tree::new();
+        let mut tree = Tree::new();
 
-         let root_id = tree.new_node(1);
-         let child1_id = tree.new_node(2);
-         let child2_id = tree.new_node(3);
+        let root_node = tree.new_node(1);
+        let child_node_1 = tree.new_node(2);
+        let child_node_2 = tree.new_node(3);
 
-         child1_id.set_parent(root_id, &mut tree);
-         child2_id.set_parent(root_id, &mut tree);
-        // assert!(!result2.is_err(), "it should not return an error");
+        root_node.add_child(child_node_1, &mut tree);
+        root_node.add_child(child_node_2, &mut tree);
+
+        assert!(tree.nodes.len() == 3, "it should have 3 nodes in the tree");
     }
 }
