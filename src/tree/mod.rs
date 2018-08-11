@@ -1,14 +1,72 @@
 use std::fmt;
+use std::ops::{Index, IndexMut};
 
 #[derive(Debug, Copy, Clone)]
 pub struct NodeId {
     index: usize,
 }
 
+// |---|
+// | A |
+// |---|
+//
+// |---|  |---|
+// | B |  | C |
+// |---|  |---|
 impl NodeId {
-    pub fn set_parent<T>(&self, parent_id: NodeId, tree: &Tree<T>) {
-        // let current_node =
-        // TODO
+    // unlink
+
+    // self.parent = parent
+
+    // if self.parent.first_child != None {
+    //   self.parent.first_child.next_sibling = self;
+    //   self.previous_sibling = self.parent.first_child;
+    // }
+
+    // if self.parent.first_child != None && self.parent.first_child == self.parent.last_child { self.parent.first_child = self; self.parent.last_child = self; }
+    // else self.parent.last_child = self;
+
+    // self.previous_sibling = parent.last_child
+    pub fn set_parent<T>(&self, parent_id: NodeId, tree: &mut Tree<T>) {
+        // let self_node = {
+        //     tree.get_mut(*self).unwrap()
+        // };
+        //
+        // // TODO: remove links
+        //
+        // let parent_node = tree.get(parent_id).unwrap();
+        //
+        // self_node.parent = Some(parent_id);
+        //
+        // if let Some(parent_first_child_id) = parent_node.first_child {
+        //     let mut parent_first_child = tree.get_mut(parent_first_child_id).unwrap();
+        //
+        //     parent_first_child.next_sibling = Some(*self);
+        //     self_node.previous_sibling = Some(parent_first_child_id);
+        // }
+    }
+
+    pub fn detach<T>(self, tree: &mut Tree<T>) {
+        let (parent, previous_sibling, next_sibling) = {
+            let node = &mut tree[self];
+            (
+                node.parent.take(),
+                node.previous_sibling.take(),
+                node.next_sibling.take(),
+            )
+        };
+
+        if let Some(next_sibling) = next_sibling {
+            tree[next_sibling].previous_sibling = previous_sibling;
+        } else if let Some(parent) = parent {
+            tree[parent].last_child = previous_sibling;
+        }
+
+        if let Some(previous_sibling) = previous_sibling {
+            tree[previous_sibling].next_sibling = next_sibling;
+        } else if let Some(parent) = parent {
+            tree[parent].first_child = next_sibling;
+        }
     }
 }
 
@@ -93,6 +151,20 @@ impl<T> Tree<T> {
     }
 }
 
+impl<T> Index<NodeId> for Tree<T> {
+    type Output = Node<T>;
+
+    fn index(&self, node_id: NodeId) -> &Node<T> {
+        &self.nodes[node_id.index]
+    }
+}
+
+impl<T> IndexMut<NodeId> for Tree<T> {
+    fn index_mut(&mut self, node_id: NodeId) -> &mut Node<T> {
+        &mut self.nodes[node_id.index]
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Tree;
@@ -105,8 +177,8 @@ mod tests {
          let child1_id = tree.new_node(2);
          let child2_id = tree.new_node(3);
 
-         child1_id.set_parent(root_id, &tree);
-         child2_id.set_parent(root_id, &tree);
+         child1_id.set_parent(root_id, &mut tree);
+         child2_id.set_parent(root_id, &mut tree);
         // assert!(!result2.is_err(), "it should not return an error");
     }
 }
