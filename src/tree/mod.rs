@@ -52,6 +52,14 @@ impl NodeId {
             tree[parent].first_child = next_sibling;
         }
     }
+
+    /// Return an iterator of references to this node’s children.
+    pub fn children<T>(self, tree: &Tree<T>) -> Children<T> {
+        Children {
+            tree,
+            node: tree[self].first_child,
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -169,6 +177,26 @@ impl<T> IndexMut<NodeId> for Tree<T> {
     }
 }
 
+/// An iterator of references to the children of a given node.
+pub struct Children<'a, T: 'a> {
+    tree: &'a Tree<T>,
+    node: Option<NodeId>,
+}
+
+impl<'a, T> Iterator for Children<'a, T> {
+    type Item = NodeId;
+
+    fn next(&mut self) -> Option<NodeId> {
+        match self.node.take() {
+            Some(node) => {
+                self.node = self.tree[node].next_sibling;
+                Some(node)
+            }
+            None => None,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Tree;
@@ -185,5 +213,41 @@ mod tests {
         root_node.add_child(child_node_2, &mut tree);
 
         assert!(tree.nodes.len() == 3, "it should have 3 nodes in the tree");
+    }
+
+    #[test]
+    fn iterate_over_children() {
+        let mut tree = Tree::new();
+
+        let root_node = tree.new_node(1);
+        let child_node_1 = tree.new_node(2);
+        let child_node_2 = tree.new_node(3);
+        let child_node_3 = tree.new_node(4);
+        let grandchild = tree.new_node(5);
+
+        root_node.add_child(child_node_1, &mut tree);
+        root_node.add_child(child_node_2, &mut tree);
+        root_node.add_child(child_node_3, &mut tree);
+        child_node_3.add_child(grandchild, &mut tree);
+
+        assert_eq!(
+            root_node.children(&tree).map(|node| tree[node].data).collect::<Vec<_>>(),
+            [2, 3, 4]
+        );
+
+        assert_eq!(
+            child_node_1.children(&tree).map(|node| tree[node].data).collect::<Vec<_>>(),
+            []
+        );
+
+        assert_eq!(
+            child_node_2.children(&tree).map(|node| tree[node].data).collect::<Vec<_>>(),
+            []
+        );
+
+        assert_eq!(
+            child_node_3.children(&tree).map(|node| tree[node].data).collect::<Vec<_>>(),
+            [5]
+        );
     }
 }
