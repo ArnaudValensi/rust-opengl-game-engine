@@ -22,6 +22,7 @@ use config::{SCR_WIDTH, SCR_HEIGHT};
 use lifecycle::{Lifecycle, Event};
 use input::input::Input;
 use time::Time;
+use scene_graph::SceneGraph;
 use window::Window;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -40,6 +41,7 @@ fn run() -> Result<()> {
     let gui_rendering_system = GuiRendering::new(Rc::clone(&window));
     let input = Input::new();
     let time = Time::new();
+    let scene_graph = SceneGraph::new();
     let material = Material::new();
     let projection: Matrix4<f32> = perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
     let mut event_loop = Lifecycle::new();
@@ -74,6 +76,7 @@ fn run() -> Result<()> {
 
     world.add_resource(time);
     world.add_resource(input);
+    world.add_resource(scene_graph);
 
     world.create_entity()
         .with(Transform::new(Point3::new(0.0, 0.0, 3.0), "Camera"))
