@@ -23,7 +23,7 @@ pub mod config;
 pub mod lifecycle;
 pub mod math;
 pub mod time;
-pub mod tree;
+pub mod vec_tree;
 pub mod scene_graph;
 
 mod _100_1_ecs;

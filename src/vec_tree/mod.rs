@@ -1,3 +1,10 @@
+//! # Vector based tree data structure
+//!
+//! This vector tree structure is using just a single `Vec` and numerical identifiers (indices in
+//! the vector) instead of reference counted pointers like. This means there is no `RefCell` and
+//! mutability is handled in a way much more idiomatic to Rust through unique (&mut) access to the
+//! vector. The tree can be sent or shared across threads like a `Vec`. This enables general
+//! multiprocessing support like parallel tree traversals.
 use std::{fmt, mem, cmp};
 use std::ops::{Index, IndexMut};
 
@@ -7,7 +14,7 @@ pub struct NodeId {
 }
 
 impl NodeId {
-    pub fn add_child<T>(self, new_child: NodeId, tree: &mut Tree<T>) {
+    pub fn add_child<T>(self, new_child: NodeId, tree: &mut VecTree<T>) {
         new_child.detach(tree);
         let last_child_opt;
         {
@@ -30,7 +37,7 @@ impl NodeId {
         }
     }
 
-    pub fn detach<T>(self, tree: &mut Tree<T>) {
+    pub fn detach<T>(self, tree: &mut VecTree<T>) {
         let (parent, previous_sibling, next_sibling) = {
             let node = &mut tree[self];
             (
@@ -54,7 +61,7 @@ impl NodeId {
     }
 
     /// Return an iterator of references to this node’s children.
-    pub fn children<T>(self, tree: &Tree<T>) -> Children<T> {
+    pub fn children<T>(self, tree: &VecTree<T>) -> Children<T> {
         Children {
             tree,
             node: tree[self].first_child,
@@ -105,15 +112,14 @@ impl<T> Node<T> {
     }
 }
 
-// TODO: Change name "Tree" to "Pool"?
 #[derive(Debug)]
-pub struct Tree<T> {
+pub struct VecTree<T> {
     nodes: Vec<Node<T>>,
 }
 
-impl<T> Tree<T> {
-    pub fn new() -> Tree<T> {
-        Tree { nodes: Vec::new() }
+impl<T> VecTree<T> {
+    pub fn new() -> VecTree<T> {
+        VecTree { nodes: Vec::new() }
     }
 
     pub fn new_node(&mut self, data: T) -> NodeId {
@@ -163,7 +169,7 @@ impl<T> GetPairMut<T> for Vec<T> {
     }
 }
 
-impl<T> Index<NodeId> for Tree<T> {
+impl<T> Index<NodeId> for VecTree<T> {
     type Output = Node<T>;
 
     fn index(&self, node_id: NodeId) -> &Node<T> {
@@ -171,7 +177,7 @@ impl<T> Index<NodeId> for Tree<T> {
     }
 }
 
-impl<T> IndexMut<NodeId> for Tree<T> {
+impl<T> IndexMut<NodeId> for VecTree<T> {
     fn index_mut(&mut self, node_id: NodeId) -> &mut Node<T> {
         &mut self.nodes[node_id.index]
     }
@@ -179,7 +185,7 @@ impl<T> IndexMut<NodeId> for Tree<T> {
 
 /// An iterator of references to the children of a given node.
 pub struct Children<'a, T: 'a> {
-    tree: &'a Tree<T>,
+    tree: &'a VecTree<T>,
     node: Option<NodeId>,
 }
 
@@ -199,11 +205,11 @@ impl<'a, T> Iterator for Children<'a, T> {
 
 #[cfg(test)]
 mod tests {
-    use super::Tree;
+    use super::VecTree;
 
     #[test]
     fn create_tree() {
-        let mut tree = Tree::new();
+        let mut tree = VecTree::new();
 
         let root_node = tree.new_node(1);
         let child_node_1 = tree.new_node(2);
@@ -217,7 +223,7 @@ mod tests {
 
     #[test]
     fn iterate_over_children() {
-        let mut tree = Tree::new();
+        let mut tree = VecTree::new();
 
         let root_node = tree.new_node(1);
         let child_node_1 = tree.new_node(2);
