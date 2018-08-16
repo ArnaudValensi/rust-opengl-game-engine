@@ -8,6 +8,7 @@ use components::transform::Transform;
 use components::mesh_render::MeshRender;
 use components::camera::Camera;
 use components::player::Player;
+use resources::active_camera::ActiveCamera;
 use systems::render::Render;
 use systems::gui_rendering::GuiRendering;
 use systems::swap_frame_buffer::SwapFrameBuffer;
@@ -78,11 +79,12 @@ fn run() -> Result<()> {
     world.add_resource(input);
     world.add_resource(scene_graph);
 
-    world.create_entity()
+    let camera_entity = world.create_entity()
         .with(Transform::new(Point3::new(0.0, 0.0, 3.0), "Camera"))
         .with(Camera)
         .with(Player)
         .build();
+    world.add_resource(ActiveCamera(camera_entity));
 
     world.create_entity()
         .with(Transform::new(Point3::new(0.0, 0.0, 0.0), "Chunk0"))

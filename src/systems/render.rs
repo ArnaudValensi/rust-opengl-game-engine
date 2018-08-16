@@ -3,11 +3,11 @@ extern crate glutin;
 extern crate imgui;
 extern crate imgui_opengl_renderer;
 
-use specs::{ReadStorage, System, Join};
+use specs::{ReadExpect, ReadStorage, System, Join};
 use cgmath::{Vector3, Matrix4, vec3, Point3};
+use resources::active_camera::ActiveCamera;
 use components::transform::Transform;
 use components::mesh_render::MeshRender;
-use components::camera::Camera;
 
 const CAMERA_UP: Vector3<f32> = Vector3 {
     x: 0.0,
@@ -25,14 +25,14 @@ impl Render {
 
 impl<'a> System<'a> for Render {
     type SystemData = (
+        ReadExpect<'a, ActiveCamera>,
         ReadStorage<'a, Transform>,
         ReadStorage<'a, MeshRender>,
-        ReadStorage<'a, Camera>,
     );
 
     fn run(&mut self, data: Self::SystemData) {
-        let (tranform_storage, mesh_render_storage, camera_storage) = data;
-        let camera_transform = get_camera_transform(&tranform_storage, &camera_storage);
+        let (active_camera, tranform_storage, mesh_render_storage) = data;
+        let camera_transform = tranform_storage.get(active_camera.0).unwrap();
 
         clear_screen();
 
@@ -78,18 +78,6 @@ fn render_mesh(
 
         mesh_render.mesh.Draw();
     }
-}
-
-// NOTE: Only one camera is available.
-fn get_camera_transform(
-    tranform_storage: &ReadStorage<Transform>,
-    camera_storage: &ReadStorage<Camera>
-) -> Transform {
-    let mut camera_join = (tranform_storage, camera_storage).join();
-    let camera_tuple = camera_join.nth(0);
-    let camera_transform = camera_tuple.unwrap().0;
-
-    (*camera_transform).clone()
 }
 
 fn point_to_vector(point: Point3<f32>) -> Vector3<f32> {
