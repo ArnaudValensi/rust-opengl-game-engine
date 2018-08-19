@@ -148,6 +148,10 @@ impl<T> VecTree<T> {
     pub fn get_mut(&mut self, id: NodeId) -> Option<&mut Node<T>> {
         self.nodes.get_mut(id.index)
     }
+
+    pub fn clear(&mut self) {
+        self.nodes.clear();
+    }
 }
 
 trait GetPairMut<T> {

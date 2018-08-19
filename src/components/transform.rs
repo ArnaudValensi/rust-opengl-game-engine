@@ -18,6 +18,7 @@ pub struct Transform {
     pub position: Point3<f32>,
     pub rotation: Quaternion<f32>,
     // scale
+    pub is_dirty: bool,
 }
 
 impl Transform {
@@ -30,6 +31,7 @@ impl Transform {
             name,
             position,
             rotation,
+            is_dirty: true,
         }
     }
 
@@ -43,6 +45,7 @@ impl Transform {
         let up = Vector3::unit_y();
 
         self.rotation = Quaternion::look_at(new_forward, up);
+        self.is_dirty = true;
     }
 
     pub fn left(&self) -> Vector3<f32> {
@@ -50,6 +53,11 @@ impl Transform {
         let down = -Vector3::unit_y();
 
         self.forward().cross(down).normalize()
+    }
+
+    pub fn set_position(&mut self, position: Point3<f32>) {
+        self.position = position;
+        self.is_dirty = true;
     }
 
     // NOTE: Inspired from:
@@ -92,6 +100,7 @@ impl Transform {
 
     pub fn set_rotation(&mut self, x: f32, y: f32, z: f32) {
         self.rotation = euler_to_quaternion(x, y, z);
+        self.is_dirty = true;
     }
 }
 
