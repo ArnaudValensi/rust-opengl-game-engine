@@ -25,7 +25,7 @@ pub mod lifecycle;
 pub mod math;
 pub mod time;
 pub mod vec_tree;
-pub mod scene_graph;
+pub mod scene_tree;
 
 mod _100_1_ecs;
 pub use self::_100_1_ecs::*;
