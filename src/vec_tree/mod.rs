@@ -14,6 +14,7 @@ pub struct NodeId {
 }
 
 impl NodeId {
+    // TODO: Maybe move this in VecTree
     pub fn add_child<T>(self, new_child: NodeId, tree: &mut VecTree<T>) {
         new_child.detach(tree);
         let last_child_opt;
@@ -37,6 +38,7 @@ impl NodeId {
         }
     }
 
+    // TODO: Maybe move this in VecTree
     pub fn detach<T>(self, tree: &mut VecTree<T>) {
         let (parent, previous_sibling, next_sibling) = {
             let node = &mut tree[self];
@@ -60,6 +62,7 @@ impl NodeId {
         }
     }
 
+    // TODO: Maybe move this in VecTree
     /// Return an iterator of references to this node’s children.
     pub fn children<T>(self, tree: &VecTree<T>) -> Children<T> {
         Children {
