@@ -81,6 +81,33 @@ impl NodeId {
         }
     }
 
+    /// Return an iterator of references to this node and its descendants, in tree order.
+    ///
+    /// Parent nodes appear before the descendants.
+    /// Call `.next().unwrap()` once on the iterator to skip the node itself.
+    pub fn descendants<T>(self, tree: &VecTree<T>) -> Descendants<T> {
+        Descendants(self.traverse(tree))
+    }
+
+    /// Return an iterator of references to this node and the siblings before it.
+    ///
+    /// Call `.next().unwrap()` once on the iterator to skip the node itself.
+    pub fn preceding_siblings<T>(self, tree: &VecTree<T>) -> PrecedingSiblings<T> {
+        PrecedingSiblings {
+            tree,
+            node: Some(self),
+        }
+    }
+
+    /// Return an iterator of references to this node and the siblings after it.
+    ///
+    /// Call `.next().unwrap()` once on the iterator to skip the node itself.
+    pub fn following_siblings<T>(self, tree: &VecTree<T>) -> FollowingSiblings<T> {
+        FollowingSiblings {
+            tree,
+            node: Some(self),
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -166,6 +193,18 @@ impl<T> VecTree<T> {
     pub fn clear(&mut self) {
         self.nodes.clear();
     }
+
+    pub fn get_first_root(&self) -> Option<NodeId> {
+        let node_index_option = self.nodes.iter().position(|ref node| node.parent.is_none());
+
+        if let Some(node_index) = node_index_option {
+            let node = NodeId { index: node_index };
+
+            return node.preceding_siblings(self).last();
+        }
+
+        None
+    }
 }
 
 trait GetPairMut<T> {
@@ -201,25 +240,44 @@ impl<T> IndexMut<NodeId> for VecTree<T> {
     }
 }
 
+macro_rules! impl_node_iterator {
+    ($name:ident, $next:expr) => {
+        impl<'a, T> Iterator for $name<'a, T> {
+            type Item = NodeId;
+
+            fn next(&mut self) -> Option<NodeId> {
+                match self.node.take() {
+                    Some(node) => {
+                        self.node = $next(&self.tree[node]);
+                        Some(node)
+                    }
+                    None => None,
+                }
+            }
+        }
+    };
+}
+
 /// An iterator of references to the children of a given node.
 pub struct Children<'a, T: 'a> {
     tree: &'a VecTree<T>,
     node: Option<NodeId>,
 }
+impl_node_iterator!(Children, |node: &Node<T>| node.next_sibling);
 
-impl<'a, T> Iterator for Children<'a, T> {
-    type Item = NodeId;
-
-    fn next(&mut self) -> Option<NodeId> {
-        match self.node.take() {
-            Some(node) => {
-                self.node = self.tree[node].next_sibling;
-                Some(node)
-            }
-            None => None,
-        }
-    }
+/// An iterator of references to the siblings before a given node.
+pub struct PrecedingSiblings<'a, T: 'a> {
+    tree: &'a VecTree<T>,
+    node: Option<NodeId>,
 }
+impl_node_iterator!(PrecedingSiblings, |node: &Node<T>| node.previous_sibling);
+
+/// An iterator of references to the siblings after a given node.
+pub struct FollowingSiblings<'a, T: 'a> {
+    tree: &'a VecTree<T>,
+    node: Option<NodeId>,
+}
+impl_node_iterator!(FollowingSiblings, |node: &Node<T>| node.next_sibling);
 
 #[derive(Debug, Clone)]
 /// Indicator if the node is at a start or endpoint of the tree
@@ -277,6 +335,23 @@ impl<'a, T> Iterator for Traverse<'a, T> {
                 Some(item)
             }
             None => None,
+        }
+    }
+}
+
+/// An iterator of references to a given node and its descendants, in tree order.
+pub struct Descendants<'a, T: 'a>(pub Traverse<'a, T>);
+
+impl<'a, T> Iterator for Descendants<'a, T> {
+    type Item = NodeId;
+
+    fn next(&mut self) -> Option<NodeId> {
+        loop {
+            match self.0.next() {
+                Some(NodeEdge::Start(node)) => return Some(node),
+                Some(NodeEdge::End(_)) => {}
+                None => return None,
+            }
         }
     }
 }

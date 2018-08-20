@@ -8,6 +8,7 @@ use components::transform::Transform;
 use components::mesh_render::MeshRender;
 use components::camera::Camera;
 use components::player::Player;
+use components::parent::Parent;
 use resources::active_camera::ActiveCamera;
 use systems::render::Render;
 use systems::gui_rendering::GuiRendering;
@@ -15,6 +16,7 @@ use systems::swap_frame_buffer::SwapFrameBuffer;
 use systems::window_event::WindowEvent;
 use systems::player_movement::PlayerMovement;
 use systems::mouse_control::MouseControl;
+use systems::transformation::Transformation;
 use voxel::chunk::Chunk;
 use mesh::Mesh;
 use material::Material;
@@ -39,6 +41,7 @@ fn run() -> Result<()> {
     let window_event_system = WindowEvent::new(Rc::clone(&window));
     let mouse_control_system = MouseControl::new(Rc::clone(&window));
     let gui_rendering_system = GuiRendering::new(Rc::clone(&window));
+    let transformation_system = Transformation::new();
     let input = Input::new();
     let time = Time::new();
     let material = Material::new();
@@ -72,6 +75,7 @@ fn run() -> Result<()> {
     world.register::<MeshRender>();
     world.register::<Camera>();
     world.register::<Player>();
+    world.register::<Parent>();
 
     world.add_resource(time);
     world.add_resource(input);
@@ -98,6 +102,7 @@ fn run() -> Result<()> {
     dispatcher_builder.add_thread_local(window_event_system);
     dispatcher_builder.add_thread_local(mouse_control_system);
     dispatcher_builder.add_thread_local(PlayerMovement::new());
+    dispatcher_builder.add_thread_local(transformation_system);
     dispatcher_builder.add_thread_local(render_system);
     dispatcher_builder.add_thread_local(gui_rendering_system);
     dispatcher_builder.add_thread_local(swap_frame_buffer_system);

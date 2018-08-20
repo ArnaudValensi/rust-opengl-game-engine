@@ -1,7 +1,8 @@
 use components::transform::Transform;
 use components::parent::Parent;
-use specs::{System, ReadStorage, Entities, Join};
+use specs::{System, ReadStorage, WriteStorage, Entities, Join};
 use scene_tree::SceneTree;
+use cgmath::Point3;
 
 pub struct Transformation {
     scene_tree: SceneTree,
@@ -19,12 +20,12 @@ impl Transformation {
 impl<'a> System<'a> for Transformation {
     type SystemData = (
         Entities<'a>,
-        ReadStorage<'a, Transform>,
+        WriteStorage<'a, Transform>,
         ReadStorage<'a, Parent>,
     );
 
     fn run(&mut self, data: Self::SystemData) {
-        let (entity, tranform_storage, parent_storage) = data;
+        let (entity, mut tranform_storage, parent_storage) = data;
 
         // Clear the scene tree.
         self.scene_tree.clear();
@@ -39,7 +40,42 @@ impl<'a> System<'a> for Transformation {
             self.scene_tree.set_entity_child(&parent.entity, &entity);
         }
 
-        // Get all entities with a transform.is_dirty.
-        // Iterate over is and set the world tranform position/rotation/scale.
+        if let Some(first_root_entity) = self.scene_tree.get_first_root_entity() {
+            // TODO: iterate over all siblings
+            // let sibling_entities = self.scene_tree.following_entities(first_root_entity);
+
+            // When world transform is set, set is_dirty to false
+            let descendant_entities = self.scene_tree.descendant_entities(first_root_entity);
+
+            for entity in descendant_entities {
+                match self.scene_tree.get_parent_entity(&entity) {
+                    Some(parent_entity) => {
+                        // Iterate over all dirty tree.
+                        // Update world transform from parent world transform and current local
+                        // transform.
+                        let parent_position_option = if let Some(parent_transform) = tranform_storage.get(*parent_entity) {
+                            Some(parent_transform.position)
+                        } else {
+                            None
+                        };
+
+                        if let Some(transform) = tranform_storage.get_mut(entity) {
+                            if transform.is_dirty {
+                                if let Some(parent_position) = parent_position_option {
+                                    transform.position = Point3 {
+                                        x: parent_position.x + transform.local_position.x,
+                                        y: parent_position.y + transform.local_position.y,
+                                        z: parent_position.z + transform.local_position.z,
+                                    };
+                                } else {
+                                    transform.position = transform.local_position;
+                                }
+                            }
+                        }
+                    },
+                    None => (),
+                };
+            }
+        }
     }
 }

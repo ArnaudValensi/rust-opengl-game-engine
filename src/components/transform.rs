@@ -16,20 +16,22 @@ const DEG_TO_RAD: f32 = PI / 180.0 as f32;
 pub struct Transform {
     pub name: &'static str,
     pub position: Point3<f32>,
+    pub local_position: Point3<f32>,
     pub rotation: Quaternion<f32>,
-    // scale
+    // TODO: Add scale.
     pub is_dirty: bool,
 }
 
 impl Transform {
-    pub fn new(position: Point3<f32>, name: &'static str) -> Self {
+    pub fn new(local_position: Point3<f32>, name: &'static str) -> Self {
         let up = Vector3::unit_y();
         let forward = -Vector3::unit_z();
         let rotation = Quaternion::look_at(forward, up);
 
         Transform {
             name,
-            position,
+            position: Point3 { x: 0.0, y: 0.0, z: 0.0 },
+            local_position,
             rotation,
             is_dirty: true,
         }
