@@ -70,6 +70,17 @@ impl NodeId {
             node: tree[self].first_child,
         }
     }
+
+    // TODO: Maybe move this in VecTree
+    /// Return an iterator of references to this node and its descendants, in tree order.
+    pub fn traverse<T>(self, tree: &VecTree<T>) -> Traverse<T> {
+        Traverse {
+            tree,
+            root: self,
+            next: Some(NodeEdge::Start(self)),
+        }
+    }
+
 }
 
 #[derive(Debug)]
@@ -204,6 +215,66 @@ impl<'a, T> Iterator for Children<'a, T> {
             Some(node) => {
                 self.node = self.tree[node].next_sibling;
                 Some(node)
+            }
+            None => None,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+/// Indicator if the node is at a start or endpoint of the tree
+pub enum NodeEdge<T> {
+    /// Indicates that start of a node that has children. Yielded by `Traverse::next` before the
+    /// node’s descendants.
+    Start(T),
+
+    /// Indicates that end of a node that has children. Yielded by `Traverse::next` after the
+    /// node’s descendants.
+    End(T),
+}
+
+/// An iterator of references to a given node and its descendants, in depth-first search pre-order
+/// NLR traversal.
+/// https://en.wikipedia.org/wiki/Tree_traversal#Pre-order_(NLR)
+pub struct Traverse<'a, T: 'a> {
+    tree: &'a VecTree<T>,
+    root: NodeId,
+    next: Option<NodeEdge<NodeId>>,
+}
+
+impl<'a, T> Iterator for Traverse<'a, T> {
+    type Item = NodeEdge<NodeId>;
+
+    fn next(&mut self) -> Option<NodeEdge<NodeId>> {
+        match self.next.take() {
+            Some(item) => {
+                self.next = match item {
+                    NodeEdge::Start(node) => match self.tree[node].first_child {
+                        Some(first_child) => Some(NodeEdge::Start(first_child)),
+                        None => Some(NodeEdge::End(node)),
+                    },
+                    NodeEdge::End(node) => {
+                        if node.index == self.root.index {
+                            None
+                        } else {
+                            match self.tree[node].next_sibling {
+                                Some(next_sibling) => Some(NodeEdge::Start(next_sibling)),
+                                None => {
+                                    match self.tree[node].parent {
+                                        Some(parent) => Some(NodeEdge::End(parent)),
+
+                                        // `node.parent()` here can only be `None`
+                                        // if the tree has been modified during iteration,
+                                        // but silently stoping iteration
+                                        // seems a more sensible behavior than panicking.
+                                        None => None,
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+                Some(item)
             }
             None => None,
         }
