@@ -60,7 +60,6 @@ impl Transform {
     pub fn set_local_position(&mut self, position: Point3<f32>) {
         self.local_position = position;
         self.is_dirty = true;
-        println!("is_dirty true");
     }
 
     pub fn add_local_position(&mut self, position: Vector3<f32>) {
