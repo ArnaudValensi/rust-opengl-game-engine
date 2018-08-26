@@ -87,10 +87,10 @@ fn run() -> Result<()> {
         .build();
     world.add_resource(ActiveCamera(camera_entity));
 
-    world.create_entity()
-        .with(Transform::new(Point3::new(0.0, 0.0, 0.0), "Chunk0"))
-        .with(MeshRender { material: material.clone(), mesh: chunk_mesh.clone() })
-        .build();
+    // world.create_entity()
+    //     .with(Transform::new(Point3::new(0.0, 0.0, 0.0), "Chunk0"))
+    //     .with(MeshRender { material: material.clone(), mesh: chunk_mesh.clone() })
+    //     .build();
 
     world.create_entity()
         .with(Transform::new(Point3::new(0.0, 0.0, -1.0), "Chunk1"))

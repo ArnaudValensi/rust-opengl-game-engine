@@ -29,16 +29,16 @@ impl PlayerMovement {
         let camera_left = transform.left();
 
         if input.get_key(KeyCode::W) {
-            transform.position += CAMERA_SPEED * camera_forward;
+            transform.add_local_position(CAMERA_SPEED * camera_forward);
         }
         if input.get_key(KeyCode::S) {
-            transform.position += -(CAMERA_SPEED * camera_forward);
+            transform.add_local_position(-(CAMERA_SPEED * camera_forward));
         }
         if input.get_key(KeyCode::A) {
-            transform.position += CAMERA_SPEED * camera_left;
+            transform.add_local_position(CAMERA_SPEED * camera_left);
         }
         if input.get_key(KeyCode::D) {
-            transform.position += -(CAMERA_SPEED * camera_left);
+            transform.add_local_position(-(CAMERA_SPEED * camera_left));
         }
     }
 

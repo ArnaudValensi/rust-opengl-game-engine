@@ -54,7 +54,7 @@ fn clear_screen() {
 }
 
 fn render_mesh(
-    mesh_tranform: &Transform,
+    mesh_transform: &Transform,
     mesh_render: &MeshRender,
     camera_tranform: &Transform,
 ) {
@@ -72,7 +72,9 @@ fn render_mesh(
         );
         mesh_render.material.set_matrix4("view", &view);
 
-        let mesh_vector = point_to_vector(mesh_tranform.position);
+        // println!("render: {:#?}", mesh_transform.position);
+
+        let mesh_vector = point_to_vector(mesh_transform.position);
         let model: Matrix4<f32> = Matrix4::from_translation(mesh_vector);
         mesh_render.material.set_matrix4("model", &model);
 
