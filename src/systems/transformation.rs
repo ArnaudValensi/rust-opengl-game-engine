@@ -58,7 +58,7 @@ impl<'a> System<'a> for Transformation {
                     };
 
                     if let Some(transform) = tranform_storage.get_mut(entity) {
-                        if transform.is_dirty {
+                        if transform.is_local_position_changed {
                             if let Some(parent_position) = parent_position_option {
                                 transform.position = Point3 {
                                     x: parent_position.x + transform.local_position.x,
@@ -69,7 +69,8 @@ impl<'a> System<'a> for Transformation {
                                 transform.position = transform.local_position;
                             }
 
-                            transform.is_dirty = false;
+                            transform.is_local_position_changed = false;
+                            transform.is_position_changed = false;
                         }
                     }
                 }

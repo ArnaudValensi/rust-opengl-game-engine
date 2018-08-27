@@ -19,7 +19,8 @@ pub struct Transform {
     pub local_position: Point3<f32>,
     pub rotation: Quaternion<f32>,
     // TODO: Add scale.
-    pub is_dirty: bool,
+    pub is_local_position_changed: bool,
+    pub is_position_changed: bool,
 }
 
 impl Transform {
@@ -33,7 +34,8 @@ impl Transform {
             position: Point3 { x: 0.0, y: 0.0, z: 0.0 },
             local_position,
             rotation,
-            is_dirty: true,
+            is_local_position_changed: true,
+            is_position_changed: false,
         }
     }
 
@@ -47,7 +49,7 @@ impl Transform {
         let up = Vector3::unit_y();
 
         self.rotation = Quaternion::look_at(new_forward, up);
-        //self.is_dirty = true;
+        //self.is_local_position_changed = true;
     }
 
     pub fn left(&self) -> Vector3<f32> {
@@ -59,13 +61,24 @@ impl Transform {
 
     pub fn set_local_position(&mut self, position: Point3<f32>) {
         self.local_position = position;
-        self.is_dirty = true;
+        self.is_local_position_changed = true;
     }
 
-    pub fn add_local_position(&mut self, position: Vector3<f32>) {
-        let current_position = self.position;
+    pub fn set_position(&mut self, position: Point3<f32>) {
+        self.position = position;
+        self.is_position_changed = true;
+    }
+
+    pub fn add_to_local_position(&mut self, position: Vector3<f32>) {
+        let current_position = self.local_position;
 
         self.set_local_position(current_position + position);
+    }
+
+    pub fn add_to_position(&mut self, position: Vector3<f32>) {
+        let current_position = self.position;
+
+        self.set_position(current_position + position);
     }
 
     // NOTE: Inspired from:
@@ -108,7 +121,7 @@ impl Transform {
 
     pub fn set_rotation(&mut self, x: f32, y: f32, z: f32) {
         self.rotation = euler_to_quaternion(x, y, z);
-        // self.is_dirty = true;
+        // self.is_local_position_changed = true;
     }
 }
 
