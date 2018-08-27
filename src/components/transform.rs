@@ -59,14 +59,20 @@ impl Transform {
         self.forward().cross(down).normalize()
     }
 
+    /// If `set_position()` has been called this frame, the last function calling will set the
+    /// positions.
     pub fn set_local_position(&mut self, position: Point3<f32>) {
         self.local_position = position;
         self.is_local_position_changed = true;
+        self.is_position_changed = false;
     }
 
+    /// If `set_local_position()` has been called this frame, the last function calling will set the
+    /// positions.
     pub fn set_position(&mut self, position: Point3<f32>) {
         self.position = position;
         self.is_position_changed = true;
+        self.is_local_position_changed = false;
     }
 
     pub fn add_to_local_position(&mut self, position: Vector3<f32>) {

@@ -70,6 +70,17 @@ impl<'a> System<'a> for Transformation {
                             }
 
                             transform.is_local_position_changed = false;
+                        } else if transform.is_position_changed {
+                            if let Some(parent_position) = parent_position_option {
+                                transform.local_position = Point3 {
+                                    x: parent_position.x + transform.position.x,
+                                    y: parent_position.y + transform.position.y,
+                                    z: parent_position.z + transform.position.z,
+                                };
+                            } else {
+                                transform.local_position = transform.position;
+                            }
+
                             transform.is_position_changed = false;
                         }
                     }
