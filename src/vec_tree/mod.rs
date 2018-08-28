@@ -62,6 +62,109 @@ impl NodeId {
         }
     }
 
+    /// Insert a new sibling after this node.
+    pub fn insert_after<T>(self, new_sibling: NodeId, tree: &mut VecTree<T>) {
+        new_sibling.detach(tree);
+        let next_sibling_opt;
+        let parent_opt;
+        {
+            let (self_borrow, new_sibling_borrow) =
+                tree
+                    .nodes
+                    .get_pair_mut(self.index, new_sibling.index, "Can not insert a node after itself");
+            parent_opt = self_borrow.parent;
+            new_sibling_borrow.parent = parent_opt;
+            new_sibling_borrow.previous_sibling = Some(self);
+            next_sibling_opt = mem::replace(&mut self_borrow.next_sibling, Some(new_sibling));
+            if let Some(next_sibling) = next_sibling_opt {
+                new_sibling_borrow.next_sibling = Some(next_sibling);
+            }
+        }
+
+        if let Some(next_sibling) = next_sibling_opt {
+            debug_assert!(tree[next_sibling].previous_sibling.unwrap().index == self.index);
+            tree[next_sibling].previous_sibling = Some(new_sibling);
+        } else if let Some(parent) = parent_opt {
+            debug_assert!(tree[parent].last_child.unwrap().index == self.index);
+            tree[parent].last_child = Some(new_sibling);
+        }
+    }
+
+    /// Insert a new sibling before this node.
+    pub fn insert_before<T>(self, new_sibling: NodeId, tree: &mut VecTree<T>) {
+        new_sibling.detach(tree);
+        let previous_sibling_opt;
+        let parent_opt;
+        {
+            let (self_borrow, new_sibling_borrow) =
+                tree
+                    .nodes
+                    .get_pair_mut(self.index, new_sibling.index, "Can not insert a node before itself");
+            parent_opt = self_borrow.parent;
+            new_sibling_borrow.parent = parent_opt;
+            new_sibling_borrow.next_sibling = Some(self);
+            previous_sibling_opt = mem::replace(&mut self_borrow.previous_sibling, Some(new_sibling));
+            if let Some(previous_sibling) = previous_sibling_opt {
+                new_sibling_borrow.previous_sibling = Some(previous_sibling);
+            }
+        }
+        if let Some(previous_sibling) = previous_sibling_opt {
+            debug_assert!(tree[previous_sibling].next_sibling.unwrap().index == self.index);
+            tree[previous_sibling].next_sibling = Some(new_sibling);
+        } else if let Some(parent) = parent_opt {
+            debug_assert!(tree[parent].first_child.unwrap().index == self.index);
+            tree[parent].first_child = Some(new_sibling);
+        }
+    }
+
+    /// Append a new child to this node, after existing children.
+    pub fn append<T>(self, new_child: NodeId, tree: &mut VecTree<T>) {
+        new_child.detach(tree);
+        let last_child_opt;
+        {
+            let (self_borrow, new_child_borrow) =
+                tree
+                    .nodes
+                    .get_pair_mut(self.index, new_child.index, "Can not append a node to itself");
+            new_child_borrow.parent = Some(self);
+            last_child_opt = mem::replace(&mut self_borrow.last_child, Some(new_child));
+            if let Some(last_child) = last_child_opt {
+                new_child_borrow.previous_sibling = Some(last_child);
+            } else {
+                debug_assert!(self_borrow.first_child.is_none());
+                self_borrow.first_child = Some(new_child);
+            }
+        }
+        if let Some(last_child) = last_child_opt {
+            debug_assert!(tree[last_child].next_sibling.is_none());
+            tree[last_child].next_sibling = Some(new_child);
+        }
+    }
+
+    /// Prepend a new child to this node, before existing children.
+    pub fn prepend<T>(self, new_child: NodeId, tree: &mut VecTree<T>) {
+        new_child.detach(tree);
+        let first_child_opt;
+        {
+            let (self_borrow, new_child_borrow) =
+                tree
+                    .nodes
+                    .get_pair_mut(self.index, new_child.index, "Can not prepend a node to itself");
+            new_child_borrow.parent = Some(self);
+            first_child_opt = mem::replace(&mut self_borrow.first_child, Some(new_child));
+            if let Some(first_child) = first_child_opt {
+                new_child_borrow.next_sibling = Some(first_child);
+            } else {
+                self_borrow.last_child = Some(new_child);
+                debug_assert!(&self_borrow.first_child.is_none());
+            }
+        }
+        if let Some(first_child) = first_child_opt {
+            debug_assert!(tree[first_child].previous_sibling.is_none());
+            tree[first_child].previous_sibling = Some(new_child);
+        }
+    }
+
     // TODO: Maybe move this in VecTree
     /// Return an iterator of references to this node’s children.
     pub fn children<T>(self, tree: &VecTree<T>) -> Children<T> {
