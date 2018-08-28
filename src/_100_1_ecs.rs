@@ -41,7 +41,6 @@ fn run() -> Result<()> {
     let window_event_system = WindowEvent::new(Rc::clone(&window));
     let mouse_control_system = MouseControl::new(Rc::clone(&window));
     let gui_rendering_system = GuiRendering::new(Rc::clone(&window));
-    let transformation_system = Transformation::new();
     let input = Input::new();
     let time = Time::new();
     let material = Material::new();
@@ -79,6 +78,9 @@ fn run() -> Result<()> {
 
     world.add_resource(time);
     world.add_resource(input);
+
+    let scene_root_entity = world.create_entity().build();
+    let transformation_system = Transformation::new(scene_root_entity);
 
     let camera_entity = world.create_entity()
         .with(Transform::new(Point3::new(0.0, 0.0, 3.0), "Camera"))

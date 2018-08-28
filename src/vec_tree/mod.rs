@@ -14,8 +14,8 @@ pub struct NodeId {
 }
 
 impl NodeId {
-    // TODO: Maybe move this in VecTree
-    pub fn add_child<T>(self, new_child: NodeId, tree: &mut VecTree<T>) {
+    /// Append a new child to this node, after existing children.
+    pub fn append_child<T>(self, new_child: NodeId, tree: &mut VecTree<T>) {
         new_child.detach(tree);
         let last_child_opt;
         {
@@ -38,7 +38,30 @@ impl NodeId {
         }
     }
 
-    // TODO: Maybe move this in VecTree
+    /// Prepend a new child to this node, before existing children.
+    pub fn prepend_child<T>(self, new_child: NodeId, tree: &mut VecTree<T>) {
+        new_child.detach(tree);
+        let first_child_opt;
+        {
+            let (self_borrow, new_child_borrow) =
+                tree
+                    .nodes
+                    .get_pair_mut(self.index, new_child.index, "Can not prepend a node to itself");
+            new_child_borrow.parent = Some(self);
+            first_child_opt = mem::replace(&mut self_borrow.first_child, Some(new_child));
+            if let Some(first_child) = first_child_opt {
+                new_child_borrow.next_sibling = Some(first_child);
+            } else {
+                self_borrow.last_child = Some(new_child);
+                debug_assert!(&self_borrow.first_child.is_none());
+            }
+        }
+        if let Some(first_child) = first_child_opt {
+            debug_assert!(tree[first_child].previous_sibling.is_none());
+            tree[first_child].previous_sibling = Some(new_child);
+        }
+    }
+
     pub fn detach<T>(self, tree: &mut VecTree<T>) {
         let (parent, previous_sibling, next_sibling) = {
             let node = &mut tree[self];
@@ -117,55 +140,6 @@ impl NodeId {
         }
     }
 
-    /// Append a new child to this node, after existing children.
-    pub fn append<T>(self, new_child: NodeId, tree: &mut VecTree<T>) {
-        new_child.detach(tree);
-        let last_child_opt;
-        {
-            let (self_borrow, new_child_borrow) =
-                tree
-                    .nodes
-                    .get_pair_mut(self.index, new_child.index, "Can not append a node to itself");
-            new_child_borrow.parent = Some(self);
-            last_child_opt = mem::replace(&mut self_borrow.last_child, Some(new_child));
-            if let Some(last_child) = last_child_opt {
-                new_child_borrow.previous_sibling = Some(last_child);
-            } else {
-                debug_assert!(self_borrow.first_child.is_none());
-                self_borrow.first_child = Some(new_child);
-            }
-        }
-        if let Some(last_child) = last_child_opt {
-            debug_assert!(tree[last_child].next_sibling.is_none());
-            tree[last_child].next_sibling = Some(new_child);
-        }
-    }
-
-    /// Prepend a new child to this node, before existing children.
-    pub fn prepend<T>(self, new_child: NodeId, tree: &mut VecTree<T>) {
-        new_child.detach(tree);
-        let first_child_opt;
-        {
-            let (self_borrow, new_child_borrow) =
-                tree
-                    .nodes
-                    .get_pair_mut(self.index, new_child.index, "Can not prepend a node to itself");
-            new_child_borrow.parent = Some(self);
-            first_child_opt = mem::replace(&mut self_borrow.first_child, Some(new_child));
-            if let Some(first_child) = first_child_opt {
-                new_child_borrow.next_sibling = Some(first_child);
-            } else {
-                self_borrow.last_child = Some(new_child);
-                debug_assert!(&self_borrow.first_child.is_none());
-            }
-        }
-        if let Some(first_child) = first_child_opt {
-            debug_assert!(tree[first_child].previous_sibling.is_none());
-            tree[first_child].previous_sibling = Some(new_child);
-        }
-    }
-
-    // TODO: Maybe move this in VecTree
     /// Return an iterator of references to this node’s children.
     pub fn children<T>(self, tree: &VecTree<T>) -> Children<T> {
         Children {
@@ -174,7 +148,6 @@ impl NodeId {
         }
     }
 
-    // TODO: Maybe move this in VecTree
     /// Return an iterator of references to this node and its descendants, in tree order.
     pub fn traverse<T>(self, tree: &VecTree<T>) -> Traverse<T> {
         Traverse {
@@ -295,18 +268,6 @@ impl<T> VecTree<T> {
 
     pub fn clear(&mut self) {
         self.nodes.clear();
-    }
-
-    pub fn get_first_root(&self) -> Option<NodeId> {
-        let node_index_option = self.nodes.iter().position(|ref node| node.parent.is_none());
-
-        if let Some(node_index) = node_index_option {
-            let node = NodeId { index: node_index };
-
-            return node.preceding_siblings(self).last();
-        }
-
-        None
     }
 }
 
@@ -471,8 +432,8 @@ mod tests {
         let child_node_1 = tree.new_node(2);
         let child_node_2 = tree.new_node(3);
 
-        root_node.add_child(child_node_1, &mut tree);
-        root_node.add_child(child_node_2, &mut tree);
+        root_node.append_child(child_node_1, &mut tree);
+        root_node.append_child(child_node_2, &mut tree);
 
         assert!(tree.nodes.len() == 3, "it should have 3 nodes in the tree");
     }
@@ -487,10 +448,10 @@ mod tests {
         let child_node_3 = tree.new_node(4);
         let grandchild = tree.new_node(5);
 
-        root_node.add_child(child_node_1, &mut tree);
-        root_node.add_child(child_node_2, &mut tree);
-        root_node.add_child(child_node_3, &mut tree);
-        child_node_3.add_child(grandchild, &mut tree);
+        root_node.append_child(child_node_1, &mut tree);
+        root_node.append_child(child_node_2, &mut tree);
+        root_node.append_child(child_node_3, &mut tree);
+        child_node_3.append_child(grandchild, &mut tree);
 
         assert_eq!(
             root_node.children(&tree).map(|node| tree[node].data).collect::<Vec<_>>(),

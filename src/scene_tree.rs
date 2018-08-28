@@ -1,30 +1,40 @@
-use vec_tree::{VecTree, NodeId};
+use vec_tree::{VecTree, NodeId, Descendants, FollowingSiblings, Children};
 use specs::Entity;
 use std::collections::HashMap;
-use vec_tree::{Descendants, FollowingSiblings};
 
 pub struct SceneTree {
     pub tree: VecTree<Entity>,
+    root_node: NodeId,
+    scene_root_entity: Entity,
     entity_node_map: HashMap<Entity, NodeId>,
 }
 
 impl SceneTree {
-    pub fn new() -> Self {
+    /// The scene_root_entity is needed to create the node which will hold the root nodes.
+    pub fn new(scene_root_entity: Entity) -> Self {
+        let mut tree = VecTree::new();
+        let root_node = tree.new_node(scene_root_entity);
+
         Self {
-            tree: VecTree::new(),
+            tree,
+            root_node,
+            scene_root_entity,
             entity_node_map: HashMap::new(),
         }
     }
 
-    pub fn clear(&mut self) {
+    pub fn reset(&mut self) {
         self.tree.clear();
         self.entity_node_map.clear();
+
+        self.root_node = self.tree.new_node(self.scene_root_entity);
     }
 
     pub fn add_entity_node(&mut self, entity: Entity) {
         let scene_node = self.tree.new_node(entity);
 
         self.entity_node_map.insert(entity, scene_node);
+        self.root_node.append_child(scene_node, &mut self.tree);
     }
 
     pub fn get_entity_node(&self, entity: &Entity) -> NodeId {
@@ -39,14 +49,7 @@ impl SceneTree {
     }
 
     fn set_node_child(&mut self, node: NodeId, child: NodeId) {
-        node.add_child(child, &mut self.tree);
-    }
-
-    pub fn get_first_root_entity(&self) -> Option<&Entity> {
-        match self.tree.get_first_root() {
-            Some(node) => Some(&self.tree[node].data),
-            None => None,
-        }
+        node.append_child(child, &mut self.tree);
     }
 
     pub fn get_parent_entity(&self, entity: &Entity) -> Option<&Entity> {
@@ -92,13 +95,13 @@ impl SceneTree {
             tree: &self.tree,
         }
     }
-}
 
-impl Default for SceneTree {
-    fn default() -> Self {
-        Self {
-            tree: VecTree::new(),
-            entity_node_map: HashMap::new(),
+    /// This is the root nodes on the scene tree perspective. On the vec tree perspective, they are
+    /// the children of the root node.
+    pub fn root_entities(&self) -> ChildrenEntities {
+        ChildrenEntities {
+            children: self.root_node.children(&self.tree),
+            tree: &self.tree,
         }
     }
 }
@@ -133,6 +136,24 @@ impl<'a> Iterator for FollowingEntities<'a> {
         let following_siblings = &mut self.following_siblings;
 
         match following_siblings.next() {
+            Some(node) => Some(self.tree[node].data),
+            None => None,
+        }
+    }
+}
+
+pub struct ChildrenEntities<'a> {
+    children: Children<'a, Entity>,
+    tree: &'a VecTree<Entity>,
+}
+
+impl<'a> Iterator for ChildrenEntities<'a> {
+    type Item = Entity;
+
+    fn next(&mut self) -> Option<Entity> {
+        let children = &mut self.children;
+
+        match children.next() {
             Some(node) => Some(self.tree[node].data),
             None => None,
         }
