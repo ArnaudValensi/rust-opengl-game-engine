@@ -57,8 +57,6 @@ impl<'a> System<'a> for Transformation {
                 };
 
                 if let Some(transform) = tranform_storage.get_mut(entity) {
-                    println!("{:#?}", transform.name);
-
                     if transform.is_local_position_changed {
                         if let Some(parent_position) = parent_position_option {
                             transform.position = Point3 {
