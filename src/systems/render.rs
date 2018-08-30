@@ -72,7 +72,7 @@ fn render_mesh(
         );
         mesh_render.material.set_matrix4("view", &view);
 
-        // println!("render: {:#?}", mesh_transform.position);
+        println!("render: {:#?}, position: {:#?}, rotation: {:#?}", mesh_transform.name, mesh_transform.position, mesh_transform.to_euler_angles());
 
         let mesh_vector = point_to_vector(mesh_transform.position);
         let model: Matrix4<f32> = Matrix4::from_translation(mesh_vector);

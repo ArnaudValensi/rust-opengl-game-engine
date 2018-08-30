@@ -10,6 +10,7 @@ use components::camera::Camera;
 use components::player::Player;
 use components::parent::Parent;
 use resources::active_camera::ActiveCamera;
+use resources::rotating_entity::RotatingEntity;
 use systems::render::Render;
 use systems::gui_rendering::GuiRendering;
 use systems::swap_frame_buffer::SwapFrameBuffer;
@@ -17,6 +18,7 @@ use systems::window_event::WindowEvent;
 use systems::player_movement::PlayerMovement;
 use systems::mouse_control::MouseControl;
 use systems::transformation::Transformation;
+use systems::Rotator;
 use voxel::chunk::Chunk;
 use mesh::Mesh;
 use material::Material;
@@ -93,6 +95,7 @@ fn run() -> Result<()> {
         .with(Transform::new(Point3::new(0.0, 0.0, -1.0), "Chunk0"))
         .with(MeshRender { material: material.clone(), mesh: chunk_mesh.clone() })
         .build();
+    world.add_resource(RotatingEntity(chunk0));
 
     world.create_entity()
         .with(Parent { entity: chunk0 })
@@ -105,6 +108,7 @@ fn run() -> Result<()> {
     dispatcher_builder.add_thread_local(window_event_system);
     dispatcher_builder.add_thread_local(mouse_control_system);
     dispatcher_builder.add_thread_local(PlayerMovement::new());
+    dispatcher_builder.add_thread_local(Rotator::new());
     dispatcher_builder.add_thread_local(transformation_system);
     dispatcher_builder.add_thread_local(render_system);
     dispatcher_builder.add_thread_local(gui_rendering_system);
