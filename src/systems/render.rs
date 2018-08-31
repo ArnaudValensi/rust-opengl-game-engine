@@ -74,8 +74,9 @@ fn render_mesh(
 
         println!("render: {:#?}, position: {:#?}, rotation: {:#?}", mesh_transform.name, mesh_transform.position, mesh_transform.to_euler_angles());
 
-        let mesh_vector = point_to_vector(mesh_transform.position);
-        let model: Matrix4<f32> = Matrix4::from_translation(mesh_vector);
+        let translation = Matrix4::from_translation(point_to_vector(mesh_transform.position));
+        let rotation = Matrix4::from(mesh_transform.rotation);
+        let model: Matrix4<f32> = translation * rotation;
         mesh_render.material.set_matrix4("model", &model);
 
         mesh_render.mesh.Draw();
