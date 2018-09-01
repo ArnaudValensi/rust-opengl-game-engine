@@ -111,9 +111,9 @@ impl<'a> System<'a> for GuiRendering {
                         .0;
 
                     let mut position: [f32; 3] = [
-                        selected_transform.position.x,
-                        selected_transform.position.y,
-                        selected_transform.position.z,
+                        selected_transform.local_position.x,
+                        selected_transform.local_position.y,
+                        selected_transform.local_position.z,
                     ];
                     let rotation_vector: Vector3<f32> = selected_transform.to_euler_angles();
                     let mut rotation: [f32; 3] = [

@@ -1,4 +1,4 @@
-use vec_tree::{VecTree, NodeId, Descendants, FollowingSiblings, Children};
+use vec_tree::{VecTree, NodeId, Descendants, FollowingSiblings, Children, Ancestors};
 use specs::Entity;
 use std::collections::HashMap;
 
@@ -96,6 +96,16 @@ impl SceneTree {
         }
     }
 
+    /// Call `.next().unwrap()` once on the iterator to skip the node itself.
+    pub fn ancestor_entities(&self, entity: &Entity) -> AncestorEntities {
+        let node = self.get_entity_node(entity);
+
+        AncestorEntities {
+            ancestors: node.ancestors(&self.tree),
+            tree: &self.tree,
+        }
+    }
+
     /// This is the root nodes on the scene tree perspective. On the vec tree perspective, they are
     /// the children of the root node.
     pub fn root_entities(&self) -> ChildrenEntities {
@@ -136,6 +146,24 @@ impl<'a> Iterator for FollowingEntities<'a> {
         let following_siblings = &mut self.following_siblings;
 
         match following_siblings.next() {
+            Some(node) => Some(self.tree[node].data),
+            None => None,
+        }
+    }
+}
+
+pub struct AncestorEntities<'a> {
+    ancestors: Ancestors<'a, Entity>,
+    tree: &'a VecTree<Entity>,
+}
+
+impl<'a> Iterator for AncestorEntities<'a> {
+    type Item = Entity;
+
+    fn next(&mut self) -> Option<Entity> {
+        let ancestors = &mut self.ancestors;
+
+        match ancestors.next() {
             Some(node) => Some(self.tree[node].data),
             None => None,
         }

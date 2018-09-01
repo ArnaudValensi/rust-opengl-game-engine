@@ -61,6 +61,7 @@ fn run() -> Result<()> {
 
     chunk.set_voxel(0, 0, 0, 1)?;
     chunk.set_voxel(1, 0, 0, 1)?;
+    chunk.set_voxel(1, 0, 1, 1)?;
     chunk2.set_voxel(0, 0, 0, 1)?;
 
     println!("chunk: {:#?}", chunk);
@@ -85,21 +86,23 @@ fn run() -> Result<()> {
     let transformation_system = Transformation::new(scene_root_entity);
 
     let camera_entity = world.create_entity()
-        .with(Transform::new(Point3::new(0.0, 0.0, 3.0), "Camera"))
+        .with(Transform::new(Point3::new(0.0, 0.0, 0.0), "Camera"))
         .with(Camera)
         .with(Player)
         .build();
     world.add_resource(ActiveCamera(camera_entity));
 
+    let mut chunk_transform = Transform::new(Point3::new(0.0, 0.0, -1.0), "Chunk0");
+    chunk_transform.set_rotation(0.0, 45.0, 0.0);
     let chunk0 = world.create_entity()
-        .with(Transform::new(Point3::new(0.0, 0.0, -1.0), "Chunk0"))
+        .with(chunk_transform)
         .with(MeshRender { material: material.clone(), mesh: chunk_mesh.clone() })
         .build();
     world.add_resource(RotatingEntity(chunk0));
 
     world.create_entity()
         .with(Parent { entity: chunk0 })
-        .with(Transform::new(Point3::new(0.0, 0.0, -3.0), "Chunk1"))
+        .with(Transform::new(Point3::new(0.0, 0.0, -2.0), "Chunk1"))
         .with(MeshRender { material: material.clone(), mesh: chunk_mesh2.clone() })
         .build();
 

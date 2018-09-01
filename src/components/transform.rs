@@ -4,8 +4,9 @@
 // - up
 
 use specs::{Component, VecStorage};
-use cgmath::{Point3, Vector3, Quaternion};
+use cgmath::{Point3, Vector3, Quaternion, Matrix4};
 use cgmath::prelude::*;
+use math::point_to_vector;
 use std::f32::consts::PI;
 use std::f32;
 
@@ -15,32 +16,37 @@ const DEG_TO_RAD: f32 = PI / 180.0 as f32;
 #[derive(Debug, Clone)]
 pub struct Transform {
     pub name: &'static str,
-    pub position: Point3<f32>,
     pub local_position: Point3<f32>,
-    pub rotation: Quaternion<f32>,
+    pub local_rotation: Quaternion<f32>,
     // TODO: Add scale.
-    pub is_local_position_changed: bool,
-    pub is_position_changed: bool,
+    pub local_matrix: Matrix4<f32>,
+    pub world_matrix: Matrix4<f32>,
+    pub is_dirty: bool,
 }
 
 impl Transform {
     pub fn new(local_position: Point3<f32>, name: &'static str) -> Self {
         let up = Vector3::unit_y();
-        let forward = -Vector3::unit_z();
-        let rotation = Quaternion::look_at(forward, up);
+        let forward = Vector3::unit_z();
+        let local_rotation = Quaternion::look_at(forward, up);
+        let local_rotation_matrix = Matrix4::from(local_rotation);
+
+        let translation = Matrix4::from_translation(point_to_vector(local_position));
+        let local_matrix: Matrix4<f32> = translation * local_rotation_matrix;
+        // let local_matrix: Matrix4<f32> = local_rotation_matrix * translation;
 
         Transform {
             name,
-            position: Point3 { x: 0.0, y: 0.0, z: 0.0 },
             local_position,
-            rotation,
-            is_local_position_changed: true,
-            is_position_changed: false,
+            local_rotation,
+            local_matrix,
+            world_matrix: local_matrix,
+            is_dirty: true,
         }
     }
 
     pub fn forward(&self) -> Vector3<f32> {
-        let forward = self.rotation * Vector3::unit_z();
+        let forward = self.local_rotation * Vector3::unit_z();
 
         forward
     }
@@ -48,7 +54,7 @@ impl Transform {
     pub fn set_forward(&mut self, new_forward: Vector3<f32>) {
         let up = Vector3::unit_y();
 
-        self.rotation = Quaternion::look_at(new_forward, up);
+        self.local_rotation = Quaternion::look_at(new_forward, up);
         //self.is_local_position_changed = true;
     }
 
@@ -63,16 +69,7 @@ impl Transform {
     /// positions.
     pub fn set_local_position(&mut self, position: Point3<f32>) {
         self.local_position = position;
-        self.is_local_position_changed = true;
-        self.is_position_changed = false;
-    }
-
-    /// If `set_local_position()` has been called this frame, the last function calling will set the
-    /// positions.
-    pub fn set_position(&mut self, position: Point3<f32>) {
-        self.position = position;
-        self.is_position_changed = true;
-        self.is_local_position_changed = false;
+        self.is_dirty = true;
     }
 
     pub fn add_to_local_position(&mut self, position: Vector3<f32>) {
@@ -81,20 +78,14 @@ impl Transform {
         self.set_local_position(current_position + position);
     }
 
-    pub fn add_to_position(&mut self, position: Vector3<f32>) {
-        let current_position = self.position;
-
-        self.set_position(current_position + position);
-    }
-
     // NOTE: Inspired from:
     //       - https://stackoverflow.com/questions/12088610/conversion-between-euler-quaternion-like-in-unity3d-engine
     //       - https://gist.github.com/aeroson/043001ca12fe29ee911e
     pub fn to_euler_angles(&self) -> Vector3<f32> {
-        let w = self.rotation.s;
-        let x = self.rotation.v.x;
-        let y = self.rotation.v.y;
-        let z = self.rotation.v.z;
+        let w = self.local_rotation.s;
+        let x = self.local_rotation.v.x;
+        let y = self.local_rotation.v.y;
+        let z = self.local_rotation.v.z;
         let square_w = w * w;
         let square_x = x * x;
         let square_y = y * y;
@@ -126,8 +117,8 @@ impl Transform {
     }
 
     pub fn set_rotation(&mut self, x: f32, y: f32, z: f32) {
-        self.rotation = euler_to_quaternion(x, y, z);
-        // self.is_local_position_changed = true;
+        self.local_rotation = euler_to_quaternion(x, y, z);
+        self.is_dirty = true;
     }
 }
 
@@ -139,6 +130,7 @@ fn normalize_angles_vector(angles: Vector3<f32>) -> Vector3<f32> {
     }
 }
 
+// TODO: Modulo?
 fn normalize_angle(angle: f32) -> f32 {
     let mut new_angle = angle;
 

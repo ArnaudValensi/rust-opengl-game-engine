@@ -4,7 +4,7 @@ extern crate imgui;
 extern crate imgui_opengl_renderer;
 
 use specs::{ReadExpect, ReadStorage, System, Join};
-use cgmath::{Vector3, Matrix4, vec3, Point3};
+use cgmath::{Vector3, Matrix4};
 use resources::active_camera::ActiveCamera;
 use components::transform::Transform;
 use components::mesh_render::MeshRender;
@@ -58,7 +58,7 @@ fn render_mesh(
     mesh_render: &MeshRender,
     camera_tranform: &Transform,
 ) {
-    let camera_pos = camera_tranform.position;
+    let camera_pos = camera_tranform.local_position;
     let camera_forward = camera_tranform.forward();
 
     unsafe {
@@ -72,21 +72,13 @@ fn render_mesh(
         );
         mesh_render.material.set_matrix4("view", &view);
 
-        println!("render: {:#?}, position: {:#?}, rotation: {:#?}", mesh_transform.name, mesh_transform.position, mesh_transform.to_euler_angles());
+        // println!("render: {:#?}, position: {:#?}, rotation: {:#?}", mesh_transform.name, mesh_transform.local_position, mesh_transform.to_euler_angles());
 
-        let translation = Matrix4::from_translation(point_to_vector(mesh_transform.position));
-        let rotation = Matrix4::from(mesh_transform.rotation);
-        let model: Matrix4<f32> = translation * rotation;
-        mesh_render.material.set_matrix4("model", &model);
+        // let translation = Matrix4::from_translation(point_to_vector(mesh_transform.local_position));
+        // let rotation = Matrix4::from(mesh_transform.local_rotation);
+        // let model: Matrix4<f32> = translation * rotation;
+        mesh_render.material.set_matrix4("model", &mesh_transform.world_matrix);
 
         mesh_render.mesh.Draw();
     }
-}
-
-fn point_to_vector(point: Point3<f32>) -> Vector3<f32> {
-    vec3(
-       point.x,
-       point.y,
-       point.z,
-   )
 }

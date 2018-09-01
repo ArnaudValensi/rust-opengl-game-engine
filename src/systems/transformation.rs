@@ -2,7 +2,8 @@ use components::transform::Transform;
 use components::parent::Parent;
 use specs::{System, ReadStorage, WriteStorage, Entities, Join, Entity};
 use scene_tree::SceneTree;
-use cgmath::Point3;
+use cgmath::Matrix4;
+use math::point_to_vector;
 
 pub struct Transformation {
     scene_tree: SceneTree,
@@ -46,9 +47,9 @@ impl<'a> System<'a> for Transformation {
             let descendant_entities = self.scene_tree.descendant_entities(&root_entity);
 
             for entity in descendant_entities {
-                let parent_position_option = if let Some(parent_entity) = self.scene_tree.get_parent_entity(&entity) {
+                let parent_world_matrix_option = if let Some(parent_entity) = self.scene_tree.get_parent_entity(&entity) {
                     if let Some(parent_transform) = tranform_storage.get(*parent_entity) {
-                        Some(parent_transform.position)
+                        Some(parent_transform.world_matrix)
                     } else {
                         None
                     }
@@ -57,30 +58,20 @@ impl<'a> System<'a> for Transformation {
                 };
 
                 if let Some(transform) = tranform_storage.get_mut(entity) {
-                    if transform.is_local_position_changed {
-                        if let Some(parent_position) = parent_position_option {
-                            transform.position = Point3 {
-                                x: parent_position.x + transform.local_position.x,
-                                y: parent_position.y + transform.local_position.y,
-                                z: parent_position.z + transform.local_position.z,
-                            };
+                    if transform.is_dirty {
+                        let local_rotation = Matrix4::from(transform.local_rotation);
+                        let translation = Matrix4::from_translation(point_to_vector(transform.local_position));
+                        let local_matrix: Matrix4<f32> = translation * local_rotation;
+
+                        transform.local_matrix = local_matrix;
+
+                        if let Some(parent_world_matrix) = parent_world_matrix_option {
+                            transform.world_matrix = parent_world_matrix * local_matrix;
                         } else {
-                            transform.position = transform.local_position;
+                            transform.world_matrix = local_matrix;
                         }
 
-                        transform.is_local_position_changed = false;
-                    } else if transform.is_position_changed {
-                        if let Some(parent_position) = parent_position_option {
-                            transform.local_position = Point3 {
-                                x: parent_position.x + transform.position.x,
-                                y: parent_position.y + transform.position.y,
-                                z: parent_position.z + transform.position.z,
-                            };
-                        } else {
-                            transform.local_position = transform.position;
-                        }
-
-                        transform.is_position_changed = false;
+                        transform.is_dirty = false;
                     }
                 }
             }

@@ -184,6 +184,16 @@ impl NodeId {
             node: Some(self),
         }
     }
+
+    /// Return an iterator of references to this node and its ancestors.
+    ///
+    /// Call `.next().unwrap()` once on the iterator to skip the node itself.
+    pub fn ancestors<T>(self, tree: &VecTree<T>) -> Ancestors<T> {
+        Ancestors {
+            tree,
+            node: Some(self),
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -342,6 +352,13 @@ pub struct FollowingSiblings<'a, T: 'a> {
     node: Option<NodeId>,
 }
 impl_node_iterator!(FollowingSiblings, |node: &Node<T>| node.next_sibling);
+
+/// An iterator of references to the ancestors a given node.
+pub struct Ancestors<'a, T: 'a> {
+    tree: &'a VecTree<T>,
+    node: Option<NodeId>,
+}
+impl_node_iterator!(Ancestors, |node: &Node<T>| node.parent);
 
 #[derive(Debug, Clone)]
 /// Indicator if the node is at a start or endpoint of the tree
