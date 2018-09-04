@@ -1,4 +1,12 @@
-use vec_tree::{VecTree, NodeId, Descendants, FollowingSiblings, Children, Ancestors};
+use vec_tree::{
+    VecTree,
+    NodeId,
+    Descendants,
+    FollowingSiblings,
+    Children,
+    Ancestors,
+    DescendantsWithDepth,
+};
 use specs::Entity;
 use std::collections::HashMap;
 
@@ -86,6 +94,17 @@ impl SceneTree {
         }
     }
 
+    /// Parent nodes appear before the descendants.
+    /// Call `.next().unwrap()` once on the iterator to skip the node itself.
+    pub fn descendant_entities_with_depth(&self, entity: &Entity) -> DescendantEntitiesWithDepth {
+        let node = self.get_entity_node(entity);
+
+        DescendantEntitiesWithDepth {
+            descendants_with_depth: node.descendants_with_depth(&self.tree),
+            tree: &self.tree,
+        }
+    }
+
     /// Call `.next().unwrap()` once on the iterator to skip the node itself.
     pub fn following_entities(&self, entity: &Entity) -> FollowingEntities {
         let node = self.get_entity_node(entity);
@@ -129,6 +148,24 @@ impl<'a> Iterator for DescendantEntities<'a> {
 
         match descendants.next() {
             Some(node) => Some(self.tree[node].data),
+            None => None,
+        }
+    }
+}
+
+pub struct DescendantEntitiesWithDepth<'a> {
+    descendants_with_depth: DescendantsWithDepth<'a, Entity>,
+    tree: &'a VecTree<Entity>,
+}
+
+impl<'a> Iterator for DescendantEntitiesWithDepth<'a> {
+    type Item = (Entity, u32);
+
+    fn next(&mut self) -> Option<(Entity, u32)> {
+        let descendants_with_depth = &mut self.descendants_with_depth;
+
+        match descendants_with_depth.next() {
+            Some((node, depth)) => Some((self.tree[node].data, depth)),
             None => None,
         }
     }

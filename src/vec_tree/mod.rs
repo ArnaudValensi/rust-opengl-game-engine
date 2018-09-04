@@ -149,11 +149,21 @@ impl NodeId {
     }
 
     /// Return an iterator of references to this node and its descendants, in tree order.
-    pub fn traverse<T>(self, tree: &VecTree<T>) -> Traverse<T> {
+    fn traverse<T>(self, tree: &VecTree<T>) -> Traverse<T> {
         Traverse {
             tree,
             root: self,
             next: Some(NodeEdge::Start(self)),
+        }
+    }
+
+    /// Return an iterator of references to this node and its descendants, with deoth in the tree,
+    /// in tree order.
+    fn traverse_with_depth<T>(self, tree: &VecTree<T>) -> TraverseWithDepth<T> {
+        TraverseWithDepth {
+            tree,
+            root: self,
+            next: Some(NodeEdgeWithDepth::Start(self, 0)),
         }
     }
 
@@ -163,6 +173,15 @@ impl NodeId {
     /// Call `.next().unwrap()` once on the iterator to skip the node itself.
     pub fn descendants<T>(self, tree: &VecTree<T>) -> Descendants<T> {
         Descendants(self.traverse(tree))
+    }
+
+    /// Return an iterator of references to this node and its descendants, with deoth in the tree,
+    /// in tree order.
+    ///
+    /// Parent nodes appear before the descendants.
+    /// Call `.next().unwrap()` once on the iterator to skip the node itself.
+    pub fn descendants_with_depth<T>(self, tree: &VecTree<T>) -> DescendantsWithDepth<T> {
+        DescendantsWithDepth(self.traverse_with_depth(tree))
     }
 
     /// Return an iterator of references to this node and the siblings before it.
@@ -437,6 +456,84 @@ impl<'a, T> Iterator for Descendants<'a, T> {
     }
 }
 
+#[derive(Debug, Clone)]
+/// Indicator if the node is at a start or endpoint of the tree
+pub enum NodeEdgeWithDepth<T> {
+    /// Indicates that start of a node that has children. Yielded by `Traverse::next` before the
+    /// node’s descendants.
+    Start(T, u32),
+
+    /// Indicates that end of a node that has children. Yielded by `Traverse::next` after the
+    /// node’s descendants.
+    End(T, u32),
+}
+
+/// An iterator of references to a given node and its descendants, with depth, in depth-first
+/// search pre-order NLR traversal.
+/// https://en.wikipedia.org/wiki/Tree_traversal#Pre-order_(NLR)
+pub struct TraverseWithDepth<'a, T: 'a> {
+    tree: &'a VecTree<T>,
+    root: NodeId,
+    next: Option<NodeEdgeWithDepth<NodeId>>,
+}
+
+impl<'a, T> Iterator for TraverseWithDepth<'a, T> {
+    type Item = NodeEdgeWithDepth<NodeId>;
+
+    fn next(&mut self) -> Option<NodeEdgeWithDepth<NodeId>> {
+        match self.next.take() {
+            Some(item) => {
+                self.next = match item {
+                    NodeEdgeWithDepth::Start(node, depth) => match self.tree[node].first_child {
+                        Some(first_child) => Some(NodeEdgeWithDepth::Start(first_child, depth + 1)),
+                        None => Some(NodeEdgeWithDepth::End(node, depth)),
+                    },
+                    NodeEdgeWithDepth::End(node, depth) => {
+                        if node.index == self.root.index {
+                            None
+                        } else {
+                            match self.tree[node].next_sibling {
+                                Some(next_sibling) => Some(NodeEdgeWithDepth::Start(next_sibling, depth)),
+                                None => {
+                                    match self.tree[node].parent {
+                                        Some(parent) => Some(NodeEdgeWithDepth::End(parent, depth - 1)),
+
+                                        // `node.parent()` here can only be `None`
+                                        // if the tree has been modified during iteration,
+                                        // but silently stoping iteration
+                                        // seems a more sensible behavior than panicking.
+                                        None => None,
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+                Some(item)
+            }
+            None => None,
+        }
+    }
+}
+
+/// An iterator of references to a given node and its descendants, with depth, in tree order.
+pub struct DescendantsWithDepth<'a, T: 'a>(pub TraverseWithDepth<'a, T>);
+
+impl<'a, T> Iterator for DescendantsWithDepth<'a, T> {
+    type Item = (NodeId, u32);
+
+    fn next(&mut self) -> Option<(NodeId, u32)> {
+        loop {
+            match self.0.next() {
+                Some(NodeEdgeWithDepth::Start(node, depth)) => return Some((node, depth)),
+                Some(NodeEdgeWithDepth::End(_, _)) => {}
+                None => return None,
+            }
+        }
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::VecTree;
@@ -489,5 +586,51 @@ mod tests {
             child_node_3.children(&tree).map(|node| tree[node].data).collect::<Vec<_>>(),
             [5]
         );
+    }
+
+    #[test]
+    fn iterate_over_descendants_with_depth() {
+        let mut tree = VecTree::new();
+
+        // 0
+        // 1----2--3
+        // |    |
+        // |    7
+        // 4--5
+        // |
+        // 6
+        let root_node = tree.new_node(0);
+        let node_1 = tree.new_node(1);
+        let node_2 = tree.new_node(2);
+        let node_3 = tree.new_node(3);
+        let node_4 = tree.new_node(4);
+        let node_5 = tree.new_node(5);
+        let node_6 = tree.new_node(6);
+        let node_7 = tree.new_node(7);
+
+        root_node.append_child(node_1, &mut tree);
+        root_node.append_child(node_2, &mut tree);
+        root_node.append_child(node_3, &mut tree);
+        node_1.append_child(node_4, &mut tree);
+        node_1.append_child(node_5, &mut tree);
+        node_4.append_child(node_6, &mut tree);
+        node_2.append_child(node_7, &mut tree);
+
+        let descendants = root_node.descendants_with_depth(&tree)
+            .map(|(node, depth)| (tree[node].data, depth))
+            .collect::<Vec<(i32, u32)>>();
+
+        let expected_result = [
+            (0, 0),
+            (1, 1),
+            (4, 2),
+            (6, 3),
+            (5, 2),
+            (2, 1),
+            (7, 2),
+            (3, 1),
+        ];
+
+        assert_eq!(descendants, expected_result);
     }
 }
