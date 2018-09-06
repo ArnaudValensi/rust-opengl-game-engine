@@ -42,11 +42,12 @@ impl<'a> System<'a> for Transformation {
         }
 
         let root_entities = self.scene_tree.root_entities();
+        let mut current_higher_dirty_depth: u32 = 0;
 
         for root_entity in root_entities {
-            let descendant_entities = self.scene_tree.descendant_entities(&root_entity);
+            let descendant_entities = self.scene_tree.descendant_entities_with_depth(&root_entity);
 
-            for entity in descendant_entities {
+            for (entity, depth) in descendant_entities {
                 let parent_world_matrix_option = if let Some(parent_entity) = self.scene_tree.get_parent_entity(&entity) {
                     if let Some(parent_transform) = tranform_storage.get(*parent_entity) {
                         Some(parent_transform.world_matrix)
@@ -58,7 +59,9 @@ impl<'a> System<'a> for Transformation {
                 };
 
                 if let Some(transform) = tranform_storage.get_mut(entity) {
-                    if transform.is_dirty {
+                    let mut is_dirty = transform.is_dirty || depth > current_higher_dirty_depth;
+
+                    if is_dirty {
                         let local_rotation = Matrix4::from(transform.local_rotation);
                         let translation = Matrix4::from_translation(point_to_vector(transform.local_position));
                         let local_matrix: Matrix4<f32> = translation * local_rotation;
@@ -72,6 +75,7 @@ impl<'a> System<'a> for Transformation {
                         }
 
                         transform.is_dirty = false;
+                        current_higher_dirty_depth = depth;
                     }
                 }
             }
