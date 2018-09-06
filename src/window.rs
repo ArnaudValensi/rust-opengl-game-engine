@@ -20,7 +20,7 @@ impl Window {
     pub fn new(width: u32, height: u32) -> Window {
         let events_loop = EventsLoop::new();
         let window = WindowBuilder::new()
-            .with_title("Hello, world!")
+            .with_title("BigSeed")
             .with_dimensions(width, height);
         let context = ContextBuilder::new()
             .with_vsync(true);
