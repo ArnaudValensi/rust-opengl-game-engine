@@ -36,8 +36,6 @@ impl<'a> System<'a> for Rotator {
             self.yaw += 360.0;
         }
 
-        println!("yaw: {:#?}", self.yaw);
-
         transform.set_rotation(0.0, self.yaw, 0.0);
     }
 }
