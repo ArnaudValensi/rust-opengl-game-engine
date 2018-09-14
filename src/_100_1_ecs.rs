@@ -18,7 +18,7 @@ use systems::window_event::WindowEvent;
 use systems::player_movement::PlayerMovement;
 use systems::mouse_control::MouseControl;
 use systems::transformation::Transformation;
-use systems::Rotator;
+// use systems::Rotator;
 use voxel::chunk::Chunk;
 use mesh::Mesh;
 use material::Material;
@@ -111,7 +111,7 @@ fn run() -> Result<()> {
     dispatcher_builder.add_thread_local(window_event_system);
     dispatcher_builder.add_thread_local(mouse_control_system);
     dispatcher_builder.add_thread_local(PlayerMovement::new());
-    dispatcher_builder.add_thread_local(Rotator::new());
+    // dispatcher_builder.add_thread_local(Rotator::new());
     dispatcher_builder.add_thread_local(transformation_system);
     dispatcher_builder.add_thread_local(render_system);
     dispatcher_builder.add_thread_local(gui_rendering_system);
