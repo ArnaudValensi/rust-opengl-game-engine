@@ -1,6 +1,6 @@
-extern crate glbs;
+extern crate bigseed;
 
-use glbs::main_100_1;
+use bigseed::main_100_1;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
