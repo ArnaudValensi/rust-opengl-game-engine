@@ -158,7 +158,7 @@ fn print_errors_and_exit(e: &Error) {
     ::std::process::exit(1);
 }
 
-pub fn main_100_1() {
+pub fn game() {
     if let Err(ref e) = run() {
         print_errors_and_exit(e);
     }
