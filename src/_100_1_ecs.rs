@@ -2,7 +2,7 @@ extern crate gl;
 extern crate glutin;
 
 use errors::*;
-use specs::{World, DispatcherBuilder};
+use specs::{World, DispatcherBuilder, Builder};
 use cgmath::{Matrix4,  Deg, perspective, Point3};
 use components::transform::Transform;
 use components::mesh_render::MeshRender;
