@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Arnaud Valensi <arnaud.valensi@gmail.com>"]
 
 [dependencies]
-gl = "0.6.0"
+gl = "0.6.1"
 glutin = "0.14.0"
 cgmath = "0.16.1"
 image = "0.14.0"
