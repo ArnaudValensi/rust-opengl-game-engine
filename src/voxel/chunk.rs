@@ -1,10 +1,14 @@
-use errors::*;
+use failure::Fail;
 use mesh_data::MeshData;
 use super::voxel_mesh_builder::build_mesh;
 use super::voxel::is_solid;
 use super::position::Position;
 
 const ERROR_VOXEL_OUT_OF_BOUND: &str = "the position of the voxel you are trying to set is out of bound";
+
+#[derive(Fail, Debug)]
+#[fail(display = "The position of the voxel you are trying to set is out of bound")]
+pub struct ChunkOutOfBoundError;
 
 #[derive(Debug, Clone)]
 pub struct Chunk {
@@ -54,9 +58,9 @@ impl Chunk {
         self.is_out_of_bound(position.x, position.y, position.z)
     }
 
-    pub fn set_voxel(&mut self, x: i64, y: i64, z: i64, i: u8) -> Result<()> {
+    pub fn set_voxel(&mut self, x: i64, y: i64, z: i64, i: u8) -> Result<(), ChunkOutOfBoundError> {
         if self.is_out_of_bound(x, y, z) {
-            bail!(ERROR_VOXEL_OUT_OF_BOUND);
+            return Err(ChunkOutOfBoundError);
         }
 
         let index = (z * self.size_x as i64 * self.size_y as i64) + (y * self.size_x as i64) + x;
@@ -65,9 +69,9 @@ impl Chunk {
         Ok(())
     }
 
-    pub fn get_voxel(&self, x: i64, y: i64, z: i64) -> Result<u8> {
+    pub fn get_voxel(&self, x: i64, y: i64, z: i64) -> Result<u8, ChunkOutOfBoundError> {
         if self.is_out_of_bound(x, y, z) {
-            bail!(ERROR_VOXEL_OUT_OF_BOUND);
+            return Err(ChunkOutOfBoundError);
         }
 
         let index = (z * self.size_x as i64 * self.size_y as i64) + (y * self.size_x as i64) + x;
@@ -79,6 +83,7 @@ impl Chunk {
         build_mesh(&self)
     }
 
+    // TODO: Improve error handling here
     pub fn is_solid(&self, x: i64, y: i64, z: i64) -> bool {
         let voxel = self.get_voxel(x, y, z).expect(ERROR_VOXEL_OUT_OF_BOUND);
 

@@ -1,7 +1,8 @@
 extern crate gl;
 extern crate glutin;
 
-use errors::*;
+use errors::print_errors_and_exit;
+use failure::Error;
 use specs::{World, DispatcherBuilder, Builder};
 use cgmath::{Matrix4,  Deg, perspective, Point3};
 use components::transform::Transform;
@@ -34,7 +35,7 @@ use std::cell::RefCell;
 // settings
 const FOV: f32 = 45.0;
 
-fn run() -> Result<()> {
+fn run() -> Result<(), Error> {
     println!(" 🦄 Starting engine...");
 
     let window = Rc::new(RefCell::new(Window::new(SCR_WIDTH, SCR_HEIGHT)));
@@ -59,7 +60,7 @@ fn run() -> Result<()> {
     let mut chunk = Chunk::new(2, 3, 4);
     let mut chunk2 = Chunk::new(2, 2, 2);
 
-    chunk.set_voxel(0, 0, 0, 1)?;
+    chunk.set_voxel(10, 0, 0, 1)?;
     chunk.set_voxel(1, 0, 0, 1)?;
     chunk.set_voxel(1, 0, 1, 1)?;
     chunk2.set_voxel(0, 0, 0, 1)?;

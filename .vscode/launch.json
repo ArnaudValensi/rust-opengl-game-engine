@@ -7,7 +7,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug tests in glbs",
+            "name": "Debug tests in bigseed",
             "cargo": {
                 "args": [
                     "test",
@@ -21,11 +21,11 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug glbs",
+            "name": "Debug bigseed",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=glbs"
+                    "--bin=bigseed"
                 ]
             },
             "args": ["100_1"],
@@ -34,12 +34,12 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug tests in glbs",
+            "name": "Debug tests in bigseed",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=glbs"
+                    "--bin=bigseed"
                 ]
             },
             "args": [],
