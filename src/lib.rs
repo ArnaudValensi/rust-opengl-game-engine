@@ -3,6 +3,7 @@ extern crate image;
 extern crate cgmath;
 extern crate floating_duration;
 #[macro_use] extern crate failure;
+#[macro_use] extern crate log;
 extern crate specs;
 
 pub mod errors;

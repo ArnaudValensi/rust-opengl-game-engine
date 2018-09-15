@@ -36,7 +36,7 @@ use std::cell::RefCell;
 const FOV: f32 = 45.0;
 
 fn run() -> Result<(), Error> {
-    println!(" 🦄 Starting engine...");
+    info!(" 🦄 Starting engine...");
 
     let window = Rc::new(RefCell::new(Window::new(SCR_WIDTH, SCR_HEIGHT)));
     let render_system = Render::new();
