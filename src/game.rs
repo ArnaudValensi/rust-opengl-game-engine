@@ -1,38 +1,38 @@
 extern crate gl;
 extern crate glutin;
 
+use cgmath::{perspective, Deg, Matrix4, Point3};
+use components::camera::Camera;
+use components::mesh_render::MeshRender;
+use components::parent::Parent;
+use components::player::Player;
+use components::transform::Transform;
 use errors::print_errors_and_exit;
 use failure::Error;
-use specs::{World, DispatcherBuilder, Builder};
-use cgmath::{Matrix4,  Deg, perspective, Point3};
-use components::transform::Transform;
-use components::mesh_render::MeshRender;
-use components::camera::Camera;
-use components::player::Player;
-use components::parent::Parent;
 use resources::active_camera::ActiveCamera;
 use resources::rotating_entity::RotatingEntity;
-use systems::render::Render;
+use specs::{Builder, DispatcherBuilder, World};
 use systems::gui_rendering::GuiRendering;
-use systems::window_event::WindowEvent;
-use systems::player_movement::PlayerMovement;
 use systems::mouse_control::MouseControl;
+use systems::player_movement::PlayerMovement;
+use systems::render::Render;
 use systems::transformation::Transformation;
+use systems::window_event::WindowEvent;
 use systems::AfterRender;
 // use systems::Rotator;
-use voxel::chunk::Chunk;
-use mesh::Mesh;
-use material::Material;
-use voxel::voxel_mesh_builder::build_mesh;
-use config::{SCR_WIDTH, SCR_HEIGHT};
-use lifecycle::{Lifecycle, Event};
+use config::{SCR_HEIGHT, SCR_WIDTH};
 use input::Input;
-use time::Time;
-use window::Window;
+use lifecycle::{Event, Lifecycle};
+use material::Material;
+use mesh::Mesh;
 use palette::Palette;
-// use vox_loader::VoxLoader;
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
+use time::Time;
+use vox_loader::VoxLoader;
+use voxel::chunk::Chunk;
+use voxel::voxel_mesh_builder::build_mesh;
+use window::Window;
 
 // settings
 const FOV: f32 = 45.0;
@@ -50,7 +50,8 @@ fn run() -> Result<(), Error> {
     let input = Input::new();
     let time = Time::new();
     let material = Material::new();
-    let projection: Matrix4<f32> = perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
+    let projection: Matrix4<f32> =
+        perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
     let palette: Vec<f32> = Palette::get();
     let mut event_loop = Lifecycle::new();
 
@@ -64,18 +65,19 @@ fn run() -> Result<(), Error> {
 
     let mut chunk = Chunk::new(2, 3, 4);
     let mut chunk2 = Chunk::new(2, 2, 2);
+    // let chunk3 = VoxLoader::load("base.vox")?;
 
-    chunk.set_voxel(10, 0, 0, 1)?;
+    chunk.set_voxel(0, 0, 0, 1)?;
     chunk.set_voxel(1, 0, 0, 1)?;
     chunk.set_voxel(1, 0, 1, 1)?;
     chunk2.set_voxel(0, 0, 0, 1)?;
-
-    println!("chunk: {:#?}", chunk);
 
     let chunk_mesh_data = build_mesh(&chunk);
     let chunk_mesh = Mesh::new(chunk_mesh_data, Vec::default());
     let chunk_mesh_data2 = build_mesh(&chunk2);
     let chunk_mesh2 = Mesh::new(chunk_mesh_data2, Vec::default());
+    // let chunk_mesh_data3 = build_mesh(&chunk3);
+    // let chunk_mesh3 = Mesh::new(chunk_mesh_data3, Vec::default());
 
     let mut world = World::new();
 
@@ -91,7 +93,8 @@ fn run() -> Result<(), Error> {
     let scene_root_entity = world.create_entity().build();
     let transformation_system = Transformation::new(scene_root_entity);
 
-    let camera_entity = world.create_entity()
+    let camera_entity = world
+        .create_entity()
         .with(Transform::new(Point3::new(0.0, 0.0, 0.0), "Camera"))
         .with(Camera)
         .with(Player)
@@ -100,16 +103,24 @@ fn run() -> Result<(), Error> {
 
     let mut chunk_transform = Transform::new(Point3::new(0.0, 0.0, -1.0), "Chunk0");
     chunk_transform.set_rotation(0.0, 45.0, 0.0);
-    let chunk0 = world.create_entity()
+    let chunk0 = world
+        .create_entity()
         .with(chunk_transform)
-        .with(MeshRender { material: material.clone(), mesh: chunk_mesh.clone() })
+        .with(MeshRender {
+            material: material.clone(),
+            mesh: chunk_mesh.clone(),
+        })
         .build();
     world.add_resource(RotatingEntity(chunk0));
 
-    world.create_entity()
+    world
+        .create_entity()
         .with(Parent { entity: chunk0 })
         .with(Transform::new(Point3::new(0.0, 0.0, -2.0), "Chunk1"))
-        .with(MeshRender { material: material.clone(), mesh: chunk_mesh2.clone() })
+        .with(MeshRender {
+            material: material.clone(),
+            mesh: chunk_mesh2.clone(),
+        })
         .build();
 
     let mut dispatcher_builder = DispatcherBuilder::new();

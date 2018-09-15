@@ -1,10 +1,11 @@
-use failure::Fail;
-use mesh_data::MeshData;
-use super::voxel_mesh_builder::build_mesh;
 use super::is_solid;
 use super::position::Position;
+use super::voxel_mesh_builder::build_mesh;
+use failure::Fail;
+use mesh_data::MeshData;
 
-const ERROR_VOXEL_OUT_OF_BOUND: &str = "the position of the voxel you are trying to set is out of bound";
+const ERROR_VOXEL_OUT_OF_BOUND: &str =
+    "the position of the voxel you are trying to set is out of bound";
 
 #[derive(Fail, Debug)]
 #[fail(display = "The position of the voxel you are trying to set is out of bound")]
@@ -38,12 +39,12 @@ impl Chunk {
     }
 
     pub fn is_in_bound(&self, x: i64, y: i64, z: i64) -> bool {
-        x >= 0 &&
-        y >= 0 &&
-        z >= 0 &&
-        x < i64::from(self.size_x) &&
-        y < i64::from(self.size_y) &&
-        z < i64::from(self.size_z)
+        x >= 0
+            && y >= 0
+            && z >= 0
+            && x < i64::from(self.size_x)
+            && y < i64::from(self.size_y)
+            && z < i64::from(self.size_z)
     }
 
     pub fn is_out_of_bound(&self, x: i64, y: i64, z: i64) -> bool {
@@ -63,7 +64,9 @@ impl Chunk {
             return Err(ChunkOutOfBoundError);
         }
 
-        let index = (z * i64::from(self.size_x) * i64::from(self.size_y)) + (y * i64::from(self.size_x)) + x;
+        let index = (z * i64::from(self.size_x) * i64::from(self.size_y))
+            + (y * i64::from(self.size_x))
+            + x;
 
         self.voxels[index as usize] = i;
         Ok(())
@@ -74,7 +77,9 @@ impl Chunk {
             return Err(ChunkOutOfBoundError);
         }
 
-        let index = (z * i64::from(self.size_x) * i64::from(self.size_y)) + (y * i64::from(self.size_x)) + x;
+        let index = (z * i64::from(self.size_x) * i64::from(self.size_y))
+            + (y * i64::from(self.size_x))
+            + x;
 
         Ok(self.voxels[index as usize])
     }
