@@ -8,8 +8,11 @@ pub struct VoxLoader {
 }
 
 impl VoxLoader {
-    pub fn new() -> Self {
-        let mut model = VoxLoader::default();
+    pub fn load(filepath: &str) -> Result<(), Error> {
+        let dot_vox_data = match load(filepath) {
+            Err(message) => return Err(format_err!("Tryed to open vox file at '{}' and got the following error: {}", filepath, message)),
+            Ok(dot_vox_data) => dot_vox_data
+        };
 
         model.load_from_file("resources/models/base.vox");
         model
