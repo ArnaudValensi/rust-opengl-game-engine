@@ -7,7 +7,7 @@ use self::glutin::GlContext;
 use self::imgui::*;
 use self::imgui_opengl_renderer::Renderer;
 use components::transform::Transform;
-use input::input::Input;
+use input::Input;
 use specs::{Join, Read, ReadStorage, System};
 use std::cell::RefCell;
 use std::rc::Rc;

@@ -2,7 +2,7 @@
 use specs::{WriteStorage, ReadStorage, System, Join, Read};
 use components::transform::Transform;
 use components::player::Player;
-use input::input::Input;
+use input::Input;
 use input::keyboard::KeyCode;
 use math::clamp;
 

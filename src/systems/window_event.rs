@@ -3,7 +3,7 @@ extern crate glutin;
 use std::rc::Rc;
 use specs::{System, Write};
 use window::Window;
-use input::input::Input;
+use input::Input;
 use input::keycode_normalizer::normalize_key;
 use std::cell::RefCell;
 use self::glutin::{

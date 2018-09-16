@@ -1,6 +1,6 @@
-use std::time::{Instant, Duration};
 use std::cmp;
 use std::thread::sleep;
+use std::time::{Duration, Instant};
 
 static BILLION: u64 = 1_000_000_000;
 const DEFAULT_FIXED_UPDATE_PER_SECOND: u64 = 120;
@@ -36,12 +36,8 @@ pub struct Lifecycle {
     delta_time: Duration,
 }
 
-// TODO:
-//   - pass return real delta time
-impl Lifecycle {
-    pub fn new() -> Lifecycle {
-        println!("new Lifecycle");
-
+impl Default for Lifecycle {
+    fn default() -> Self {
         let start = Instant::now();
 
         Lifecycle {
@@ -51,6 +47,14 @@ impl Lifecycle {
             fixed_delta_time: ns_to_duration(BILLION / DEFAULT_FIXED_UPDATE_PER_SECOND),
             delta_time: ns_to_duration(BILLION / DEFAULT_UPDATE_PER_SECOND),
         }
+    }
+}
+
+// TODO:
+//   - pass return real delta time
+impl Lifecycle {
+    pub fn new() -> Lifecycle {
+        Default::default()
     }
 
     pub fn next(&mut self) -> Option<Event> {

@@ -26,9 +26,10 @@ use material::Material;
 use voxel::voxel_mesh_builder::build_mesh;
 use config::{SCR_WIDTH, SCR_HEIGHT};
 use lifecycle::{Lifecycle, Event};
-use input::input::Input;
+use input::Input;
 use time::Time;
 use window::Window;
+// use vox_loader::VoxLoader;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -130,7 +131,7 @@ fn run() -> Result<(), Error> {
                     (*time).update();
                 }
 
-                dispatcher.dispatch(&mut world.res);
+                dispatcher.dispatch(&world.res);
 
                 if !window.borrow().running {
                     return Ok(());

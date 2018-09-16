@@ -5,7 +5,7 @@ extern crate imgui_opengl_renderer;
 
 use specs::{System, Write};
 use window::Window;
-use input::input::Input;
+use input::Input;
 use input::keyboard::KeyCode;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -39,12 +39,10 @@ impl<'a> System<'a> for MouseControl {
             if input.is_cursor_locked() {
                 gl_window
                     .set_cursor_state(CursorState::Grab)
-                    .ok()
                     .expect("could not grab mouse cursor");
             } else {
                 gl_window
                     .set_cursor_state(CursorState::Normal)
-                    .ok()
                     .expect("could not free mouse cursor");
             }
         }

@@ -46,9 +46,7 @@ impl Transform {
     }
 
     pub fn forward(&self) -> Vector3<f32> {
-        let forward = self.local_rotation * Vector3::unit_z();
-
-        forward
+        self.local_rotation * Vector3::unit_z()
     }
 
     pub fn set_forward(&mut self, new_forward: Vector3<f32>) {
@@ -113,7 +111,8 @@ impl Transform {
         v.y = (2_f32 * q.v.x * q.s + 2_f32 * q.v.y * q.v.z).atan2(1.0 - 2_f32 * (q.v.z * q.v.z + q.s * q.s)) as f32;     // Yaw
         v.x = (2_f32 * (q.v.x * q.v.z - q.s * q.v.y)).asin() as f32;                                                     // Pitch
         v.z = (2_f32 * q.v.x * q.v.y + 2_f32 * q.v.z * q.s).atan2(1.0 - 2_f32 * (q.v.y * q.v.y + q.v.z * q.v.z)) as f32; // Roll
-        return normalize_angles_vector(v * RAD_TO_DEG);
+
+        normalize_angles_vector(v * RAD_TO_DEG)
     }
 
     pub fn set_rotation(&mut self, x: f32, y: f32, z: f32) {
@@ -142,13 +141,13 @@ fn normalize_angle(angle: f32) -> f32 {
         new_angle += 360.0;
     }
 
-    return new_angle;
+    new_angle
 }
 
 fn euler_to_quaternion(x: f32, y: f32, z: f32) -> Quaternion<f32> {
-    let pitch = (x * DEG_TO_RAD) as f64;
-    let roll = (z * DEG_TO_RAD) as f64;
-    let yaw = (y * DEG_TO_RAD) as f64;
+    let pitch = f64::from(x * DEG_TO_RAD);
+    let roll = f64::from(z * DEG_TO_RAD);
+    let yaw = f64::from(y * DEG_TO_RAD);
 
     let pitch_over_2: f64 = pitch * 0.5_f64;
     let roll_over_2: f64 = roll * 0.5_f64;
