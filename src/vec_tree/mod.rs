@@ -5,8 +5,8 @@
 //! mutability is handled in a way much more idiomatic to Rust through unique (&mut) access to the
 //! vector. The tree can be sent or shared across threads like a `Vec`. This enables general
 //! multiprocessing support like parallel tree traversals.
-use std::{fmt, mem, cmp};
 use std::ops::{Index, IndexMut};
+use std::{cmp, fmt, mem};
 
 #[derive(Debug, Copy, Clone)]
 pub struct NodeId {
@@ -17,13 +17,16 @@ impl NodeId {
     /// Append a new child to this node, after existing children.
     pub fn append_child<T>(self, new_child: NodeId, tree: &mut VecTree<T>) {
         new_child.detach(tree);
+
         let last_child_opt;
         {
-            let (self_borrow, new_child_borrow) =
-                tree
-                    .nodes
-                    .get_pair_mut(self.index, new_child.index, "Can not append a node to itself");
+            let (self_borrow, new_child_borrow) = tree.nodes.get_pair_mut(
+                self.index,
+                new_child.index,
+                "Can not append a node to itself",
+            );
             new_child_borrow.parent = Some(self);
+
             last_child_opt = mem::replace(&mut self_borrow.last_child, Some(new_child));
             if let Some(last_child) = last_child_opt {
                 new_child_borrow.previous_sibling = Some(last_child);
@@ -32,6 +35,7 @@ impl NodeId {
                 self_borrow.first_child = Some(new_child);
             }
         }
+
         if let Some(last_child) = last_child_opt {
             debug_assert!(tree[last_child].next_sibling.is_none());
             tree[last_child].next_sibling = Some(new_child);
@@ -43,10 +47,11 @@ impl NodeId {
         new_child.detach(tree);
         let first_child_opt;
         {
-            let (self_borrow, new_child_borrow) =
-                tree
-                    .nodes
-                    .get_pair_mut(self.index, new_child.index, "Can not prepend a node to itself");
+            let (self_borrow, new_child_borrow) = tree.nodes.get_pair_mut(
+                self.index,
+                new_child.index,
+                "Can not prepend a node to itself",
+            );
             new_child_borrow.parent = Some(self);
             first_child_opt = mem::replace(&mut self_borrow.first_child, Some(new_child));
             if let Some(first_child) = first_child_opt {
@@ -91,10 +96,11 @@ impl NodeId {
         let next_sibling_opt;
         let parent_opt;
         {
-            let (self_borrow, new_sibling_borrow) =
-                tree
-                    .nodes
-                    .get_pair_mut(self.index, new_sibling.index, "Can not insert a node after itself");
+            let (self_borrow, new_sibling_borrow) = tree.nodes.get_pair_mut(
+                self.index,
+                new_sibling.index,
+                "Can not insert a node after itself",
+            );
             parent_opt = self_borrow.parent;
             new_sibling_borrow.parent = parent_opt;
             new_sibling_borrow.previous_sibling = Some(self);
@@ -119,14 +125,16 @@ impl NodeId {
         let previous_sibling_opt;
         let parent_opt;
         {
-            let (self_borrow, new_sibling_borrow) =
-                tree
-                    .nodes
-                    .get_pair_mut(self.index, new_sibling.index, "Can not insert a node before itself");
+            let (self_borrow, new_sibling_borrow) = tree.nodes.get_pair_mut(
+                self.index,
+                new_sibling.index,
+                "Can not insert a node before itself",
+            );
             parent_opt = self_borrow.parent;
             new_sibling_borrow.parent = parent_opt;
             new_sibling_borrow.next_sibling = Some(self);
-            previous_sibling_opt = mem::replace(&mut self_borrow.previous_sibling, Some(new_sibling));
+            previous_sibling_opt =
+                mem::replace(&mut self_borrow.previous_sibling, Some(new_sibling));
             if let Some(previous_sibling) = previous_sibling_opt {
                 new_sibling_borrow.previous_sibling = Some(previous_sibling);
             }
@@ -302,11 +310,21 @@ impl<T> VecTree<T> {
 
 trait GetPairMut<T> {
     /// Get mutable references to two distinct nodes. Panics if the two given IDs are the same.
-    fn get_pair_mut(&mut self, a: usize, b: usize, same_index_error_message: &'static str) -> (&mut T, &mut T);
+    fn get_pair_mut(
+        &mut self,
+        a: usize,
+        b: usize,
+        same_index_error_message: &'static str,
+    ) -> (&mut T, &mut T);
 }
 
 impl<T> GetPairMut<T> for Vec<T> {
-    fn get_pair_mut(&mut self, a: usize, b: usize, same_index_error_message: &'static str) -> (&mut T, &mut T) {
+    fn get_pair_mut(
+        &mut self,
+        a: usize,
+        b: usize,
+        same_index_error_message: &'static str,
+    ) -> (&mut T, &mut T) {
         if a == b {
             panic!(same_index_error_message)
         }
@@ -493,10 +511,14 @@ impl<'a, T> Iterator for TraverseWithDepth<'a, T> {
                             None
                         } else {
                             match self.tree[node].next_sibling {
-                                Some(next_sibling) => Some(NodeEdgeWithDepth::Start(next_sibling, depth)),
+                                Some(next_sibling) => {
+                                    Some(NodeEdgeWithDepth::Start(next_sibling, depth))
+                                }
                                 None => {
                                     match self.tree[node].parent {
-                                        Some(parent) => Some(NodeEdgeWithDepth::End(parent, depth - 1)),
+                                        Some(parent) => {
+                                            Some(NodeEdgeWithDepth::End(parent, depth - 1))
+                                        }
 
                                         // `node.parent()` here can only be `None`
                                         // if the tree has been modified during iteration,
@@ -533,7 +555,6 @@ impl<'a, T> Iterator for DescendantsWithDepth<'a, T> {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::VecTree;
@@ -568,22 +589,34 @@ mod tests {
         child_node_3.append_child(grandchild, &mut tree);
 
         assert_eq!(
-            root_node.children(&tree).map(|node| tree[node].data).collect::<Vec<_>>(),
+            root_node
+                .children(&tree)
+                .map(|node| tree[node].data)
+                .collect::<Vec<_>>(),
             [2, 3, 4]
         );
 
         assert_eq!(
-            child_node_1.children(&tree).map(|node| tree[node].data).collect::<Vec<_>>(),
+            child_node_1
+                .children(&tree)
+                .map(|node| tree[node].data)
+                .collect::<Vec<_>>(),
             []
         );
 
         assert_eq!(
-            child_node_2.children(&tree).map(|node| tree[node].data).collect::<Vec<_>>(),
+            child_node_2
+                .children(&tree)
+                .map(|node| tree[node].data)
+                .collect::<Vec<_>>(),
             []
         );
 
         assert_eq!(
-            child_node_3.children(&tree).map(|node| tree[node].data).collect::<Vec<_>>(),
+            child_node_3
+                .children(&tree)
+                .map(|node| tree[node].data)
+                .collect::<Vec<_>>(),
             [5]
         );
     }
@@ -616,7 +649,8 @@ mod tests {
         node_4.append_child(node_6, &mut tree);
         node_2.append_child(node_7, &mut tree);
 
-        let descendants = root_node.descendants_with_depth(&tree)
+        let descendants = root_node
+            .descendants_with_depth(&tree)
             .map(|(node, depth)| (tree[node].data, depth))
             .collect::<Vec<(i32, u32)>>();
 
