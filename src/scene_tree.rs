@@ -1,27 +1,23 @@
-use vec_tree::{
-    VecTree,
-    NodeId,
-    Descendants,
-    FollowingSiblings,
-    Children,
-    Ancestors,
-    DescendantsWithDepth,
+extern crate vec_tree;
+use self::vec_tree::{
+    AncestorsIter, ChildrenIter, DescendantsIter, DescendantsWithDepthIter, FollowingSiblingsIter,
+    Index, VecTree,
 };
 use specs::Entity;
 use std::collections::HashMap;
 
 pub struct SceneTree {
     pub tree: VecTree<Entity>,
-    root_node: NodeId,
+    root_node: Index,
     scene_root_entity: Entity,
-    entity_node_map: HashMap<Entity, NodeId>,
+    entity_node_map: HashMap<Entity, Index>,
 }
 
 impl SceneTree {
     /// The scene_root_entity is needed to create the node which will hold the root nodes.
     pub fn new(scene_root_entity: Entity) -> Self {
         let mut tree = VecTree::new();
-        let root_node = tree.new_node(scene_root_entity);
+        let root_node = tree.insert_root(scene_root_entity);
 
         Self {
             tree,
@@ -35,17 +31,16 @@ impl SceneTree {
         self.tree.clear();
         self.entity_node_map.clear();
 
-        self.root_node = self.tree.new_node(self.scene_root_entity);
+        self.root_node = self.tree.insert_root(self.scene_root_entity);
     }
 
     pub fn add_entity_node(&mut self, entity: Entity) {
-        let scene_node = self.tree.new_node(entity);
+        let scene_node = self.tree.insert(entity, self.root_node);
 
         self.entity_node_map.insert(entity, scene_node);
-        self.root_node.append_child(scene_node, &mut self.tree);
     }
 
-    pub fn get_entity_node(&self, entity: &Entity) -> NodeId {
+    pub fn get_entity_node(&self, entity: &Entity) -> Index {
         self.entity_node_map[entity]
     }
 
@@ -56,40 +51,38 @@ impl SceneTree {
         self.set_node_child(node, child_node);
     }
 
-    fn set_node_child(&mut self, node: NodeId, child: NodeId) {
-        node.append_child(child, &mut self.tree);
+    fn set_node_child(&mut self, node: Index, child: Index) {
+        self.tree.append_child(node, child);
     }
 
     pub fn get_parent_entity(&self, entity: &Entity) -> Option<&Entity> {
         let node = self.get_entity_node(entity);
 
-        match self.tree[node].parent() {
-            Some(node) => Some(&self.tree[node].data),
-            None => None,
+        match self.tree.parent(node) {
+            Some(node_id) => self.tree.get(node_id),
+            _ => None,
         }
     }
 
-    pub fn get_entity_root_parent(&self, entity: &Entity) -> &Entity {
-        let mut node_id: NodeId = self.get_entity_node(entity);
+    // pub fn get_entity_root_parent(&self, entity: &Entity) -> &Entity {
+    //     let mut node_id: Index = self.get_entity_node(entity);
 
-        loop {
-            let node = &self.tree[node_id];
-
-            if let Some(parent_id) = node.parent() {
-                node_id = parent_id;
-            } else {
-                return &self.tree[node_id].data;
-            }
-        }
-    }
+    //     loop {
+    //         if let Some(parent_id) = node.parent() {
+    //             node_id = parent_id;
+    //         } else {
+    //             return &self.tree[node_id].data;
+    //         }
+    //     }
+    // }
 
     /// Parent nodes appear before the descendants.
     /// Call `.next().unwrap()` once on the iterator to skip the node itself.
     pub fn descendant_entities(&self, entity: &Entity) -> DescendantEntities {
-        let node = self.get_entity_node(entity);
+        let node_id = self.get_entity_node(entity);
 
         DescendantEntities {
-            descendants: node.descendants(&self.tree),
+            descendants: self.tree.descendants(node_id),
             tree: &self.tree,
         }
     }
@@ -97,46 +90,52 @@ impl SceneTree {
     /// Parent nodes appear before the descendants.
     /// Call `.next().unwrap()` once on the iterator to skip the node itself.
     pub fn descendant_entities_with_depth(&self, entity: &Entity) -> DescendantEntitiesWithDepth {
-        let node = self.get_entity_node(entity);
+        let node_id = self.get_entity_node(entity);
 
         DescendantEntitiesWithDepth {
-            descendants_with_depth: node.descendants_with_depth(&self.tree),
+            descendants_with_depth: self.tree.descendants_with_depth(node_id),
             tree: &self.tree,
         }
     }
 
     /// Call `.next().unwrap()` once on the iterator to skip the node itself.
     pub fn following_entities(&self, entity: &Entity) -> FollowingEntities {
-        let node = self.get_entity_node(entity);
+        let node_id = self.get_entity_node(entity);
 
         FollowingEntities {
-            following_siblings: node.following_siblings(&self.tree),
+            following_siblings: self.tree.following_siblings(node_id),
             tree: &self.tree,
         }
     }
 
     /// Call `.next().unwrap()` once on the iterator to skip the node itself.
     pub fn ancestor_entities(&self, entity: &Entity) -> AncestorEntities {
-        let node = self.get_entity_node(entity);
+        let node_id = self.get_entity_node(entity);
 
         AncestorEntities {
-            ancestors: node.ancestors(&self.tree),
+            ancestors: self.tree.ancestors(node_id),
             tree: &self.tree,
         }
     }
 
     /// This is the root nodes on the scene tree perspective. On the vec tree perspective, they are
     /// the children of the root node.
-    pub fn root_entities(&self) -> ChildrenEntities {
-        ChildrenEntities {
-            children: self.root_node.children(&self.tree),
-            tree: &self.tree,
+    pub fn root_entities(&self) -> Option<ChildrenEntities> {
+        let root_node_id_opt = self.tree.get_root_index();
+
+        match root_node_id_opt {
+            Some(root_node_id) => Some(ChildrenEntities {
+                children: self.tree.children(root_node_id),
+                tree: &self.tree,
+            }),
+            _ => None,
         }
     }
 }
 
+// TODO: DescendantEntitiesIter.
 pub struct DescendantEntities<'a> {
-    descendants: Descendants<'a, Entity>,
+    descendants: DescendantsIter<'a, Entity>,
     tree: &'a VecTree<Entity>,
 }
 
@@ -147,14 +146,14 @@ impl<'a> Iterator for DescendantEntities<'a> {
         let descendants = &mut self.descendants;
 
         match descendants.next() {
-            Some(node) => Some(self.tree[node].data),
+            Some(node_id) => Some(self.tree[node_id]),
             None => None,
         }
     }
 }
 
 pub struct DescendantEntitiesWithDepth<'a> {
-    descendants_with_depth: DescendantsWithDepth<'a, Entity>,
+    descendants_with_depth: DescendantsWithDepthIter<'a, Entity>,
     tree: &'a VecTree<Entity>,
 }
 
@@ -165,14 +164,14 @@ impl<'a> Iterator for DescendantEntitiesWithDepth<'a> {
         let descendants_with_depth = &mut self.descendants_with_depth;
 
         match descendants_with_depth.next() {
-            Some((node, depth)) => Some((self.tree[node].data, depth)),
+            Some((node_id, depth)) => Some((self.tree[node_id], depth)),
             None => None,
         }
     }
 }
 
 pub struct FollowingEntities<'a> {
-    following_siblings: FollowingSiblings<'a, Entity>,
+    following_siblings: FollowingSiblingsIter<'a, Entity>,
     tree: &'a VecTree<Entity>,
 }
 
@@ -183,14 +182,14 @@ impl<'a> Iterator for FollowingEntities<'a> {
         let following_siblings = &mut self.following_siblings;
 
         match following_siblings.next() {
-            Some(node) => Some(self.tree[node].data),
+            Some(node_id) => Some(self.tree[node_id]),
             None => None,
         }
     }
 }
 
 pub struct AncestorEntities<'a> {
-    ancestors: Ancestors<'a, Entity>,
+    ancestors: AncestorsIter<'a, Entity>,
     tree: &'a VecTree<Entity>,
 }
 
@@ -201,14 +200,14 @@ impl<'a> Iterator for AncestorEntities<'a> {
         let ancestors = &mut self.ancestors;
 
         match ancestors.next() {
-            Some(node) => Some(self.tree[node].data),
+            Some(node_id) => Some(self.tree[node_id]),
             None => None,
         }
     }
 }
 
 pub struct ChildrenEntities<'a> {
-    children: Children<'a, Entity>,
+    children: ChildrenIter<'a, Entity>,
     tree: &'a VecTree<Entity>,
 }
 
@@ -219,7 +218,7 @@ impl<'a> Iterator for ChildrenEntities<'a> {
         let children = &mut self.children;
 
         match children.next() {
-            Some(node) => Some(self.tree[node].data),
+            Some(node_id) => Some(self.tree[node_id]),
             None => None,
         }
     }

@@ -41,7 +41,15 @@ impl<'a> System<'a> for Transformation {
             self.scene_tree.set_entity_child(&parent.entity, &entity);
         }
 
-        let root_entities = self.scene_tree.root_entities();
+        let root_entities = {
+            match self.scene_tree.root_entities() {
+                Some(root_entities) => root_entities,
+                _ => {
+                    return;
+                }
+            }
+        };
+
         let mut current_higher_dirty_depth: u32 = 0;
 
         for root_entity in root_entities {

@@ -21,5 +21,8 @@ pretty_env_logger = "0.2"
 git = "https://github.com/michaelfairley/rust-imgui-opengl-renderer.git"
 rev = "52ea13c6a619091902a4877db3ed53eb8ae28a34"
 
+[dependencies.vec-tree]
+path = "/Users/arnaudvalensi/dev/perso/rust/vec-tree"
+
 [patch.crates-io]
 imgui = { git = "https://github.com/Gekkio/imgui-rs.git" }

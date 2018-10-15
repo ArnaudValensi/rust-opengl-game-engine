@@ -25,7 +25,6 @@ pub mod config;
 pub mod lifecycle;
 pub mod math;
 pub mod time;
-pub mod vec_tree;
 pub mod scene_tree;
 
 mod game;
