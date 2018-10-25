@@ -56,17 +56,21 @@ impl<'a> System<'a> for GuiRendering {
         let gl_window = &self.window.borrow().gl_window;
 
         let size_pixels = gl_window.get_inner_size().unwrap();
-        let hdipi = gl_window.hidpi_factor();
+        let hdipi = gl_window.get_hidpi_factor();
         let size_points = (
-            (size_pixels.0 as f32 / hdipi) as u32,
-            (size_pixels.1 as f32 / hdipi) as u32,
+            (size_pixels.width / hdipi) as u32,
+            (size_pixels.height / hdipi) as u32,
         );
 
         update_mouse(&mut self.imgui, &input);
 
         let ui = self
             .imgui
-            .frame(size_points, size_pixels, delta_time_in_seconds);
+            .frame(
+                size_points,
+                (size_pixels.width as u32, size_pixels.height as u32),
+                delta_time_in_seconds,
+            );
 
         // let mut open = true;
         // ui.show_demo_window(&mut open);

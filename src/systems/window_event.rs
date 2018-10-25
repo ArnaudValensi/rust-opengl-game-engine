@@ -35,6 +35,7 @@ impl WindowEvent {
         let events_loop = &mut tmp.events_loop;
         let running = &mut tmp.running;
         let gl_window = &tmp.gl_window;
+        let dpi_factor = gl_window.get_hidpi_factor();
 
         input_ctx.new_tick();
 
@@ -42,8 +43,8 @@ impl WindowEvent {
             if let Event::WindowEvent{ event, .. } = event {
                 match event {
                     GlutinWindowEvent::CloseRequested => *running = false,
-                    GlutinWindowEvent::Resized(width, height) => {
-                        gl_window.resize(width, height);
+                    GlutinWindowEvent::Resized(logical_size) => {
+                        gl_window.resize(logical_size.to_physical(dpi_factor));
                     },
                     GlutinWindowEvent::KeyboardInput { input, .. } => match input {
                         KeyboardInput { state, virtual_keycode, .. } => {
@@ -62,11 +63,14 @@ impl WindowEvent {
                         }
                     }
                     GlutinWindowEvent::CursorMoved { position, .. } => {
-                        let window_size = gl_window.get_inner_size().unwrap();
-                        let window_center_x = window_size.0 as f64 / 2.0;
-                        let window_center_y = window_size.1 as f64 / 2.0;
+                        let logical_size = gl_window.get_inner_size().unwrap();
+                        let window_center_x = logical_size.width / 2.0;
+                        let window_center_y = logical_size.height / 2.0;
 
-                        input_ctx.set_mouse_position(position, (window_center_x, window_center_y));
+                        input_ctx.set_mouse_position(
+                            (position.x, position.y),
+                            (window_center_x, window_center_y),
+                        );
                     }
                     GlutinWindowEvent::MouseInput { state, button, .. } => {
                         match button {
@@ -80,12 +84,12 @@ impl WindowEvent {
                         delta: MouseScrollDelta::LineDelta(_, y),
                         phase: TouchPhase::Moved,
                         ..
-                    } |
+                    } => input_ctx.set_mouse_wheel(y),
                     GlutinWindowEvent::MouseWheel {
-                        delta: MouseScrollDelta::PixelDelta(_, y),
+                        delta: MouseScrollDelta::PixelDelta(logical_position),
                         phase: TouchPhase::Moved,
                         ..
-                    } => input_ctx.set_mouse_wheel(y),
+                    } => input_ctx.set_mouse_wheel(logical_position.y as f32),
                     _ => ()
                 };
             }

@@ -3,13 +3,14 @@ extern crate glutin;
 
 use self::glutin::{
     ContextBuilder,
-    CursorState,
     EventsLoop,
     GlContext,
     GlWindow,
     WindowBuilder,
     // GlProfile, GlRequest,
 };
+
+use self::glutin::dpi::{LogicalSize, LogicalPosition};
 
 pub struct Window {
     pub gl_window: GlWindow,
@@ -22,23 +23,25 @@ impl Window {
         let mut events_loop = EventsLoop::new();
         let window = WindowBuilder::new()
             .with_title("BigSeed")
-            .with_dimensions(width, height);
+            .with_dimensions(LogicalSize { width: width as f64, height: height as f64 });
         let context = ContextBuilder::new().with_vsync(true);
         // .with_gl_profile(GlProfile::Core)
         // .with_gl(GlRequest::Latest);
         // .with_multisampling(config.multisampling);
         let gl_window = GlWindow::new(window, context, &events_loop).unwrap();
 
-        // FIXME: On Mac 10.14 (Mojave) we need to resize the window after creation.
-        // This is related to this issue https://github.com/tomaka/glutin/issues/1069
-        events_loop.poll_events(|_| {});
-        let (width, height): (u32, u32) =
-            gl_window.get_outer_size().expect("Window no longer exists");
-        gl_window.resize(width, height);
+        // // FIXME: On Mac 10.14 (Mojave) we need to resize the window after creation.
+        // // This is related to this issue https://github.com/tomaka/glutin/issues/1069
+        // events_loop.poll_events(|_| {});
+        // let (width, height): (u32, u32) =
+        //     gl_window.get_outer_size().expect("Window no longer exists");
+        // gl_window.resize(width, height);
 
         gl_window
-            .set_cursor_state(CursorState::Grab)
+            .grab_cursor(true)
             .expect("could not grab mouse cursor");
+
+        gl_window.hide_cursor(true);
 
         unsafe {
             gl_window.make_current().unwrap();
@@ -55,13 +58,14 @@ impl Window {
     }
 
     pub fn center_mouse_cursor(gl_window: &GlWindow) {
-        let hidpi_factor = gl_window.hidpi_factor() as i32;
         let window_size = gl_window.get_inner_size().unwrap();
-        let posx = window_size.0 as i32 / hidpi_factor / 2;
-        let posy = window_size.1 as i32 / hidpi_factor / 2;
+        let cursor_position = LogicalPosition {
+            x: window_size.width / 2.0,
+            y: window_size.height / 2.0,
+        };
 
         gl_window
-            .set_cursor_position(posx, posy)
+            .set_cursor_position(cursor_position)
             .expect("could not center mouse cursor");
     }
 }

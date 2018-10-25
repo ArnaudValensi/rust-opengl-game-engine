@@ -9,7 +9,6 @@ use input::Input;
 use input::keyboard::KeyCode;
 use std::rc::Rc;
 use std::cell::RefCell;
-use self::glutin::CursorState;
 
 pub struct MouseControl {
     window: Rc<RefCell<Window>>,
@@ -38,12 +37,16 @@ impl<'a> System<'a> for MouseControl {
 
             if input.is_cursor_locked() {
                 gl_window
-                    .set_cursor_state(CursorState::Grab)
+                    .grab_cursor(true)
                     .expect("could not grab mouse cursor");
+
+                gl_window.hide_cursor(true);
             } else {
                 gl_window
-                    .set_cursor_state(CursorState::Normal)
+                    .grab_cursor(false)
                     .expect("could not free mouse cursor");
+
+                gl_window.hide_cursor(false);
             }
         }
 
