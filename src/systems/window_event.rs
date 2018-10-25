@@ -41,7 +41,7 @@ impl WindowEvent {
         events_loop.poll_events(|event| {
             if let Event::WindowEvent{ event, .. } = event {
                 match event {
-                    GlutinWindowEvent::Closed => *running = false,
+                    GlutinWindowEvent::CloseRequested => *running = false,
                     GlutinWindowEvent::Resized(width, height) => {
                         gl_window.resize(width, height);
                     },
