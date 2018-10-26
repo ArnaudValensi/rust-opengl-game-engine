@@ -5,7 +5,7 @@ authors = ["Arnaud Valensi <arnaud.valensi@gmail.com>"]
 
 [dependencies]
 gl = "0.6.1"
-glutin = "0.17"
+glutin = "0.18.0"
 cgmath = "0.16.1"
 image = "0.14.0"
 floating-duration = "0.1.2"
