@@ -6,6 +6,7 @@ extern crate imgui_opengl_renderer;
 use self::glutin::GlContext;
 use self::imgui::*;
 use self::imgui_opengl_renderer::Renderer;
+use cgmath::Vector3;
 use components::transform::Transform;
 use input::Input;
 use specs::{Join, Read, ReadStorage, System};
@@ -13,7 +14,6 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use time::Time;
 use window::Window;
-use cgmath::{Vector3};
 
 pub struct GuiRendering {
     window: Rc<RefCell<Window>>,
@@ -52,6 +52,7 @@ impl<'a> System<'a> for GuiRendering {
         let (time, input, tranform_storage) = data;
 
         let delta_time_in_seconds = time.get_delta_time_in_seconds();
+        let average_delta_time_in_seconds = time.get_average_delta_time_in_seconds();
         let gl_window = &self.window.borrow().gl_window;
 
         let size_pixels = gl_window.get_inner_size().unwrap();
@@ -86,7 +87,7 @@ impl<'a> System<'a> for GuiRendering {
 
         let selected_entity_index = &mut self.selected_entity_index;
         ui.window(im_str!("Inspector"))
-            .size((370.0, 100.0), ImGuiCond::FirstUseEver)
+            .size((370.0, 130.0), ImGuiCond::FirstUseEver)
             .build(|| {
                 let mut tranform_names: Vec<ImString> = Vec::new();
 
@@ -94,7 +95,15 @@ impl<'a> System<'a> for GuiRendering {
                     tranform_names.push(ImString::new(transform.name.clone()));
                 }
 
-                let tranform_names: Vec<&ImStr> = tranform_names.iter().map(|s| s.as_ref()).collect();
+                let tranform_names: Vec<&ImStr> =
+                    tranform_names.iter().map(|s| s.as_ref()).collect();
+
+                ui.text(im_str!(
+                    "{:.3}ms/frame ({:.1}FPS)",
+                    average_delta_time_in_seconds * 1000.0,
+                    1.0 / average_delta_time_in_seconds,
+                ));
+                ui.separator();
 
                 ui.combo(
                     im_str!("Entity"),
@@ -116,11 +125,8 @@ impl<'a> System<'a> for GuiRendering {
                         selected_transform.local_position.z,
                     ];
                     let rotation_vector: Vector3<f32> = selected_transform.to_euler_angles();
-                    let mut rotation: [f32; 3] = [
-                        rotation_vector.x,
-                        rotation_vector.y,
-                        rotation_vector.z,
-                    ];
+                    let mut rotation: [f32; 3] =
+                        [rotation_vector.x, rotation_vector.y, rotation_vector.z];
 
                     ui.input_float3(im_str!("Position"), &mut position).build();
                     ui.input_float3(im_str!("Rotation"), &mut rotation).build();
