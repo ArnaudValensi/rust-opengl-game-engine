@@ -1,13 +1,14 @@
-extern crate glutin;
 extern crate gl;
+extern crate glutin;
 
 use self::glutin::{
-    WindowBuilder,
     ContextBuilder,
-    EventsLoop,
-    GlWindow,
-    GlContext,
     CursorState,
+    EventsLoop,
+    GlContext,
+    GlWindow,
+    WindowBuilder,
+    // GlProfile, GlRequest,
 };
 
 pub struct Window {
@@ -18,17 +19,25 @@ pub struct Window {
 
 impl Window {
     pub fn new(width: u32, height: u32) -> Window {
-        let events_loop = EventsLoop::new();
+        let mut events_loop = EventsLoop::new();
         let window = WindowBuilder::new()
             .with_title("BigSeed")
             .with_dimensions(width, height);
-        let context = ContextBuilder::new()
-            .with_vsync(true);
+        let context = ContextBuilder::new().with_vsync(true);
+        // .with_gl_profile(GlProfile::Core)
+        // .with_gl(GlRequest::Latest);
+        // .with_multisampling(config.multisampling);
         let gl_window = GlWindow::new(window, context, &events_loop).unwrap();
+
+        // FIXME: On Mac 10.14 (Mojave) we need to resize the window after creation.
+        // This is related to this issue https://github.com/tomaka/glutin/issues/1069
+        events_loop.poll_events(|_| {});
+        let (width, height): (u32, u32) =
+            gl_window.get_outer_size().expect("Window no longer exists");
+        gl_window.resize(width, height);
 
         gl_window
             .set_cursor_state(CursorState::Grab)
-            .ok()
             .expect("could not grab mouse cursor");
 
         unsafe {
@@ -53,7 +62,6 @@ impl Window {
 
         gl_window
             .set_cursor_position(posx, posy)
-            .ok()
             .expect("could not center mouse cursor");
     }
 }
