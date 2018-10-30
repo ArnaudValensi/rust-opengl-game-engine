@@ -39,15 +39,15 @@ impl WindowEvent {
         input_ctx.new_tick();
 
         events_loop.poll_events(|event| {
-            match event {
-                Event::WindowEvent{ event, .. } => match event {
+            if let Event::WindowEvent{ event, .. } = event {
+                match event {
                     GlutinWindowEvent::Closed => *running = false,
                     GlutinWindowEvent::Resized(width, height) => {
                         gl_window.resize(width, height);
                     },
                     GlutinWindowEvent::KeyboardInput { input, .. } => match input {
-                        KeyboardInput { state, virtual_keycode, .. } => match virtual_keycode {
-                            Some(key) => {
+                        KeyboardInput { state, virtual_keycode, .. } => {
+                            if let Some(key) = virtual_keycode {
                                 let normalized_key = normalize_key(key);
 
                                 match state {
@@ -59,7 +59,6 @@ impl WindowEvent {
                                     }
                                 }
                             }
-                            _ => ()
                         }
                     }
                     GlutinWindowEvent::CursorMoved { position, .. } => {
@@ -88,8 +87,7 @@ impl WindowEvent {
                         ..
                     } => input_ctx.set_mouse_wheel(y),
                     _ => ()
-                },
-                _ => ()
+                };
             }
         });
     }
