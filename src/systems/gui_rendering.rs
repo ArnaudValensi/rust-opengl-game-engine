@@ -92,7 +92,7 @@ impl<'a> System<'a> for GuiRendering {
                 let mut tranform_names: Vec<ImString> = Vec::new();
 
                 for (transform,) in (&tranform_storage,).join() {
-                    tranform_names.push(ImString::new(transform.name.clone()));
+                    tranform_names.push(ImString::new(transform.name));
                 }
 
                 let tranform_names: Vec<&ImStr> =
