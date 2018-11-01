@@ -23,19 +23,21 @@ impl Window {
         let mut events_loop = EventsLoop::new();
         let window = WindowBuilder::new()
             .with_title("BigSeed")
-            .with_dimensions(LogicalSize { width: width as f64, height: height as f64 });
+            .with_dimensions(LogicalSize::from((width, height)));
         let context = ContextBuilder::new().with_vsync(true);
         // .with_gl_profile(GlProfile::Core)
         // .with_gl(GlRequest::Latest);
         // .with_multisampling(config.multisampling);
         let gl_window = GlWindow::new(window, context, &events_loop).unwrap();
 
-        // // FIXME: On Mac 10.14 (Mojave) we need to resize the window after creation.
-        // // This is related to this issue https://github.com/tomaka/glutin/issues/1069
-        // events_loop.poll_events(|_| {});
-        // let (width, height): (u32, u32) =
-        //     gl_window.get_outer_size().expect("Window no longer exists");
-        // gl_window.resize(width, height);
+        // FIXME: On Mac 10.14 (Mojave) we need to resize the window after creation.
+        // This is related to this issue https://github.com/tomaka/glutin/issues/1069
+        events_loop.poll_events(|_| {});
+        let logical_size =
+            gl_window.get_outer_size()
+            .expect("Window no longer exists");
+        let physical_size = logical_size.to_physical(gl_window.get_hidpi_factor());
+        gl_window.resize(physical_size);
 
         gl_window
             .grab_cursor(true)
