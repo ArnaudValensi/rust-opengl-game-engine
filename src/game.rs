@@ -29,6 +29,7 @@ use lifecycle::{Lifecycle, Event};
 use input::Input;
 use time::Time;
 use window::Window;
+use palette::Palette;
 // use vox_loader::VoxLoader;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -50,12 +51,14 @@ fn run() -> Result<(), Error> {
     let time = Time::new();
     let material = Material::new();
     let projection: Matrix4<f32> = perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
+    let palette: Vec<f32> = Palette::get();
     let mut event_loop = Lifecycle::new();
 
     unsafe {
         // configure global opengl state
         // -----------------------------
         gl::Enable(gl::DEPTH_TEST);
+        material.set_vector4_array("colors", &palette);
         material.set_matrix4("projection", &projection);
     }
 

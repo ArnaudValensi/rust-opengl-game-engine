@@ -26,6 +26,7 @@ pub mod lifecycle;
 pub mod math;
 pub mod time;
 pub mod scene_tree;
+pub mod palette;
 
 mod game;
 pub use self::game::game;

@@ -8,7 +8,7 @@ use std::str;
 use gl;
 use gl::types::*;
 
-use cgmath::{Matrix, Matrix4, Vector3};
+use cgmath::{Matrix, Matrix4, Vector3, Vector4};
 use cgmath::prelude::*;
 
 #[derive(Debug, Clone)]
@@ -90,6 +90,20 @@ impl Shader {
     /// ------------------------------------------------------------------------
     pub unsafe fn setVec3(&self, name: &CStr, x: f32, y: f32, z: f32) {
         gl::Uniform3f(gl::GetUniformLocation(self.ID, name.as_ptr()), x, y, z);
+    }
+    /// ------------------------------------------------------------------------
+    pub unsafe fn setVector4(&self, name: &CStr, value: &Vector4<f32>) {
+        gl::Uniform4fv(gl::GetUniformLocation(self.ID, name.as_ptr()), 1, value.as_ptr());
+    }
+    /// ------------------------------------------------------------------------
+    pub unsafe fn setVec4(&self, name: &CStr, x: f32, y: f32, z: f32, w: f32) {
+        gl::Uniform4f(gl::GetUniformLocation(self.ID, name.as_ptr()), x, y, z, w);
+    }
+    /// ------------------------------------------------------------------------
+    pub unsafe fn setVector4Array(&self, name: &CStr, value: &[f32]) {
+        gl::Uniform4fv(
+            gl::GetUniformLocation(self.ID, name.as_ptr()), value.len() as i32, value.as_ptr(),
+        );
     }
     /// ------------------------------------------------------------------------
     pub unsafe fn setMat4(&self, name: &CStr, mat: &Matrix4<f32>) {

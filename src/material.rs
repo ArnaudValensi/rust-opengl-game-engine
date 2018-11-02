@@ -1,4 +1,4 @@
-use cgmath::Matrix4;
+use cgmath::{Matrix4, Vector4};
 use shader::Shader;
 use std::ffi::{CStr, CString};
 use texture::Texture;
@@ -13,7 +13,7 @@ impl Default for Material {
     fn default() -> Self {
         // build and compile our shader program
         // ------------------------------------
-        let shader = Shader::new("src/shaders/7.2.camera.vs", "src/shaders/7.2.camera.fs");
+        let shader = Shader::new("src/shaders/chunk.vs", "src/shaders/chunk.fs");
 
         // load and create a texture
         // -------------------------
@@ -50,6 +50,24 @@ impl Material {
 
         unsafe {
             self.shader.setMat4(c_str, matrix);
+        }
+    }
+
+    pub fn set_vector4(&self, name: &str, vector: &Vector4<f32>) {
+        let c_string = CString::new(name).unwrap();
+        let c_str = c_string.as_c_str();
+
+        unsafe {
+            self.shader.setVector4(c_str, vector);
+        }
+    }
+
+    pub fn set_vector4_array(&self, name: &str, array: &[f32]) {
+        let c_string = CString::new(name).unwrap();
+        let c_str = c_string.as_c_str();
+
+        unsafe {
+            self.shader.setVector4Array(c_str, array);
         }
     }
 
