@@ -43,6 +43,7 @@ fn run() -> Result<(), Error> {
     let render_system = Render::new();
     let window_event_system = WindowEvent::new(Rc::clone(&window));
     let mouse_control_system = MouseControl::new(Rc::clone(&window));
+    let player_movement_system = PlayerMovement::new();
     let gui_rendering_system = GuiRendering::new(Rc::clone(&window));
     let after_render_system = AfterRender::new(Rc::clone(&window));
     let input = Input::new();
@@ -112,7 +113,7 @@ fn run() -> Result<(), Error> {
 
     dispatcher_builder.add_thread_local(window_event_system);
     dispatcher_builder.add_thread_local(mouse_control_system);
-    dispatcher_builder.add_thread_local(PlayerMovement::new());
+    dispatcher_builder.add_thread_local(player_movement_system);
     // dispatcher_builder.add_thread_local(Rotator::new());
     dispatcher_builder.add_thread_local(transformation_system);
     dispatcher_builder.add_thread_local(render_system);
