@@ -107,11 +107,11 @@ impl<'a> System<'a> for GuiRendering {
                         / delta_time_in_seconds;
 
                 ui.text(im_str!(
-                    "{:.3}ms/frame ({:.1}FPS) {:.3}ms idle ({:.0}%)",
+                    "{:.3}ms/frame ({:.1}FPS) {:.0}% idle ({:0.3}ms)",
                     average_delta_time_in_seconds * 1000.0,
                     1.0 / average_delta_time_in_seconds,
-                    average_idle_time * 1000.0,
                     average_idle_time_percent,
+                    average_idle_time * 1000.0,
                 ));
                 ui.separator();
 
