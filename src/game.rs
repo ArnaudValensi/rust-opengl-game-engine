@@ -14,7 +14,6 @@ use resources::active_camera::ActiveCamera;
 use resources::rotating_entity::RotatingEntity;
 use systems::render::Render;
 use systems::gui_rendering::GuiRendering;
-use systems::swap_frame_buffer::SwapFrameBuffer;
 use systems::window_event::WindowEvent;
 use systems::player_movement::PlayerMovement;
 use systems::mouse_control::MouseControl;
@@ -42,11 +41,10 @@ fn run() -> Result<(), Error> {
 
     let window = Rc::new(RefCell::new(Window::new(SCR_WIDTH, SCR_HEIGHT)));
     let render_system = Render::new();
-    let swap_frame_buffer_system = SwapFrameBuffer::new(Rc::clone(&window));
     let window_event_system = WindowEvent::new(Rc::clone(&window));
     let mouse_control_system = MouseControl::new(Rc::clone(&window));
     let gui_rendering_system = GuiRendering::new(Rc::clone(&window));
-    let after_render_system = AfterRender::new();
+    let after_render_system = AfterRender::new(Rc::clone(&window));
     let input = Input::new();
     let time = Time::new();
     let material = Material::new();
@@ -119,7 +117,6 @@ fn run() -> Result<(), Error> {
     dispatcher_builder.add_thread_local(transformation_system);
     dispatcher_builder.add_thread_local(render_system);
     dispatcher_builder.add_thread_local(gui_rendering_system);
-    dispatcher_builder.add_thread_local(swap_frame_buffer_system);
     dispatcher_builder.add_thread_local(after_render_system);
 
     let mut dispatcher = dispatcher_builder.build();
