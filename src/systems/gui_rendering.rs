@@ -53,6 +53,7 @@ impl<'a> System<'a> for GuiRendering {
 
         let delta_time_in_seconds = time.get_delta_time_in_seconds();
         let average_delta_time_in_seconds = time.get_average_delta_time_in_seconds();
+        let average_render_time_in_seconds = time.get_average_render_time_in_seconds();
         let gl_window = &self.window.borrow().gl_window;
 
         let size_pixels = gl_window.get_inner_size().unwrap();
@@ -64,13 +65,11 @@ impl<'a> System<'a> for GuiRendering {
 
         update_mouse(&mut self.imgui, &input);
 
-        let ui = self
-            .imgui
-            .frame(
-                size_points,
-                (size_pixels.width as u32, size_pixels.height as u32),
-                delta_time_in_seconds,
-            );
+        let ui = self.imgui.frame(
+            size_points,
+            (size_pixels.width as u32, size_pixels.height as u32),
+            delta_time_in_seconds,
+        );
 
         // let mut open = true;
         // ui.show_demo_window(&mut open);
@@ -102,10 +101,17 @@ impl<'a> System<'a> for GuiRendering {
                 let tranform_names: Vec<&ImStr> =
                     tranform_names.iter().map(|s| s.as_ref()).collect();
 
+                let average_idle_time = delta_time_in_seconds - average_render_time_in_seconds;
+                let average_idle_time_percent =
+                    (delta_time_in_seconds - average_render_time_in_seconds) * 100.0
+                        / delta_time_in_seconds;
+
                 ui.text(im_str!(
-                    "{:.3}ms/frame ({:.1}FPS)",
+                    "{:.3}ms/frame ({:.1}FPS) {:.3}ms idle ({:.0}%)",
                     average_delta_time_in_seconds * 1000.0,
                     1.0 / average_delta_time_in_seconds,
+                    average_idle_time * 1000.0,
+                    average_idle_time_percent,
                 ));
                 ui.separator();
 

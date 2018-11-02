@@ -1,4 +1,3 @@
-// TODO: use delta time
 use specs::{WriteStorage, WriteExpect, System, Read};
 use resources::rotating_entity::RotatingEntity;
 use components::transform::Transform;

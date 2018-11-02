@@ -8,3 +8,6 @@ pub mod transformation;
 
 mod rotator;
 pub use self::rotator::Rotator;
+
+mod after_render;
+pub use self::after_render::AfterRender;
