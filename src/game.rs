@@ -121,6 +121,7 @@ fn run() -> Result<(), Error> {
 
     let mut dispatcher = dispatcher_builder.build();
 
+    // TODO: Simplify event loop.
     while let Some(event) = event_loop.next() {
         match event {
             Event::FixedUpdate => {}
