@@ -1,16 +1,20 @@
 use super::direction::Direction;
 use super::position::Position;
+use cgmath::{Vector2, Vector3};
 use mesh_data::MeshData;
 use vertex::Vertex;
-use cgmath::{Vector2, Vector3};
 
-pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position, direction: &Direction) {
+pub fn create_vertex_position_face(
+    mesh_data: &mut MeshData,
+    position: &Position,
+    direction: Direction,
+) {
     match direction {
-        &Direction::North => {
+        Direction::North => {
             let mut vertex_position_0 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 - 0.5_f32,
-                position.z as f32 - 0.5_f32
+                position.z as f32 - 0.5_f32,
             );
             let mut vertex_position_1 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
@@ -48,8 +52,8 @@ pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position
             mesh_data.vertices.push(vertex_1);
             mesh_data.vertices.push(vertex_2);
             mesh_data.vertices.push(vertex_3);
-        },
-        &Direction::East => {
+        }
+        Direction::East => {
             let mut vertex_position_0 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 - 0.5_f32,
@@ -90,8 +94,8 @@ pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position
             mesh_data.vertices.push(vertex_1);
             mesh_data.vertices.push(vertex_2);
             mesh_data.vertices.push(vertex_3);
-        },
-        &Direction::South => {
+        }
+        Direction::South => {
             let mut vertex_position_0 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 - 0.5_f32,
@@ -132,8 +136,8 @@ pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position
             mesh_data.vertices.push(vertex_1);
             mesh_data.vertices.push(vertex_2);
             mesh_data.vertices.push(vertex_3);
-        },
-        &Direction::West => {
+        }
+        Direction::West => {
             let mut vertex_position_0 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 - 0.5_f32,
@@ -174,8 +178,8 @@ pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position
             mesh_data.vertices.push(vertex_1);
             mesh_data.vertices.push(vertex_2);
             mesh_data.vertices.push(vertex_3);
-        },
-        &Direction::Up => {
+        }
+        Direction::Up => {
             let mut vertex_position_0 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 + 0.5_f32,
@@ -216,8 +220,8 @@ pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position
             mesh_data.vertices.push(vertex_1);
             mesh_data.vertices.push(vertex_2);
             mesh_data.vertices.push(vertex_3);
-        },
-        &Direction::Down => {
+        }
+        Direction::Down => {
             let mut vertex_position_0 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 - 0.5_f32,
@@ -258,7 +262,7 @@ pub fn create_vertex_position_face(mesh_data: &mut MeshData, position: &Position
             mesh_data.vertices.push(vertex_1);
             mesh_data.vertices.push(vertex_2);
             mesh_data.vertices.push(vertex_3);
-        },
+        }
     }
 }
 

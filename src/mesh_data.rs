@@ -9,6 +9,12 @@ pub struct MeshData {
 
 impl MeshData {
     pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+impl Default for MeshData {
+    fn default() -> Self {
         let vertices: Vec<Vertex> = Vec::new();
         let indices: Vec<i32> = Vec::new();
 
