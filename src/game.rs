@@ -116,7 +116,7 @@ fn run() -> Result<(), Error> {
     // dispatcher_builder.add_thread_local(Rotator::new());
     dispatcher_builder.add_thread_local(transformation_system);
     dispatcher_builder.add_thread_local(render_system);
-    dispatcher_builder.add_thread_local(gui_rendering_system);
+    // dispatcher_builder.add_thread_local(gui_rendering_system);
     dispatcher_builder.add_thread_local(swap_frame_buffer_system);
 
     let mut dispatcher = dispatcher_builder.build();

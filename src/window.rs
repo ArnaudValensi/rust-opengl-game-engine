@@ -60,10 +60,10 @@ impl Window {
     }
 
     pub fn center_mouse_cursor(gl_window: &GlWindow) {
-        let window_size = gl_window.get_inner_size().unwrap();
+        let logical_size = gl_window.get_inner_size().unwrap();
         let cursor_position = LogicalPosition {
-            x: window_size.width / 2.0,
-            y: window_size.height / 2.0,
+            x: logical_size.width / 2.0,
+            y: logical_size.height / 2.0,
         };
 
         gl_window
