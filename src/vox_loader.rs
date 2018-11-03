@@ -22,7 +22,7 @@ impl VoxLoader {
         let dot_vox_data = match load(&filepath) {
             Err(message) => {
                 return Err(format_err!(
-                    "Tryed to open the asset file at '{}' and got the following error: {}",
+                    "Tryed to open the asset file at '{}' and got the following error: {}.",
                     filepath,
                     message,
                 ))
@@ -30,11 +30,9 @@ impl VoxLoader {
             Ok(dot_vox_data) => dot_vox_data,
         };
 
-        println!("{:#?}", dot_vox_data);
-
         if dot_vox_data.version != SUPPORTED_VOX_VERSION {
             return Err(format_err!(
-                "Cannot load the asset file at '{}' because its vox version is {} and only the version 150 is supported",
+                "Cannot load the asset file at '{}' because its vox version is {} and only the version 150 is supported.",
                 filepath,
                 dot_vox_data.version,
             ));
@@ -50,13 +48,10 @@ impl VoxLoader {
         }
 
         if nb_models > 1 {
-            warn!("Mutliple models are found in the asset file at '{}', but only one the first one will be loaded", filepath);
+            warn!("Mutliple models are found in the asset file at '{}', but only one the first one will be loaded.", filepath);
         }
 
         let model = &dot_vox_data.models[0];
-
-        println!("model: {:#?}", model);
-
         let mut chunk2 = Chunk::new(model.size.x as u8, model.size.z as u8, model.size.y as u8);
 
         for &voxel in model.voxels.iter() {
