@@ -59,7 +59,7 @@ fn run() -> Result<(), Error> {
         // configure global opengl state
         // -----------------------------
         gl::Enable(gl::DEPTH_TEST);
-        material.set_vector4_array("colors", &palette);
+        material.set_vector4_array("palette", &palette);
         material.set_matrix4("projection", &projection);
     }
 
