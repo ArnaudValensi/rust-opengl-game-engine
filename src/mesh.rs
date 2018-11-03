@@ -78,21 +78,24 @@ impl Mesh {
 
         // set the vertex attribute pointers
         let size = size_of::<Vertex>() as i32;
-        // vertex Positions
+        // vertex positions
         gl::EnableVertexAttribArray(0);
         gl::VertexAttribPointer(0, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, position) as *const c_void);
-        // vertex normals
+        // vertex colors index
         gl::EnableVertexAttribArray(1);
-        gl::VertexAttribPointer(1, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, normal) as *const c_void);
-        // vertex texture coords
+        gl::VertexAttribIPointer(1, 1, gl::UNSIGNED_BYTE, size, offset_of!(Vertex, color_index) as *const c_void);
+        // vertex normals
         gl::EnableVertexAttribArray(2);
-        gl::VertexAttribPointer(2, 2, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, tex_coords) as *const c_void);
-        // vertex tangent
+        gl::VertexAttribPointer(2, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, normal) as *const c_void);
+        // vertex texture coords
         gl::EnableVertexAttribArray(3);
-        gl::VertexAttribPointer(3, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, tangent) as *const c_void);
-        // vertex bitangent
+        gl::VertexAttribPointer(3, 2, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, tex_coords) as *const c_void);
+        // vertex tangent
         gl::EnableVertexAttribArray(4);
-        gl::VertexAttribPointer(4, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, bitangent) as *const c_void);
+        gl::VertexAttribPointer(4, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, tangent) as *const c_void);
+        // vertex bitangent
+        gl::EnableVertexAttribArray(5);
+        gl::VertexAttribPointer(5, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, bitangent) as *const c_void);
 
         gl::BindVertexArray(0);
     }

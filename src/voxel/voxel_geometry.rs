@@ -1,12 +1,13 @@
 use super::direction::Direction;
 use super::position::Position;
-use cgmath::{Vector2, Vector3};
+use cgmath::Vector3;
 use mesh_data::MeshData;
 use vertex::Vertex;
 
 pub fn create_vertex_position_face(
     mesh_data: &mut MeshData,
     position: &Position,
+    color_index: u8,
     direction: Direction,
 ) {
     match direction {
@@ -43,10 +44,10 @@ pub fn create_vertex_position_face(
             vertex_2.position = vertex_position_2;
             vertex_3.position = vertex_position_3;
 
-            vertex_0.tex_coords = Vector2::<f32>::new(0.0, 0.0);
-            vertex_1.tex_coords = Vector2::<f32>::new(0.0, 1.0);
-            vertex_2.tex_coords = Vector2::<f32>::new(1.0, 1.0);
-            vertex_3.tex_coords = Vector2::<f32>::new(1.0, 0.0);
+            vertex_0.color_index = color_index;
+            vertex_1.color_index = color_index;
+            vertex_2.color_index = color_index;
+            vertex_3.color_index = color_index;
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -85,10 +86,10 @@ pub fn create_vertex_position_face(
             vertex_2.position = vertex_position_2;
             vertex_3.position = vertex_position_3;
 
-            vertex_0.tex_coords = Vector2::<f32>::new(0.0, 0.0);
-            vertex_1.tex_coords = Vector2::<f32>::new(0.0, 1.0);
-            vertex_2.tex_coords = Vector2::<f32>::new(1.0, 1.0);
-            vertex_3.tex_coords = Vector2::<f32>::new(1.0, 0.0);
+            vertex_0.color_index = color_index;
+            vertex_1.color_index = color_index;
+            vertex_2.color_index = color_index;
+            vertex_3.color_index = color_index;
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -127,10 +128,10 @@ pub fn create_vertex_position_face(
             vertex_2.position = vertex_position_2;
             vertex_3.position = vertex_position_3;
 
-            vertex_0.tex_coords = Vector2::<f32>::new(0.0, 0.0);
-            vertex_1.tex_coords = Vector2::<f32>::new(0.0, 1.0);
-            vertex_2.tex_coords = Vector2::<f32>::new(1.0, 1.0);
-            vertex_3.tex_coords = Vector2::<f32>::new(1.0, 0.0);
+            vertex_0.color_index = color_index;
+            vertex_1.color_index = color_index;
+            vertex_2.color_index = color_index;
+            vertex_3.color_index = color_index;
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -169,10 +170,10 @@ pub fn create_vertex_position_face(
             vertex_2.position = vertex_position_2;
             vertex_3.position = vertex_position_3;
 
-            vertex_0.tex_coords = Vector2::<f32>::new(0.0, 0.0);
-            vertex_1.tex_coords = Vector2::<f32>::new(0.0, 1.0);
-            vertex_2.tex_coords = Vector2::<f32>::new(1.0, 1.0);
-            vertex_3.tex_coords = Vector2::<f32>::new(1.0, 0.0);
+            vertex_0.color_index = color_index;
+            vertex_1.color_index = color_index;
+            vertex_2.color_index = color_index;
+            vertex_3.color_index = color_index;
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -211,10 +212,10 @@ pub fn create_vertex_position_face(
             vertex_2.position = vertex_position_2;
             vertex_3.position = vertex_position_3;
 
-            vertex_0.tex_coords = Vector2::<f32>::new(0.0, 0.0);
-            vertex_1.tex_coords = Vector2::<f32>::new(0.0, 1.0);
-            vertex_2.tex_coords = Vector2::<f32>::new(1.0, 1.0);
-            vertex_3.tex_coords = Vector2::<f32>::new(1.0, 0.0);
+            vertex_0.color_index = color_index;
+            vertex_1.color_index = color_index;
+            vertex_2.color_index = color_index;
+            vertex_3.color_index = color_index;
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -253,10 +254,10 @@ pub fn create_vertex_position_face(
             vertex_2.position = vertex_position_2;
             vertex_3.position = vertex_position_3;
 
-            vertex_0.tex_coords = Vector2::<f32>::new(0.0, 0.0);
-            vertex_1.tex_coords = Vector2::<f32>::new(0.0, 1.0);
-            vertex_2.tex_coords = Vector2::<f32>::new(1.0, 1.0);
-            vertex_3.tex_coords = Vector2::<f32>::new(1.0, 0.0);
+            vertex_0.color_index = color_index;
+            vertex_1.color_index = color_index;
+            vertex_2.color_index = color_index;
+            vertex_3.color_index = color_index;
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);

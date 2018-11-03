@@ -9,6 +9,8 @@ use cgmath::prelude::*;
 pub struct Vertex {
     // position
     pub position: Vector3<f32>,
+    // color
+    pub color_index: u8,
     // normal
     pub normal: Vector3<f32>,
     // texCoords
@@ -23,6 +25,7 @@ impl Default for Vertex {
     fn default() -> Self {
         Vertex {
             position: Vector3::zero(),
+            color_index: 0,
             normal: Vector3::zero(),
             tex_coords: Vector2::zero(),
             tangent: Vector3::zero(),

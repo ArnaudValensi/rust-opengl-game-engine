@@ -67,9 +67,9 @@ fn run() -> Result<(), Error> {
     let mut chunk2 = Chunk::new(2, 2, 2);
     // let chunk3 = VoxLoader::load("base.vox")?;
 
-    chunk.set_voxel(0, 0, 0, 1)?;
-    chunk.set_voxel(1, 0, 0, 1)?;
-    chunk.set_voxel(1, 0, 1, 1)?;
+    chunk.set_voxel(0, 0, 0, 2)?;
+    chunk.set_voxel(1, 0, 0, 2)?;
+    chunk.set_voxel(1, 0, 1, 2)?;
     chunk2.set_voxel(0, 0, 0, 1)?;
 
     let chunk_mesh_data = build_mesh(&chunk);
