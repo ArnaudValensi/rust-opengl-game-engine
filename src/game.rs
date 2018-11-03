@@ -65,7 +65,7 @@ fn run() -> Result<(), Error> {
 
     let mut chunk = Chunk::new(2, 3, 4);
     let mut chunk2 = Chunk::new(2, 2, 2);
-    // let chunk3 = VoxLoader::load("base.vox")?;
+    let chunk3 = VoxLoader::load("base.vox")?;
 
     chunk.set_voxel(0, 0, 0, 2)?;
     chunk.set_voxel(1, 0, 0, 2)?;
@@ -76,8 +76,8 @@ fn run() -> Result<(), Error> {
     let chunk_mesh = Mesh::new(chunk_mesh_data, Vec::default());
     let chunk_mesh_data2 = build_mesh(&chunk2);
     let chunk_mesh2 = Mesh::new(chunk_mesh_data2, Vec::default());
-    // let chunk_mesh_data3 = build_mesh(&chunk3);
-    // let chunk_mesh3 = Mesh::new(chunk_mesh_data3, Vec::default());
+    let chunk_mesh_data3 = build_mesh(&chunk3);
+    let chunk_mesh3 = Mesh::new(chunk_mesh_data3, Vec::default());
 
     let mut world = World::new();
 
@@ -120,6 +120,15 @@ fn run() -> Result<(), Error> {
         .with(MeshRender {
             material: material.clone(),
             mesh: chunk_mesh2.clone(),
+        })
+        .build();
+
+    world
+        .create_entity()
+        .with(Transform::new(Point3::new(0.0, 0.0, -4.0), "Chunk2"))
+        .with(MeshRender {
+            material: material.clone(),
+            mesh: chunk_mesh3.clone(),
         })
         .build();
 

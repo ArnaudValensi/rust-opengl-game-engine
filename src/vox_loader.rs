@@ -4,7 +4,7 @@ use self::dot_vox::load;
 use failure::Error;
 use voxel::chunk::Chunk;
 
-const ASSETS_DIRECTORY: &'static str = "../assets";
+const ASSETS_DIRECTORY: &str = "../assets";
 const SUPPORTED_VOX_VERSION: u32 = 150;
 
 // #[derive(Fail, Debug)]
@@ -17,7 +17,7 @@ const SUPPORTED_VOX_VERSION: u32 = 150;
 pub struct VoxLoader {}
 
 impl VoxLoader {
-    pub fn load(asset_name: &str) -> Result<(), Error> {
+    pub fn load(asset_name: &str) -> Result<Chunk, Error> {
         let filepath = format!("{}/{}", ASSETS_DIRECTORY, asset_name);
         let dot_vox_data = match load(&filepath) {
             Err(message) => {
@@ -60,10 +60,15 @@ impl VoxLoader {
         let mut chunk2 = Chunk::new(model.size.x as u8, model.size.y as u8, model.size.y as u8);
 
         for &voxel in model.voxels.iter() {
-            chunk2.set_voxel(i64::from(voxel.x), i64::from(voxel.y), i64::from(voxel.z), voxel.i)?;
+            chunk2.set_voxel(
+                i64::from(voxel.x),
+                i64::from(voxel.y),
+                i64::from(voxel.z),
+                voxel.i,
+            )?;
         }
 
-        Ok(())
+        Ok(chunk2)
     }
 }
 
