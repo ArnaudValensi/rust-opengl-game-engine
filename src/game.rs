@@ -65,7 +65,7 @@ fn run() -> Result<(), Error> {
 
     let mut chunk = Chunk::new(2, 3, 4);
     let mut chunk2 = Chunk::new(2, 2, 2);
-    let chunk3 = VoxLoader::load("base.vox")?;
+    let chunk3 = VoxLoader::load("chr_old.vox")?;
 
     chunk.set_voxel(0, 0, 0, 2)?;
     chunk.set_voxel(1, 0, 0, 2)?;

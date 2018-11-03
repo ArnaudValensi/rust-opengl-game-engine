@@ -27,7 +27,7 @@ pub struct Chunk {
 // public int SizeZBasedOnPlan(Direction direction)
 impl Chunk {
     pub fn new(size_x: u8, size_y: u8, size_z: u8) -> Self {
-        let size = (size_x * size_y * size_z) as usize;
+        let size = size_x as usize * size_y as usize * size_z as usize;
 
         Chunk {
             size_x,
