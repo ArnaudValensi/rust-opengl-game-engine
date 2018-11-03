@@ -87,15 +87,6 @@ impl Mesh {
         // vertex normals
         gl::EnableVertexAttribArray(2);
         gl::VertexAttribPointer(2, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, normal) as *const c_void);
-        // vertex texture coords
-        gl::EnableVertexAttribArray(3);
-        gl::VertexAttribPointer(3, 2, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, tex_coords) as *const c_void);
-        // vertex tangent
-        gl::EnableVertexAttribArray(4);
-        gl::VertexAttribPointer(4, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, tangent) as *const c_void);
-        // vertex bitangent
-        gl::EnableVertexAttribArray(5);
-        gl::VertexAttribPointer(5, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, bitangent) as *const c_void);
 
         gl::BindVertexArray(0);
     }

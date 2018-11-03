@@ -1,4 +1,4 @@
-use cgmath::{ Vector3, Vector2 };
+use cgmath::Vector3;
 use cgmath::prelude::*;
 
 // NOTE: without repr(C) the compiler may reorder the fields or use different padding/alignment than C.
@@ -7,18 +7,9 @@ use cgmath::prelude::*;
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub struct Vertex {
-    // position
     pub position: Vector3<f32>,
-    // color
     pub color_index: u8,
-    // normal
     pub normal: Vector3<f32>,
-    // texCoords
-    pub tex_coords: Vector2<f32>,
-    // tangent
-    pub tangent: Vector3<f32>,
-    // bitangent
-    pub bitangent: Vector3<f32>,
 }
 
 impl Default for Vertex {
@@ -27,9 +18,6 @@ impl Default for Vertex {
             position: Vector3::zero(),
             color_index: 0,
             normal: Vector3::zero(),
-            tex_coords: Vector2::zero(),
-            tangent: Vector3::zero(),
-            bitangent: Vector3::zero(),
         }
     }
 }
