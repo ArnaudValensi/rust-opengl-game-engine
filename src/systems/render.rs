@@ -3,11 +3,11 @@ extern crate glutin;
 extern crate imgui;
 extern crate imgui_opengl_renderer;
 
-use specs::{ReadExpect, ReadStorage, System, Join};
-use cgmath::{Vector3, Matrix4};
-use resources::active_camera::ActiveCamera;
-use components::transform::Transform;
+use cgmath::{Matrix4, Vector3};
 use components::mesh_render::MeshRender;
+use components::transform::Transform;
+use resources::active_camera::ActiveCamera;
+use specs::{Join, ReadExpect, ReadStorage, System};
 
 const CAMERA_UP: Vector3<f32> = Vector3 {
     x: 0.0,
@@ -15,11 +15,12 @@ const CAMERA_UP: Vector3<f32> = Vector3 {
     z: 0.0,
 };
 
-pub struct Render { }
+#[derive(Default, Debug)]
+pub struct Render;
 
 impl Render {
     pub fn new() -> Self {
-        Self { }
+        Self::default()
     }
 }
 
@@ -37,11 +38,7 @@ impl<'a> System<'a> for Render {
         clear_screen();
 
         for (mesh_transform, mesh_render) in (&tranform_storage, &mesh_render_storage).join() {
-            render_mesh(
-                &mesh_transform,
-                &mesh_render,
-                &camera_transform,
-            );
+            render_mesh(&mesh_transform, &mesh_render, &camera_transform);
         }
     }
 }
@@ -53,31 +50,21 @@ fn clear_screen() {
     }
 }
 
-fn render_mesh(
-    mesh_transform: &Transform,
-    mesh_render: &MeshRender,
-    camera_tranform: &Transform,
-) {
+fn render_mesh(mesh_transform: &Transform, mesh_render: &MeshRender, camera_tranform: &Transform) {
     let camera_pos = camera_tranform.local_position;
     let camera_forward = camera_tranform.forward();
 
     unsafe {
-        // TODO: batch entities with the same material
+        // TODO: Batch entities with the same material.
         mesh_render.material.bind();
 
-        let view: Matrix4<f32> = Matrix4::look_at(
-            camera_pos,
-            camera_pos + camera_forward,
-            CAMERA_UP
-        );
+        let view: Matrix4<f32> =
+            Matrix4::look_at(camera_pos, camera_pos + camera_forward, CAMERA_UP);
         mesh_render.material.set_matrix4("view", &view);
 
-        // println!("render: {:#?}, position: {:#?}, rotation: {:#?}", mesh_transform.name, mesh_transform.local_position, mesh_transform.to_euler_angles());
-
-        // let translation = Matrix4::from_translation(point_to_vector(mesh_transform.local_position));
-        // let rotation = Matrix4::from(mesh_transform.local_rotation);
-        // let model: Matrix4<f32> = translation * rotation;
-        mesh_render.material.set_matrix4("model", &mesh_transform.world_matrix);
+        mesh_render
+            .material
+            .set_matrix4("model", &mesh_transform.world_matrix);
 
         mesh_render.mesh.Draw();
     }
