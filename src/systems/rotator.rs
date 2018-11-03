@@ -9,11 +9,17 @@ pub struct Rotator {
     yaw: f32,
 }
 
-impl Rotator {
-    pub fn new() -> Self {
+impl Default for Rotator {
+    fn default() -> Self {
         Self {
             yaw: 0.0,
         }
+    }
+}
+
+impl Rotator {
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 
