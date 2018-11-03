@@ -125,7 +125,7 @@ fn run() -> Result<(), Error> {
 
     world
         .create_entity()
-        .with(Transform::new(Point3::new(0.0, 0.0, -4.0), "Chunk2"))
+        .with(Transform::new(Point3::new(0.0, 0.0, 0.0), "Chunk2"))
         .with(MeshRender {
             material: material.clone(),
             mesh: chunk_mesh3.clone(),

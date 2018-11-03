@@ -57,13 +57,13 @@ impl VoxLoader {
 
         println!("model: {:#?}", model);
 
-        let mut chunk2 = Chunk::new(model.size.x as u8, model.size.y as u8, model.size.y as u8);
+        let mut chunk2 = Chunk::new(model.size.x as u8, model.size.z as u8, model.size.y as u8);
 
         for &voxel in model.voxels.iter() {
             chunk2.set_voxel(
                 i64::from(voxel.x),
-                i64::from(voxel.y),
                 i64::from(voxel.z),
+                i64::from(model.size.y - u32::from(voxel.y) - 1),
                 voxel.i,
             )?;
         }
