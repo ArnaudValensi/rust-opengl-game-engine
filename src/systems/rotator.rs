@@ -1,7 +1,7 @@
 use specs::{WriteStorage, WriteExpect, System, Read};
 use resources::rotating_entity::RotatingEntity;
 use components::transform::Transform;
-use time::Time;
+use resources::Time;
 
 const SENSITIVITY: f32 = 5.0;
 

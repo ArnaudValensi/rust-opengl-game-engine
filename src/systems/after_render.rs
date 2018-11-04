@@ -7,7 +7,7 @@ use self::glutin::GlContext;
 use specs::{System, Write};
 use std::cell::RefCell;
 use std::rc::Rc;
-use time::Time;
+use resources::Time;
 use window::Window;
 
 pub struct AfterRender {

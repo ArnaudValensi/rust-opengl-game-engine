@@ -12,7 +12,7 @@ use input::Input;
 use specs::{Join, Read, ReadStorage, System};
 use std::cell::RefCell;
 use std::rc::Rc;
-use time::Time;
+use resources::Time;
 use window::Window;
 
 pub struct GuiRendering {

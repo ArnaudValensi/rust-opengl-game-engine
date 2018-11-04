@@ -4,7 +4,7 @@ use input::keyboard::KeyCode;
 use input::Input;
 use math::clamp;
 use specs::{Join, Read, ReadStorage, System, WriteStorage};
-use time::Time;
+use resources::Time;
 
 const CAMERA_SPEED: f32 = 20.0;
 const SENSITIVITY: f32 = 10.0;
