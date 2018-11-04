@@ -6,6 +6,7 @@ in vec3 Normal;
 
 out vec4 FragColor;
 
+vec3 ambientLightColor = vec3(1.0f, 1.0f, 1.0f);
 vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
 
 uniform vec3 lightPos;
@@ -15,7 +16,7 @@ void main()
 	float ambientStrength = 0.1;
 
 	// Ambient light calculation
-    vec3 ambient = ambientStrength * lightColor;
+    vec3 ambient = ambientStrength * ambientLightColor;
 
 	// Diffuse light calculation
 	vec3 norm = normalize(Normal);
