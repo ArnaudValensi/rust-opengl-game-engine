@@ -7,12 +7,6 @@ use voxel::chunk::Chunk;
 const ASSETS_DIRECTORY: &str = "../assets";
 const SUPPORTED_VOX_VERSION: u32 = 150;
 
-// #[derive(Fail, Debug)]
-// #[fail(display = "Input was invalid UTF-8 at index {}", index)]
-// pub struct DotVoxError {
-//     message: &str,
-// }
-
 #[derive(Default)]
 pub struct VoxLoader {}
 
@@ -52,10 +46,10 @@ impl VoxLoader {
         }
 
         let model = &dot_vox_data.models[0];
-        let mut chunk2 = Chunk::new(model.size.x as u8, model.size.z as u8, model.size.y as u8);
+        let mut chunk = Chunk::new(model.size.x as u8, model.size.z as u8, model.size.y as u8);
 
         for &voxel in model.voxels.iter() {
-            chunk2.set_voxel(
+            chunk.set_voxel(
                 i64::from(voxel.x),
                 i64::from(voxel.z),
                 i64::from(model.size.y - u32::from(voxel.y) - 1),
@@ -63,7 +57,7 @@ impl VoxLoader {
             )?;
         }
 
-        Ok(chunk2)
+        Ok(chunk)
     }
 }
 
@@ -74,9 +68,18 @@ mod tests {
 
     #[test]
     fn load_vox() {
-        if let Err(ref e) = VoxLoader::load("base.vox") {
+        let result = VoxLoader::load("base.vox");
+        if let Err(ref e) = result {
             print_errors_and_exit(e);
         }
-        // assert!(tree.nodes.len() == 3, "it should have 3 nodes in the tree");
+
+        let chunk = result.unwrap();
+
+        assert_eq!(chunk.get_voxel(0, 0, 2).unwrap(), 78);
+        assert_eq!(chunk.get_voxel(0, 0, 1).unwrap(), 78);
+        assert_eq!(chunk.get_voxel(0, 0, 0).unwrap(), 78);
+        assert_eq!(chunk.get_voxel(1, 0, 0).unwrap(), 78);
+        assert_eq!(chunk.get_voxel(0, 1, 0).unwrap(), 78);
+        assert_eq!(chunk.get_voxel(1, 3, 2).unwrap(), 0);
     }
 }
