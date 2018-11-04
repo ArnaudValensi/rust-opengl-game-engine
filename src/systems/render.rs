@@ -66,6 +66,10 @@ fn render_mesh(mesh_transform: &Transform, mesh_render: &MeshRender, camera_tran
             .material
             .set_matrix4("model", &mesh_transform.world_matrix);
 
+        mesh_render
+            .material
+            .set_matrix3("normalMatrix", &mesh_transform.get_normal_matrix());
+
         mesh_render.mesh.Draw();
     }
 }

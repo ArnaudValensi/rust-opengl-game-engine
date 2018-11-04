@@ -61,7 +61,7 @@ fn run() -> Result<(), Error> {
         gl::Enable(gl::DEPTH_TEST);
         material.set_vector4_array("palette", &palette);
         material.set_matrix4("projection", &projection);
-        material.set_vector3("lightPos", &Vector3::<f32> { x: 0.0, y: 10.0, z: 0.0 });
+        material.set_vector3("lightPos", &Vector3::<f32> { x: 5.0, y: 0.0, z: 0.0 });
     }
 
     let mut chunk = Chunk::new(2, 3, 4);

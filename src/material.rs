@@ -1,4 +1,4 @@
-use cgmath::{Matrix4, Vector4, Vector3};
+use cgmath::{Matrix3, Matrix4, Vector3, Vector4};
 use shader::Shader;
 use std::ffi::{CStr, CString};
 use texture::Texture;
@@ -41,6 +41,15 @@ impl Material {
         unsafe {
             self.shader.useProgram();
             self.texture.bind();
+        }
+    }
+
+    pub fn set_matrix3(&self, name: &str, matrix: &Matrix3<f32>) {
+        let c_string = CString::new(name).unwrap();
+        let c_str = c_string.as_c_str();
+
+        unsafe {
+            self.shader.setMat3(c_str, matrix);
         }
     }
 

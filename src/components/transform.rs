@@ -3,12 +3,12 @@
 // - set_left/set_up
 // - up
 
-use specs::{Component, VecStorage};
-use cgmath::{Point3, Vector3, Quaternion, Matrix4};
 use cgmath::prelude::*;
+use cgmath::{Matrix3, Matrix4, Point3, Quaternion, Vector3};
 use math::point_to_vector;
-use std::f32::consts::PI;
+use specs::{Component, VecStorage};
 use std::f32;
+use std::f32::consts::PI;
 
 const RAD_TO_DEG: f32 = 180.0 / PI as f32;
 const DEG_TO_RAD: f32 = PI / 180.0 as f32;
@@ -43,6 +43,19 @@ impl Transform {
             world_matrix: local_matrix,
             is_dirty: true,
         }
+    }
+
+    pub fn get_normal_matrix(&self) -> Matrix3<f32> {
+        let m = self.world_matrix.invert().unwrap().transpose();
+        let row0 = m.row(0);
+        let row1 = m.row(1);
+        let row2 = m.row(2);
+
+        Matrix3::<f32>::new(
+            row0.x, row1.x, row2.x,
+            row0.y, row1.y, row2.y,
+            row0.z, row1.z, row2.z,
+        )
     }
 
     pub fn forward(&self) -> Vector3<f32> {
@@ -108,9 +121,11 @@ impl Transform {
         }
 
         let q = Quaternion::new(y, w, z, x);
-        v.y = (2_f32 * q.v.x * q.s + 2_f32 * q.v.y * q.v.z).atan2(1.0 - 2_f32 * (q.v.z * q.v.z + q.s * q.s)) as f32;     // Yaw
-        v.x = (2_f32 * (q.v.x * q.v.z - q.s * q.v.y)).asin() as f32;                                                     // Pitch
-        v.z = (2_f32 * q.v.x * q.v.y + 2_f32 * q.v.z * q.s).atan2(1.0 - 2_f32 * (q.v.y * q.v.y + q.v.z * q.v.z)) as f32; // Roll
+        v.y = (2_f32 * q.v.x * q.s + 2_f32 * q.v.y * q.v.z)
+            .atan2(1.0 - 2_f32 * (q.v.z * q.v.z + q.s * q.s)) as f32; // Yaw
+        v.x = (2_f32 * (q.v.x * q.v.z - q.s * q.v.y)).asin() as f32; // Pitch
+        v.z = (2_f32 * q.v.x * q.v.y + 2_f32 * q.v.z * q.s)
+            .atan2(1.0 - 2_f32 * (q.v.y * q.v.y + q.v.z * q.v.z)) as f32; // Roll
 
         normalize_angles_vector(v * RAD_TO_DEG)
     }

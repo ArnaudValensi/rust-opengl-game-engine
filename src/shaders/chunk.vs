@@ -9,6 +9,7 @@ out vec3 Color;
 out vec3 Normal;
 
 uniform mat4 model;
+uniform mat3 normalMatrix;
 uniform mat4 view;
 uniform mat4 projection;
 uniform vec4 palette[256];
@@ -21,5 +22,5 @@ void main()
 	gl_Position = projection * view * model * vec4(aPosition, 1.0f);
 	FragPos = vec3(model * vec4(aPosition, 1.0));
 	Color = palette[ColorIndex].xyz * lightColor;
-	Normal = aNormal;
+	Normal = normalMatrix * aNormal;
 }
