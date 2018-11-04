@@ -12,6 +12,7 @@ use failure::Error;
 use resources::active_camera::ActiveCamera;
 use resources::rotating_entity::RotatingEntity;
 use resources::Time;
+use resources::Terrain;
 use specs::{Builder, DispatcherBuilder, World};
 use systems::gui_rendering::GuiRendering;
 use systems::mouse_control::MouseControl;
@@ -49,6 +50,7 @@ fn run() -> Result<(), Error> {
     let after_render_system = AfterRender::new(Rc::clone(&window));
     let input = Input::new();
     let time = Time::new();
+    let terrain = Terrain::new();
     let material = Material::new();
     let projection: Matrix4<f32> =
         perspective(Deg(FOV), SCR_WIDTH as f32 / SCR_HEIGHT as f32, 0.1, 100.0);
@@ -92,6 +94,7 @@ fn run() -> Result<(), Error> {
 
     world.add_resource(time);
     world.add_resource(input);
+    world.add_resource(terrain);
 
     let scene_root_entity = world.create_entity().build();
     let transformation_system = Transformation::new(scene_root_entity);
