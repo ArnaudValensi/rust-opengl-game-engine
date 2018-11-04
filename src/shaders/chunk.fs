@@ -7,7 +7,7 @@ in vec3 Normal;
 out vec4 FragColor;
 
 uniform vec3 ambientLightColor;
-uniform vec3 lightPos;
+uniform vec3 lightPosition;
 uniform vec3 lightColor;
 
 void main()
@@ -19,7 +19,7 @@ void main()
 
 	// Diffuse light calculation
 	vec3 norm = normalize(Normal);
-	vec3 lightDir = normalize(lightPos - FragPos);
+	vec3 lightDir = normalize(lightPosition - FragPos);
 	float diff = max(dot(norm, lightDir), 0.0);
 	vec3 diffuse = diff * lightColor;
 
