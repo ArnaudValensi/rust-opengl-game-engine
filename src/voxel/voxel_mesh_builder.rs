@@ -5,6 +5,7 @@ use super::position::Position;
 use super::voxel_geometry::{add_quad_triangles, create_vertex_position_face};
 
 pub fn build_mesh(chunk: &Chunk) -> MeshData {
+    // TODO: Instanciate mesh_data with_capacity.
     let mut mesh_data = MeshData::new();
 
     for x in 0..chunk.size_x {
