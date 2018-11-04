@@ -19,7 +19,7 @@ use systems::render::Render;
 use systems::transformation::Transformation;
 use systems::window_event::WindowEvent;
 use systems::AfterRender;
-// use systems::Rotator;
+use systems::Rotator;
 use config::{SCR_HEIGHT, SCR_WIDTH};
 use input::Input;
 use lifecycle::{Event, Lifecycle};
@@ -138,7 +138,7 @@ fn run() -> Result<(), Error> {
     dispatcher_builder.add_thread_local(window_event_system);
     dispatcher_builder.add_thread_local(mouse_control_system);
     dispatcher_builder.add_thread_local(player_movement_system);
-    // dispatcher_builder.add_thread_local(Rotator::new());
+    dispatcher_builder.add_thread_local(Rotator::new());
     dispatcher_builder.add_thread_local(transformation_system);
     dispatcher_builder.add_thread_local(render_system);
     dispatcher_builder.add_thread_local(gui_rendering_system);

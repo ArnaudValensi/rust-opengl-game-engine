@@ -6,7 +6,7 @@ use math::clamp;
 use specs::{Join, Read, ReadStorage, System, WriteStorage};
 use time::Time;
 
-const CAMERA_SPEED: f32 = 2.0;
+const CAMERA_SPEED: f32 = 20.0;
 const SENSITIVITY: f32 = 10.0;
 const MIN_Y: f32 = -60.0;
 const MAX_Y: f32 = 60.0;
