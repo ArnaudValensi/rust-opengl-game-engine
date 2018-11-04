@@ -1,7 +1,7 @@
 extern crate gl;
 extern crate glutin;
 
-use cgmath::{perspective, Deg, Matrix4, Point3};
+use cgmath::{perspective, Deg, Matrix4, Point3, Vector3};
 use components::camera::Camera;
 use components::mesh_render::MeshRender;
 use components::parent::Parent;
@@ -61,6 +61,7 @@ fn run() -> Result<(), Error> {
         gl::Enable(gl::DEPTH_TEST);
         material.set_vector4_array("palette", &palette);
         material.set_matrix4("projection", &projection);
+        material.set_vector3("lightPos", &Vector3::<f32> { x: 0.0, y: 10.0, z: 0.0 });
     }
 
     let mut chunk = Chunk::new(2, 3, 4);
