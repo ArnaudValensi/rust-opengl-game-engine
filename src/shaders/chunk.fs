@@ -6,10 +6,9 @@ in vec3 Normal;
 
 out vec4 FragColor;
 
-vec3 ambientLightColor = vec3(1.0f, 1.0f, 1.0f);
-vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
-
+uniform vec3 ambientLightColor;
 uniform vec3 lightPos;
+uniform vec3 lightColor;
 
 void main()
 {
