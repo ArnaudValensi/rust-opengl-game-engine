@@ -33,6 +33,8 @@ pub fn create_vertex_position_face(
                 position.z as f32 - 0.5_f32,
             );
 
+            let normal = Vector3::<f32>::new(0.0, 0.0, -1.0);
+
             // TODO: vertex values are set twice, the default one, then the vertex.
             let mut vertex_0 = Vertex::default();
             let mut vertex_1 = Vertex::default();
@@ -48,6 +50,11 @@ pub fn create_vertex_position_face(
             vertex_1.color_index = color_index;
             vertex_2.color_index = color_index;
             vertex_3.color_index = color_index;
+
+            vertex_0.normal = normal;
+            vertex_1.normal = normal;
+            vertex_2.normal = normal;
+            vertex_3.normal = normal;
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -76,6 +83,8 @@ pub fn create_vertex_position_face(
                 position.z as f32 + 0.5_f32,
             );
 
+            let normal = Vector3::<f32>::new(1.0, 0.0, 0.0);
+
             let mut vertex_0 = Vertex::default();
             let mut vertex_1 = Vertex::default();
             let mut vertex_2 = Vertex::default();
@@ -90,6 +99,11 @@ pub fn create_vertex_position_face(
             vertex_1.color_index = color_index;
             vertex_2.color_index = color_index;
             vertex_3.color_index = color_index;
+
+            vertex_0.normal = normal;
+            vertex_1.normal = normal;
+            vertex_2.normal = normal;
+            vertex_3.normal = normal;
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -118,6 +132,8 @@ pub fn create_vertex_position_face(
                 position.z as f32 + 0.5_f32,
             );
 
+            let normal = Vector3::<f32>::new(0.0, 0.0, 1.0);
+
             let mut vertex_0 = Vertex::default();
             let mut vertex_1 = Vertex::default();
             let mut vertex_2 = Vertex::default();
@@ -132,6 +148,11 @@ pub fn create_vertex_position_face(
             vertex_1.color_index = color_index;
             vertex_2.color_index = color_index;
             vertex_3.color_index = color_index;
+
+            vertex_0.normal = normal;
+            vertex_1.normal = normal;
+            vertex_2.normal = normal;
+            vertex_3.normal = normal;
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -160,6 +181,8 @@ pub fn create_vertex_position_face(
                 position.z as f32 + 0.5_f32,
             );
 
+            let normal = Vector3::<f32>::new(-1.0, 0.0, 0.0);
+
             let mut vertex_0 = Vertex::default();
             let mut vertex_1 = Vertex::default();
             let mut vertex_2 = Vertex::default();
@@ -174,6 +197,11 @@ pub fn create_vertex_position_face(
             vertex_1.color_index = color_index;
             vertex_2.color_index = color_index;
             vertex_3.color_index = color_index;
+
+            vertex_0.normal = normal;
+            vertex_1.normal = normal;
+            vertex_2.normal = normal;
+            vertex_3.normal = normal;
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -202,6 +230,8 @@ pub fn create_vertex_position_face(
                 position.z as f32 - 0.5_f32,
             );
 
+            let normal = Vector3::<f32>::new(0.0, 1.0, 0.0);
+
             let mut vertex_0 = Vertex::default();
             let mut vertex_1 = Vertex::default();
             let mut vertex_2 = Vertex::default();
@@ -216,6 +246,11 @@ pub fn create_vertex_position_face(
             vertex_1.color_index = color_index;
             vertex_2.color_index = color_index;
             vertex_3.color_index = color_index;
+
+            vertex_0.normal = normal;
+            vertex_1.normal = normal;
+            vertex_2.normal = normal;
+            vertex_3.normal = normal;
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
@@ -244,6 +279,8 @@ pub fn create_vertex_position_face(
                 position.z as f32 + 0.5_f32,
             );
 
+            let normal = Vector3::<f32>::new(0.0, -1.0, 0.0);
+
             let mut vertex_0 = Vertex::default();
             let mut vertex_1 = Vertex::default();
             let mut vertex_2 = Vertex::default();
@@ -258,6 +295,11 @@ pub fn create_vertex_position_face(
             vertex_1.color_index = color_index;
             vertex_2.color_index = color_index;
             vertex_3.color_index = color_index;
+
+            vertex_0.normal = normal;
+            vertex_1.normal = normal;
+            vertex_2.normal = normal;
+            vertex_3.normal = normal;
 
             mesh_data.vertices.push(vertex_0);
             mesh_data.vertices.push(vertex_1);
