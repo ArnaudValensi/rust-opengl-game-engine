@@ -17,6 +17,7 @@ dotenv = "0.13.0"
 log = { version = "0.4", features = ["max_level_debug", "release_max_level_info"] }
 pretty_env_logger = "0.2"
 vec-tree = "0.1.2"
+noise = "0.4.1"
 
 [dependencies.imgui-opengl-renderer]
 git = "https://github.com/michaelfairley/rust-imgui-opengl-renderer.git"
