@@ -4,6 +4,8 @@ use cgmath::Vector3;
 use mesh_data::MeshData;
 use vertex::Vertex;
 
+// IMPROVEMENT: Many vertices are duplicated, we could share it instead.
+//              See: https://youtu.be/64NblGkAabk?t=646
 pub fn create_vertex_position_face(
     mesh_data: &mut MeshData,
     position: &Position,
