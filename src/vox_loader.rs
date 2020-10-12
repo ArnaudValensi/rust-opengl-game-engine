@@ -4,7 +4,7 @@ use self::dot_vox::load;
 use failure::Error;
 use voxel::chunk::Chunk;
 
-const ASSETS_DIRECTORY: &str = "../assets";
+const ASSETS_DIRECTORY: &str = "./resources/voxs";
 const SUPPORTED_VOX_VERSION: u32 = 150;
 
 #[derive(Default)]
