@@ -16,13 +16,11 @@ imgui = "0.0.19-pre"
 dotenv = "0.13.0"
 log = { version = "0.4", features = ["max_level_debug", "release_max_level_info"] }
 pretty_env_logger = "0.2"
+vec-tree = "0.1.2"
 
 [dependencies.imgui-opengl-renderer]
 git = "https://github.com/michaelfairley/rust-imgui-opengl-renderer.git"
 rev = "52ea13c6a619091902a4877db3ed53eb8ae28a34"
-
-[dependencies.vec-tree]
-path = "/Users/arnaudvalensi/dev/perso/rust/vec-tree"
 
 [patch.crates-io]
 imgui = { git = "https://github.com/Gekkio/imgui-rs.git" }
