@@ -20,7 +20,7 @@ impl Palette {
     pub fn get() -> Vec<f32> {
         // Convert color coded into an integer to 4 floats.
         let palette_f32: Vec<Vector4<f32>> = DEFAULT_PALETTE
-            .into_iter()
+            .iter()
             .map(|color| to_vector4_f32(*color))
             .collect();
 

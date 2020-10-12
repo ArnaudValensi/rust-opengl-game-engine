@@ -111,7 +111,7 @@ fn run() -> Result<(), Error> {
         .with(chunk_transform)
         .with(MeshRender {
             material: material.clone(),
-            mesh: chunk_mesh.clone(),
+            mesh: chunk_mesh,
         })
         .build();
     world.add_resource(RotatingEntity(chunk0));
@@ -122,7 +122,7 @@ fn run() -> Result<(), Error> {
         .with(Transform::new(Point3::new(0.0, 0.0, -2.0), "Chunk1"))
         .with(MeshRender {
             material: material.clone(),
-            mesh: chunk_mesh2.clone(),
+            mesh: chunk_mesh2,
         })
         .build();
 
@@ -130,8 +130,8 @@ fn run() -> Result<(), Error> {
         .create_entity()
         .with(Transform::new(Point3::new(0.0, 0.0, 0.0), "Chunk2"))
         .with(MeshRender {
-            material: material.clone(),
-            mesh: chunk_mesh3.clone(),
+            material,
+            mesh: chunk_mesh3,
         })
         .build();
 

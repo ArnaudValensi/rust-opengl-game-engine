@@ -25,7 +25,7 @@ fn voxel_data<'a>(chunk: &Chunk, x: i64, y: i64, z: i64, mesh_data: &'a mut Mesh
     let position: Position = Position::new(x, y, z);
 
     for direction in Direction::iterator() {
-        let touching_pos: Position = position.add_direction(direction.clone());
+        let touching_pos: Position = position.add_direction(*direction);
 
         // Build the face if there is no touching cube or if is the side of the chunk.
         if chunk.is_position_out_of_bound(&touching_pos) || chunk.is_position_air(&touching_pos) {

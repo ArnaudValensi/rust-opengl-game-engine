@@ -5,7 +5,7 @@ use image::GenericImage;
 use std::path::Path;
 use std::os::raw::c_void;
 
-static OBJECT_COUNTER: AtomicUsize = atomic::ATOMIC_USIZE_INIT;
+static OBJECT_COUNTER: AtomicUsize = AtomicUsize::new(0);
 
 #[derive(Debug, Clone)]
 pub struct Texture {

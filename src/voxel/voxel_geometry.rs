@@ -12,22 +12,22 @@ pub fn create_vertex_position_face(
 ) {
     match direction {
         Direction::North => {
-            let mut vertex_position_0 = Vector3::<f32>::new(
+            let vertex_position_0 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 - 0.5_f32,
                 position.z as f32 - 0.5_f32,
             );
-            let mut vertex_position_1 = Vector3::<f32>::new(
+            let vertex_position_1 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 + 0.5_f32,
                 position.z as f32 - 0.5_f32,
             );
-            let mut vertex_position_2 = Vector3::<f32>::new(
+            let vertex_position_2 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 + 0.5_f32,
                 position.z as f32 - 0.5_f32,
             );
-            let mut vertex_position_3 = Vector3::<f32>::new(
+            let vertex_position_3 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 - 0.5_f32,
                 position.z as f32 - 0.5_f32,
@@ -62,22 +62,22 @@ pub fn create_vertex_position_face(
             mesh_data.vertices.push(vertex_3);
         }
         Direction::East => {
-            let mut vertex_position_0 = Vector3::<f32>::new(
+            let vertex_position_0 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 - 0.5_f32,
                 position.z as f32 - 0.5_f32,
             );
-            let mut vertex_position_1 = Vector3::<f32>::new(
+            let vertex_position_1 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 + 0.5_f32,
                 position.z as f32 - 0.5_f32,
             );
-            let mut vertex_position_2 = Vector3::<f32>::new(
+            let vertex_position_2 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 + 0.5_f32,
                 position.z as f32 + 0.5_f32,
             );
-            let mut vertex_position_3 = Vector3::<f32>::new(
+            let vertex_position_3 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 - 0.5_f32,
                 position.z as f32 + 0.5_f32,
@@ -111,22 +111,22 @@ pub fn create_vertex_position_face(
             mesh_data.vertices.push(vertex_3);
         }
         Direction::South => {
-            let mut vertex_position_0 = Vector3::<f32>::new(
+            let vertex_position_0 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 - 0.5_f32,
                 position.z as f32 + 0.5_f32,
             );
-            let mut vertex_position_1 = Vector3::<f32>::new(
+            let vertex_position_1 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 + 0.5_f32,
                 position.z as f32 + 0.5_f32,
             );
-            let mut vertex_position_2 = Vector3::<f32>::new(
+            let vertex_position_2 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 + 0.5_f32,
                 position.z as f32 + 0.5_f32,
             );
-            let mut vertex_position_3 = Vector3::<f32>::new(
+            let vertex_position_3 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 - 0.5_f32,
                 position.z as f32 + 0.5_f32,
@@ -160,22 +160,22 @@ pub fn create_vertex_position_face(
             mesh_data.vertices.push(vertex_3);
         }
         Direction::West => {
-            let mut vertex_position_0 = Vector3::<f32>::new(
+            let vertex_position_0 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 - 0.5_f32,
                 position.z as f32 - 0.5_f32,
             );
-            let mut vertex_position_1 = Vector3::<f32>::new(
+            let vertex_position_1 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 + 0.5_f32,
                 position.z as f32 - 0.5_f32,
             );
-            let mut vertex_position_2 = Vector3::<f32>::new(
+            let vertex_position_2 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 + 0.5_f32,
                 position.z as f32 + 0.5_f32,
             );
-            let mut vertex_position_3 = Vector3::<f32>::new(
+            let vertex_position_3 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 - 0.5_f32,
                 position.z as f32 + 0.5_f32,
@@ -209,22 +209,22 @@ pub fn create_vertex_position_face(
             mesh_data.vertices.push(vertex_3);
         }
         Direction::Up => {
-            let mut vertex_position_0 = Vector3::<f32>::new(
+            let vertex_position_0 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 + 0.5_f32,
                 position.z as f32 - 0.5_f32,
             );
-            let mut vertex_position_1 = Vector3::<f32>::new(
+            let vertex_position_1 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 + 0.5_f32,
                 position.z as f32 + 0.5_f32,
             );
-            let mut vertex_position_2 = Vector3::<f32>::new(
+            let vertex_position_2 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 + 0.5_f32,
                 position.z as f32 + 0.5_f32,
             );
-            let mut vertex_position_3 = Vector3::<f32>::new(
+            let vertex_position_3 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 + 0.5_f32,
                 position.z as f32 - 0.5_f32,
@@ -258,22 +258,22 @@ pub fn create_vertex_position_face(
             mesh_data.vertices.push(vertex_3);
         }
         Direction::Down => {
-            let mut vertex_position_0 = Vector3::<f32>::new(
+            let vertex_position_0 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 - 0.5_f32,
                 position.z as f32 + 0.5_f32,
             );
-            let mut vertex_position_1 = Vector3::<f32>::new(
+            let vertex_position_1 = Vector3::<f32>::new(
                 position.x as f32 - 0.5_f32,
                 position.y as f32 - 0.5_f32,
                 position.z as f32 - 0.5_f32,
             );
-            let mut vertex_position_2 = Vector3::<f32>::new(
+            let vertex_position_2 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 - 0.5_f32,
                 position.z as f32 - 0.5_f32,
             );
-            let mut vertex_position_3 = Vector3::<f32>::new(
+            let vertex_position_3 = Vector3::<f32>::new(
                 position.x as f32 + 0.5_f32,
                 position.y as f32 - 0.5_f32,
                 position.z as f32 + 0.5_f32,

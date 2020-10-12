@@ -67,7 +67,7 @@ impl<'a> System<'a> for Transformation {
                 };
 
                 if let Some(transform) = tranform_storage.get_mut(entity) {
-                    let mut is_dirty = transform.is_dirty || depth > current_higher_dirty_depth;
+                    let is_dirty = transform.is_dirty || depth > current_higher_dirty_depth;
 
                     if is_dirty {
                         let local_rotation = Matrix4::from(transform.local_rotation);
